@@ -199,7 +199,8 @@ public class HomeActivity extends Activity {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-
+                    if(seekBar.getProgress() == 0)
+                        seekBar.setProgress(1);
                 }
 
                 @Override
@@ -220,7 +221,8 @@ public class HomeActivity extends Activity {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-
+                    if(seekBar.getProgress() == 0)
+                        seekBar.setProgress(1);
                 }
 
                 @Override

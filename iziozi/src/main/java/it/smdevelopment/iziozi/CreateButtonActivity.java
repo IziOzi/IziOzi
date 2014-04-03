@@ -5,9 +5,6 @@ import android.os.Bundle;
 
 public class CreateButtonActivity extends Activity {
 
-	public CreateButtonActivity() {
-		// TODO Auto-generated constructor stub
-	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

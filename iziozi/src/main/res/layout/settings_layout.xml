@@ -32,7 +32,7 @@
         android:layout_toRightOf="@+id/textView1"
         android:indeterminate="false"
         android:max="8"
-        android:progress="0" />
+        android:progress="1" />
 
     <SeekBar
         android:id="@+id/seekCols"
