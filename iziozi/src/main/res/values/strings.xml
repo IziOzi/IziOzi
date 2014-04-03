@@ -4,5 +4,13 @@
     <string name="app_name">IziOzi</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="action_settings" >Settings
+    </string>
+    <string name="hello_world" >Hello world!
+    </string>
+    <string name="should" >I should say:</string>
+    <string name="speak_button">Speak!</string>
+    <string name="tts_init">TTS init complete!</string>
+    <string name="edit_string">Edit Mode</string>
 
 </resources>
