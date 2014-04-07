@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
-    tools:context="it.smdevelopment.iziozi.HomeActivity">
+    tools:context="it.smdevelopment.iziozi.gui.BoardActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -16,7 +16,7 @@
         android:textStyle="bold"
         android:textSize="50sp"
         android:gravity="center"
-        android:text="@string/dummy_content" />
+        android:text="dummy" />
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/dummy_button" />
+                android:text="btn" />
 
         </LinearLayout>
     </FrameLayout>

@@ -1,4 +1,4 @@
-package it.smdevelopment.iziozi;
+package it.smdevelopment.iziozi.core;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,15 +9,27 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
+
+import it.smdevelopment.iziozi.R;
+@Root(name = "SpeakableImageButton")
 public class SpeakableImageButton extends ImageButton {
 
-	private String mSentence = null;
+    @Element(name = "mSentence", required = false)
+	private String mSentence = "";
+
 	private Context mContext;
 	
 	public SpeakableImageButton(Context ctx) {
 		super(ctx);
 		mContext = ctx;
 	}
+
+    public SpeakableImageButton(@Element (name = "mSentence")String sentence){
+        super(SMIziOziApplication.CONTEXT);
+        this.mSentence = sentence;
+    }
 	
 	public void setSentence(String sentence) {
 		mSentence = sentence;

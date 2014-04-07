@@ -1,9 +1,11 @@
-package it.smdevelopment.iziozi;
+package it.smdevelopment.iziozi.gui;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import it.smdevelopment.iziozi.R;
 
 public class CreateButtonActivity extends Activity {
 
