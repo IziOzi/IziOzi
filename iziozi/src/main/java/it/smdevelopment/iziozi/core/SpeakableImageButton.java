@@ -16,7 +16,7 @@ import it.smdevelopment.iziozi.R;
 @Root(name = "SpeakableImageButton")
 public class SpeakableImageButton extends ImageButton {
 
-    @Element(name = "mSentence", required = false)
+    @Element(required = false)
 	private String mSentence = "";
 
 	private Context mContext;
@@ -30,8 +30,28 @@ public class SpeakableImageButton extends ImageButton {
         super(SMIziOziApplication.CONTEXT);
         this.mSentence = sentence;
     }
-	
-	public void setSentence(String sentence) {
+
+    public SpeakableImageButton(){
+        super(SMIziOziApplication.CONTEXT);
+    }
+
+    public String getmSentence() {
+        return mSentence;
+    }
+
+    public void setmSentence(String mSentence) {
+        this.mSentence = mSentence;
+    }
+
+    public Context getmContext() {
+        return mContext;
+    }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
+    }
+
+    public void setSentence(String sentence) {
 		mSentence = sentence;
 	}
 	
@@ -47,6 +67,7 @@ public class SpeakableImageButton extends ImageButton {
 		View layoutView = inflater.inflate(R.layout.spkbtn_input_layout, null);
 		
 		final EditText txt = (EditText) layoutView.findViewById(R.id.textField);
+        txt.setText(this.mSentence);
 		
 		builder.setTitle("Text to speech")
 		.setView(layoutView)

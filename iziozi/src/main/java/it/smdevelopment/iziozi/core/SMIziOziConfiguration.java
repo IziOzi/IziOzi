@@ -33,17 +33,15 @@ public class SMIziOziConfiguration {
     Context context;
 
     @Attribute
-    private Integer mRows = 2;
+    private Integer rows = 2;
     @Attribute
-    private Integer mCols = 3;
+    private Integer cols = 3;
 
     @ElementList(inline = true, required = false)
     private List<SpeakableImageButton> mButtons;
 
-    public SMIziOziConfiguration(Integer rows, Integer cols, List<SpeakableImageButton> btns){
-        this.mRows = rows;
-        this.mCols = cols;
-        this.mButtons = btns;
+    public SMIziOziConfiguration(){
+
     }
 
     public SMIziOziConfiguration(Context ctx){
@@ -60,19 +58,19 @@ public class SMIziOziConfiguration {
     }
 
     public Integer getRows() {
-        return mRows;
+        return rows;
     }
 
     public void setRows(Integer mRows) {
-        this.mRows = mRows;
+        this.rows = mRows;
     }
 
     public Integer getCols() {
-        return mCols;
+        return cols;
     }
 
     public void setCols(Integer mCols) {
-        this.mCols = mCols;
+        this.cols = mCols;
     }
 
     public void setContext(Context context) {
