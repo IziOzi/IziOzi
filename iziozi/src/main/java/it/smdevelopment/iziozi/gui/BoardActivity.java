@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,13 +32,28 @@ import it.smdevelopment.iziozi.core.SpeakableImageButton;
 
 public class BoardActivity extends Activity {
 
-    private TextToSpeech tts;
+
+    /*
+    * Layout and configuration
+    * */
+    private SMIziOziConfiguration mConfig;
     private Boolean mIsEditing = false, mCanSpeak = false;
     private List<LinearLayout> homeRows = new ArrayList<LinearLayout>();
-    private SMIziOziConfiguration mConfig;
 
+
+    /*
+    * Interface Lock vars
+    * */
+    private Integer mUnlockTimeout = 5;
+    private AlertDialog mUnlockAlert = null;
+    private CountDownTimer mUnlockCountDown = null;
+
+
+    /*
+    * Window and global objects
+    * */
     private View mDecorView;
-
+    private TextToSpeech tts;
 
     int newRows, newCols;
 
@@ -46,14 +62,83 @@ public class BoardActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.mDecorView= getWindow().getDecorView();
+        this.mDecorView = getWindow().getDecorView();
 
         hideSystemUI();
+
+        this.mDecorView.setOnSystemUiVisibilityChangeListener
+                (new View.OnSystemUiVisibilityChangeListener() {
+
+                    @Override
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        // Note that system bars will only be "visible" if none of the
+                        // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+                        if (visibility == View.VISIBLE && BoardActivity.this.mUnlockAlert == null) {
+                            // TODO: The system bars are visible.
+
+                            BoardActivity.this.mUnlockAlert = new AlertDialog.Builder(BoardActivity.this)
+                                    .setTitle(getResources().getString(R.string.unlock))
+                                    .setMessage(getResources().getQuantityString(R.plurals.unlock_question, BoardActivity.this.mUnlockTimeout.intValue(), BoardActivity.this.mUnlockTimeout.intValue()))
+                                    .setPositiveButton(getResources().getString(R.string.unlock), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    })
+                                    .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            hideSystemUI();
+                                        }
+                                    })
+                                    .setCancelable(false)
+                                    .create();
+
+                            BoardActivity.this.mUnlockAlert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    BoardActivity.this.mUnlockCountDown.cancel();
+                                    BoardActivity.this.mUnlockCountDown = null;
+                                    BoardActivity.this.mUnlockAlert = null;
+                                }
+                            });
+
+                            BoardActivity.this.mUnlockAlert.setOnShowListener(new DialogInterface.OnShowListener() {
+                                @Override
+                                public void onShow(DialogInterface dialog) {
+                                    BoardActivity.this.mUnlockCountDown = new CountDownTimer(1000 * BoardActivity.this.mUnlockTimeout, 100) {
+                                        @Override
+                                        public void onTick(long millisUntilFinished) {
+
+                                            int sVal = ((int) Math.ceil(millisUntilFinished / 1000.f));
+
+                                            BoardActivity.this.mUnlockAlert.setMessage(getResources().getQuantityString(R.plurals.unlock_question, sVal, sVal));
+                                        }
+
+                                        @Override
+                                        public void onFinish() {
+                                            BoardActivity.this.mUnlockAlert.dismiss();
+                                            hideSystemUI();
+                                        }
+                                    };
+
+                                    BoardActivity.this.mUnlockCountDown.start();
+                                }
+                            });
+
+                            BoardActivity.this.mUnlockAlert.show();
+
+
+                        } else {
+                            // TODO: The system bars are NOT visible.
+                        }
+                    }
+                });
 
 
         this.mConfig = SMIziOziConfiguration.getSavedConfiguration();
 
-        if(this.mConfig == null)
+        if (this.mConfig == null)
             this.mConfig = new SMIziOziConfiguration(this);
         else
             this.mConfig.setContext(this);
@@ -99,7 +184,7 @@ public class BoardActivity extends Activity {
             Log.d("home debug", "row created");
         }
 
-        for (int j = 0; j < this.homeRows.size() ; j++) {
+        for (int j = 0; j < this.homeRows.size(); j++) {
             LinearLayout homeRow = this.homeRows.get(j);
 
             for (int i = 0; i < this.mConfig.getCols(); i++) {
@@ -276,19 +361,29 @@ public class BoardActivity extends Activity {
                 item.setChecked(!item.isChecked());
                 mIsEditing = item.isChecked();
 
-                if(!mIsEditing)
+                if (!mIsEditing)
                     this.mConfig.save();
 
                 break;
             }
 
-            case R.id.action_save:
-            {
+            case R.id.action_save: {
                 this.mConfig.save();
                 break;
             }
 
-            default: break;
+            case R.id.action_exit: {
+                finish();
+                break;
+            }
+
+            case R.id.action_lock: {
+                hideSystemUI();
+                break;
+            }
+
+            default:
+                break;
 
         }
 
@@ -297,31 +392,43 @@ public class BoardActivity extends Activity {
 
     // This snippet hides the system bars.
     private void hideSystemUI() {
-        // Set the IMMERSIVE flag.
-        // Set the content to appear under the system bars so that the content
-        // doesn't resize when the system bars hide and show.
         mDecorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE
+        );
     }
 
-    // This snippet shows the system bars. It does this by removing all the flags
-// except for the ones that make the content appear under the system bars.
+
+    /*
+    * Hide both the navigation bar and the status bar.
+    * SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+    * a general rule, you should design your app to hide the status bar whenever you
+    * hide the navigation bar.
+    * */
+    private void hideNavigationBar() {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+    }
+
+
+
+    /*
+    * This snippet shows the system bars. It does this by removing all the flags
+    * except for the ones that make the content appear under the system bars.
+    * */
     private void showSystemUI() {
         mDecorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        );
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if(hasFocus)
-            hideSystemUI();
-    }
+
 }

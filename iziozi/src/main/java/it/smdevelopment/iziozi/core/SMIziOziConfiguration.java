@@ -91,7 +91,7 @@ public class SMIziOziConfiguration {
             new AlertDialog.Builder(context)
                     .setTitle(this.context.getResources().getString(R.string.error))
                     .setMessage(this.context.getResources().getString(R.string.xml_save_fail))
-                    .setNegativeButton(this.context.getResources().getString(R.string.go_on), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(this.context.getResources().getString(R.string.continue_string), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

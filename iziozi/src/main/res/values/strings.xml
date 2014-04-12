@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">IziOzi</string>
-    <string name="action_settings" >Settings</string>
-    <string name="hello_world" >Hello world!</string>
-    <string name="should_say" >I should say:</string>
-    <string name="speak_button">Speak!</string>
-    <string name="tts_init">TTS init complete!</string>
-    <string name="edit_mode">Edit Mode</string>
-    <string name="save">Save</string>
+    <!-- Generic strings -->
     <string name="apply">Apply</string>
     <string name="cancel">Cancel</string>
     <string name="error">Error</string>
-    <string name="go_on">Continue</string>
+    <string name="continue_string">Continue</string>
+
+
+    <!-- App specific strings -->
+    <string name="app_name">IziOzi</string>
+
+
+    <!-- Actions strings -->
+    <string name="action_settings" >Settings</string>
+    <string name="edit_mode">Edit Mode</string>
+    <string name="save">Save</string>
+    <string name="exit">Exit</string>
+
+
+    <!-- Debugging strings -->
+    <string name="should_say" >I should say:</string>
+    <string name="speak_button">Speak!</string>
+    <string name="tts_init">TTS init complete!</string>
     <string name="xml_save_fail">Xml save failed!</string>
+
+
+    <!-- Device interface lock -->
+    <string name="lock">Lock</string>
+    <string name="unlock">Unlock</string>
+    <plurals name="unlock_question">
+        <item quantity="one">Are you sure you want to unlock the device UI?\n\nMake a choice in 1 second...</item>
+        <item quantity="other">Are you sure you want to unlock the device UI?\n\nMake a choice in %d seconds...</item>
+    </plurals>
+
 
 
 </resources>

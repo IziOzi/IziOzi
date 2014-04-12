@@ -1,14 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/action_lock"
+        android:orderInCategory="1"
+        android:showAsAction="never"
+        android:title="@string/lock" />
+
+    <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="2"
         android:showAsAction="never"
         android:title="@string/action_settings" />
 
     <item
         android:id="@+id/action_save"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:showAsAction="never"
         android:title="@string/save" />
 
@@ -20,5 +26,12 @@
         android:orderInCategory="1"
         android:title="@string/edit_mode"
         android:visible="true"></item>
+
+    <item
+        android:id="@+id/action_exit"
+        android:orderInCategory="9999999"
+        android:showAsAction="never"
+        android:title="@string/exit" />
+
 
 </menu>
