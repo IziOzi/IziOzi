@@ -3,77 +3,127 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
+    android:weightSum="1"
     android:orientation="vertical" >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.99" >
+        android:layout_height="0dp"
+        android:layout_weight="0.6" >
 
-        <ImageButton
-            android:id="@+id/CreateButtonImageBtn"
+        <TextView
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/preview"
+            android:id="@+id/create_preview_label"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:layout_margin="10dp"
+            android:id="@+id/CreateButtonImageBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/create_preview_label" />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tap_for_image"
+            android:id="@+id/create_tap_label"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_launcher" />
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:orientation="vertical" >
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="0.4"
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:id="@+id/title_layout">
 
             <TextView
-                android:id="@+id/TextView01"
+                android:id="@+id/create_title_label"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="Nome: " />
+                android:text="@string/c_title"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
             <EditText
-                android:id="@+id/EditText01"
-                android:layout_width="wrap_content"
+                android:id="@+id/create_title_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10" />
+                android:ems="10"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:id="@+id/text_layout"
+            android:layout_below="@id/title_layout">
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/create_text_label"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="Testo: " />
+                android:text="@string/c_text"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
             <EditText
-                android:id="@+id/editText1"
+                android:id="@+id/create_text_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ems="10" >
+                android:ems="10"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true">
 
-                <requestFocus />
+
             </EditText>
+
+
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:gravity="center">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Salva"
-        android:id="@+id/button"
-        android:layout_gravity="center_horizontal"
-        android:onClick="doSave" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/save"
+                android:id="@+id/button"
+                android:onClick="doSave" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
 
 </LinearLayout>

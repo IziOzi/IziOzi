@@ -10,7 +10,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="18dp"
-        android:text="Rows:"
+        android:text="@string/rows"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -20,7 +20,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="25dp"
-        android:text="Cols:"
+        android:text="@string/cols"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <SeekBar

@@ -13,25 +13,25 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 import it.smdevelopment.iziozi.R;
-@Root(name = "SpeakableImageButton")
-public class SpeakableImageButton extends ImageButton {
+@Root(name = "SMSpeakableImageButton")
+public class SMSpeakableImageButton extends ImageButton {
 
     @Element(required = false)
 	private String mSentence = "";
 
 	private Context mContext;
 	
-	public SpeakableImageButton(Context ctx) {
+	public SMSpeakableImageButton(Context ctx) {
 		super(ctx);
 		mContext = ctx;
 	}
 
-    public SpeakableImageButton(@Element (name = "mSentence")String sentence){
+    public SMSpeakableImageButton(@Element(name = "mSentence") String sentence){
         super(SMIziOziApplication.CONTEXT);
         this.mSentence = sentence;
     }
 
-    public SpeakableImageButton(){
+    public SMSpeakableImageButton(){
         super(SMIziOziApplication.CONTEXT);
     }
 

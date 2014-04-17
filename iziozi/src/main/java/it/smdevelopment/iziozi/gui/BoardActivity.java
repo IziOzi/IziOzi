@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.SeekBar;
@@ -23,11 +25,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import it.smdevelopment.iziozi.R;
 import it.smdevelopment.iziozi.core.SMIziOziConfiguration;
-import it.smdevelopment.iziozi.core.SpeakableImageButton;
+import it.smdevelopment.iziozi.core.SMSpeakableImageButton;
 
 
 public class BoardActivity extends Activity {
@@ -148,7 +151,12 @@ public class BoardActivity extends Activity {
         this.tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-                tts.speak("Sono pronta a parlare per te!", TextToSpeech.QUEUE_FLUSH, null);
+                if(tts.isLanguageAvailable(Locale.getDefault()) >= 0)
+                    tts.setLanguage(Locale.getDefault());
+                else
+                    tts.setLanguage(Locale.ENGLISH);
+
+                tts.speak(getResources().getString(R.string.tts_ready), TextToSpeech.QUEUE_FLUSH, null);
                 mCanSpeak = true;
             }
         });
@@ -163,8 +171,8 @@ public class BoardActivity extends Activity {
     private View buildView() {
 
         this.homeRows.clear();
-        final List<SpeakableImageButton> mButtons = new ArrayList<SpeakableImageButton>();
-        List<SpeakableImageButton> configButtons = this.mConfig.getButtons();
+        final List<SMSpeakableImageButton> mButtons = new ArrayList<SMSpeakableImageButton>();
+        List<SMSpeakableImageButton> configButtons = this.mConfig.getButtons();
 
         LinearLayout mainLayout = new LinearLayout(this);
         LayoutParams mainParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -181,7 +189,6 @@ public class BoardActivity extends Activity {
             rowLayout.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));
             mainLayout.addView(rowLayout);
             this.homeRows.add(rowLayout);
-            Log.d("home debug", "row created");
         }
 
         for (int j = 0; j < this.homeRows.size(); j++) {
@@ -195,13 +202,19 @@ public class BoardActivity extends Activity {
                 Random color = new Random();
                 btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));
                 homeRow.addView(btnContainer);
-                Log.d("homedebug", "container created");
 
-                SpeakableImageButton imgButton = configButtons.size() > 0 ? configButtons.get(mButtons.size()) : new SpeakableImageButton(this);
+                SMSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new SMSpeakableImageButton(this);
                 imgButton.setmContext(this);
 
                 imgButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                imgButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+                imgButton.setImageDrawable(getResources().getDrawable(R.drawable.btn_background));
+                imgButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imgButton.setBackgroundColor(Color.TRANSPARENT);
+
+                ViewGroup parent = (ViewGroup)imgButton.getParent();
+
+                if(parent != null)
+                    parent.removeAllViews();
 
                 btnContainer.addView(imgButton);
                 mButtons.add(imgButton);
@@ -222,21 +235,20 @@ public class BoardActivity extends Activity {
         return mainLayout;
     }
 
-    private void tapOnSpeakableButton(SpeakableImageButton spkBtn) {
+    private void tapOnSpeakableButton(SMSpeakableImageButton spkBtn) {
         if (mIsEditing) {
-//            spkBtn.showInsertDialog();
+            //spkBtn.showInsertDialog();
             Intent cIntent = new Intent(getApplicationContext(), CreateButtonActivity.class);
             startActivity(cIntent);
         } else {
-            Log.d("speakable_debug", "tap on speak");
             if (mCanSpeak) {
                 Log.d("speakable_debug", "should say: " + spkBtn.getSentence());
                 if (spkBtn.getSentence() == "")
-                    tts.speak("Questo pulsante non ha una frase associata!", TextToSpeech.QUEUE_FLUSH, null);
+                    tts.speak(getResources().getString(R.string.tts_nosentence), TextToSpeech.QUEUE_FLUSH, null);
                 else
                     tts.speak(spkBtn.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
             } else {
-                Toast.makeText(this, "TTS not yet initialized!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -250,17 +262,21 @@ public class BoardActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        Log.d("menu_debug", "menu created!");
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        menu.findItem(R.id.editMode).setChecked(this.mIsEditing);
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.action_settings: {
-                Log.d("home debug", "options selected");
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 LayoutInflater inflater = getLayoutInflater();
 
@@ -269,12 +285,11 @@ public class BoardActivity extends Activity {
                 Integer rows = this.mConfig.getRows();
                 Integer columns = this.mConfig.getCols();
 
-                builder.setTitle("Settings")
+                builder.setTitle(getResources().getString(R.string.settings))
                         .setView(layoutView)
                         .setPositiveButton(getResources().getString(R.string.apply), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Log.d("dialog", "should dismiss and apply");
 
                                 if (newCols == 0)
                                     newCols++;
@@ -361,14 +376,14 @@ public class BoardActivity extends Activity {
                 item.setChecked(!item.isChecked());
                 mIsEditing = item.isChecked();
 
-                if (!mIsEditing)
-                    this.mConfig.save();
+                if (!BoardActivity.this.mIsEditing)
+                    BoardActivity.this.mConfig.save();
 
                 break;
             }
 
             case R.id.action_save: {
-                this.mConfig.save();
+                BoardActivity.this.mConfig.save();
                 break;
             }
 
@@ -378,6 +393,12 @@ public class BoardActivity extends Activity {
             }
 
             case R.id.action_lock: {
+
+                if (BoardActivity.this.mIsEditing)
+                    BoardActivity.this.mConfig.save();
+
+                BoardActivity.this.mIsEditing = false;
+
                 hideSystemUI();
                 break;
             }

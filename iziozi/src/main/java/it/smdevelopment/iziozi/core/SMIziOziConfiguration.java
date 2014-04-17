@@ -38,22 +38,22 @@ public class SMIziOziConfiguration {
     private Integer cols = 3;
 
     @ElementList(inline = true, required = false)
-    private List<SpeakableImageButton> mButtons;
+    private List<SMSpeakableImageButton> mButtons;
 
     public SMIziOziConfiguration(){
 
     }
 
     public SMIziOziConfiguration(Context ctx){
-        this.mButtons = new ArrayList<SpeakableImageButton>();
+        this.mButtons = new ArrayList<SMSpeakableImageButton>();
         this.context = ctx;
     }
 
-    public List<SpeakableImageButton> getButtons() {
+    public List<SMSpeakableImageButton> getButtons() {
         return mButtons;
     }
 
-    public void setButtons(List<SpeakableImageButton> mButtons) {
+    public void setButtons(List<SMSpeakableImageButton> mButtons) {
         this.mButtons = mButtons;
     }
 
