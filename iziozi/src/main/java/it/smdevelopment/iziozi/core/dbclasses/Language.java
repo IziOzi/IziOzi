@@ -10,6 +10,10 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "languages")
 public class Language {
 
+    public static String CODE_NAME = "code";
+    public static String ID_NAME = "id";
+    public static String NAME_NAME = "name";
+
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 
