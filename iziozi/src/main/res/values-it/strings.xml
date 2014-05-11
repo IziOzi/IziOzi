@@ -8,6 +8,7 @@
     <string name="continue_string">Continue</string>
     <string name="c_title">Title:</string>
     <string name="c_text">Text:</string>
+    <string name="s_search">Search</string>
 
 
     <!-- App specific strings -->
@@ -44,7 +45,5 @@
         <item quantity="one">Are you sure you want to unlock the device UI?\n\nMake a choice in 1 second...</item>
         <item quantity="other">Are you sure you want to unlock the device UI?\n\nMake a choice in %d seconds...</item>
     </plurals>
-
-
 
 </resources>

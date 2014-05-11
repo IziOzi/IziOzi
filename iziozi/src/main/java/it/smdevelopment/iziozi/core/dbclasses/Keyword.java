@@ -10,6 +10,10 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "keywords")
 public class Keyword   {
 
+    public static final String ID_NAME = "id";
+    public static final String TYPE_ID_NAME = "type_id";
+    public static final String PICTOGRAM_ID_NAME = "pictogram_id";
+
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 
@@ -18,6 +22,9 @@ public class Keyword   {
 
     @DatabaseField(columnName = "pictogram_id")
     private Integer pictogramId;
+
+    @DatabaseField(foreign = true)
+    private Pictogram pictogram;
 
 
     public Keyword(){}

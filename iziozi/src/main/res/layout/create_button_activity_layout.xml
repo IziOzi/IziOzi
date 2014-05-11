@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     android:weightSum="1"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    android:focusable="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,7 +31,8 @@
             android:layout_height="match_parent"
             android:background="@null"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/create_preview_label" />
+            android:layout_below="@+id/create_preview_label"
+            android:onClick="doTapOnImage" />
 
 
 
@@ -56,7 +59,7 @@
             android:id="@+id/title_layout">
 
             <TextView
-                android:id="@+id/create_title_label"
+                android:id="@+id/CreateButtonTitleLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -65,7 +68,7 @@
                 android:layout_alignParentStart="true" />
 
             <EditText
-                android:id="@+id/create_title_text"
+                android:id="@+id/CreateButtonTitleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -80,7 +83,7 @@
             android:layout_below="@id/title_layout">
 
             <TextView
-                android:id="@+id/create_text_label"
+                android:id="@+id/CreateButtonTextLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -89,7 +92,7 @@
                 android:layout_alignParentStart="true" />
 
             <EditText
-                android:id="@+id/create_text_text"
+                android:id="@+id/CreateButtonTextText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -124,6 +127,7 @@
 
     </RelativeLayout>
 
+    <requestFocus />
 
 
 </LinearLayout>

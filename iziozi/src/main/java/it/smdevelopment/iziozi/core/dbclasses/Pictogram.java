@@ -10,6 +10,10 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "pictograms")
 public class Pictogram {
 
+    public static final String ID_NAME = "id";
+    public static final String URL_NAME = "url";
+    public static final String FILE_NAME = "file";
+
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 

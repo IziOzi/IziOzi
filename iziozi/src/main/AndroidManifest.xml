@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.smdevelopment.iziozi">
+    package="it.smdevelopment.iziozi" >
 
     <application
+        android:name="it.smdevelopment.iziozi.core.SMIziOziApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo_org192"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".core.SMIziOziApplication">
+        android:theme="@style/AppTheme" >
 
-        <!--<meta-data android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />-->
+        <!--
+            <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        -->
+
+        <meta-data android:name="android.app.default_searchable" android:value=".SMImagesSearchActivity" />
 
         <activity
-            android:name=".gui.BoardActivity"
+            android:name="it.smdevelopment.iziozi.gui.BoardActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
@@ -23,10 +27,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".gui.CreateButtonActivity"
+        <activity
+            android:name="it.smdevelopment.iziozi.gui.CreateButtonActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
+            <meta-data android:name="android.app.default_searchable"
+                android:value="it.smdevelopment.iziozi.gui.SMImagesSearchActivity"/>
+
+        </activity>
+        <activity
+            android:name="it.smdevelopment.iziozi.gui.SMImagesSearchActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
     </application>
 

@@ -10,6 +10,9 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "types")
 public class Type {
 
+    public static final String ID_NAME = "id";
+    public static final String TYPE_NAME = "type";
+
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 

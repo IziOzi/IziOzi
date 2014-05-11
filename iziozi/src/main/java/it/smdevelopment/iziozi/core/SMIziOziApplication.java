@@ -27,6 +27,7 @@ public class SMIziOziApplication extends Application {
     public static String applicationLocale;
     public static final String APPLICATION_NAME = "iziozi";
     public static final String APPLICATION_LOCALE = "APPLICATION_LOCALE";
+    public static final String APPLICATION_LANGUAGE_ID = "APPLICATION_LANGUAGE_ID";
     private SMIziOziDatabaseHelper openedDb;
 
     private SQLiteDatabase connectedDb = null;
@@ -67,10 +68,7 @@ public class SMIziOziApplication extends Application {
 
         try{
 
-
             Dao<Language,String> languagesDao = openedDb.getDao(Language.class);
-
-
 
             QueryBuilder<Language, String> lQueryBuilder = languagesDao.queryBuilder();
 
@@ -86,11 +84,22 @@ public class SMIziOziApplication extends Application {
             {
                 Log.d("locale debug", languages.get(0).getName());
                 prefsEditor.putString(APPLICATION_LOCALE, languages.get(0).getCode());
+                prefsEditor.putInt(APPLICATION_LANGUAGE_ID, languages.get(0).getId());
 
             }else
             {
+                lQueryBuilder.reset();
+
+                lQueryBuilder.where().eq(Language.CODE_NAME, Locale.ENGLISH.getLanguage());
+
+                query = lQueryBuilder.prepare();
+
+                languages = languagesDao.query(query);
+
                 Log.d("locale debug", "using default locale. requested: " + applicationLocale);
-                prefsEditor.putString(APPLICATION_LOCALE, Locale.ENGLISH.getLanguage());
+                prefsEditor.putString(APPLICATION_LOCALE, languages.get(0).getCode());
+                prefsEditor.putInt(APPLICATION_LANGUAGE_ID, languages.get(0).getId());
+
             }
         }catch (SQLException e)
         {

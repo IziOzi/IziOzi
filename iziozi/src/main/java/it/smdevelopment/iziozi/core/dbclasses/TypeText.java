@@ -10,6 +10,12 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "typetexts")
 public class TypeText {
 
+    public static final String ID_NAME = "id";
+    public static final String TEXT_NAME = "text";
+    public static final String TYPE_ID_NAME = "type_id";
+    public static final String LANGUAGE_ID_NAME = "language_id";
+
+
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 
@@ -21,6 +27,13 @@ public class TypeText {
 
     @DatabaseField(columnName = "language_id")
     private Integer languageId;
+
+    @DatabaseField(foreign = true)
+    private Type type;
+
+    @DatabaseField(foreign = true)
+    private Language language;
+
 
     public TypeText() {
     }
