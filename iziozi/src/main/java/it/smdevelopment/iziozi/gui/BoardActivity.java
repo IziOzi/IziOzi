@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2014 Martino Lessio -
+ * www.martinolessio.com
+ * martino [at] iziozi [dot] org
+ *
+ *
+ * This file is part of the IziOzi project.
+ *
+ * IziOzi is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * IziOzi is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with IziOzi.
+ * If not, see http://www.gnu.org/licenses/.
+ */
+
 package it.smdevelopment.iziozi.gui;
 
 import android.app.Activity;
@@ -5,6 +26,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -57,6 +79,13 @@ public class BoardActivity extends Activity {
     * */
     private View mDecorView;
     private TextToSpeech tts;
+
+    public static final int CREATE_BUTTON_CODE = 8001;
+
+    public static final String BUTTON_IMAGE_FILE = "button_image_file";
+    public static final String BUTTON_TITLE = "button_title";
+    public static final String BUTTON_TEXT = "button_text";
+    public static final String BUTTON_INDEX = "button_index";
 
     int newRows, newCols;
 
@@ -211,6 +240,9 @@ public class BoardActivity extends Activity {
                 imgButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 imgButton.setBackgroundColor(Color.TRANSPARENT);
 
+                if(imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0)
+                    imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
+
                 ViewGroup parent = (ViewGroup)imgButton.getParent();
 
                 if(parent != null)
@@ -239,7 +271,14 @@ public class BoardActivity extends Activity {
         if (mIsEditing) {
             //spkBtn.showInsertDialog();
             Intent cIntent = new Intent(getApplicationContext(), CreateButtonActivity.class);
-            startActivity(cIntent);
+            cIntent.putExtra(BUTTON_INDEX, mConfig.getButtons().indexOf(spkBtn));
+
+            cIntent.putExtra(BUTTON_TEXT, spkBtn.getSentence());
+            cIntent.putExtra(BUTTON_TITLE, spkBtn.getmTitle());
+            cIntent.putExtra(BUTTON_IMAGE_FILE, spkBtn.getmImageFile());
+
+            startActivityForResult(cIntent, CREATE_BUTTON_CODE);
+
         } else {
             if (mCanSpeak) {
                 Log.d("speakable_debug", "should say: " + spkBtn.getSentence());
@@ -451,5 +490,32 @@ public class BoardActivity extends Activity {
         );
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == CREATE_BUTTON_CODE)
+        {
+            if(resultCode == RESULT_OK)
+            {
+                Bundle extras = data.getExtras();
+                int index = extras.getInt(BUTTON_INDEX);
+                String title = extras.getString(BUTTON_TITLE);
+                String text = extras.getString(BUTTON_TEXT);
+                String imageFile = extras.getString(BUTTON_IMAGE_FILE);
 
+                SMSpeakableImageButton button = mConfig.getButtons().get(index);
+
+                if(text != null)
+                    button.setSentence(text);
+
+                if(title != null)
+                    button.setmTitle(title);
+
+                if(imageFile != null) {
+                    button.setImageBitmap(BitmapFactory.decodeFile(imageFile));
+                    button.setmImageFile(imageFile);
+                }
+            }
+        }else
+            super.onActivityResult(requestCode, resultCode, data);
+    }
 }
