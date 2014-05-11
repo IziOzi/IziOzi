@@ -27,7 +27,8 @@
     android:weightSum="1"
     android:orientation="vertical"
     android:focusableInTouchMode="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:onClick="doTapOnImage">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -52,7 +53,8 @@
             android:layout_height="match_parent"
             android:background="@null"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/create_preview_label" />
+            android:layout_below="@+id/create_preview_label"
+            android:onClick="doTapOnImage" />
 
 
 

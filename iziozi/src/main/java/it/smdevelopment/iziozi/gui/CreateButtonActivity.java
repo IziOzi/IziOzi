@@ -19,6 +19,8 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
+package it.smdevelopment.iziozi.gui;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -36,10 +38,9 @@ import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 import it.smdevelopment.iziozi.R;
 import it.smdevelopment.iziozi.core.SMIziOziDatabaseHelper;
-import it.smdevelopment.iziozi.gui.BoardActivity;
 
 
-package it.smdevelopment.iziozi.gui;
+
 
 public class CreateButtonActivity extends OrmLiteBaseActivity<SMIziOziDatabaseHelper> {
 
@@ -85,7 +86,7 @@ public class CreateButtonActivity extends OrmLiteBaseActivity<SMIziOziDatabaseHe
         if(mImageText != null)
             mTextText.setText(mImageText);
 
-        if(mImageFile != null) {
+        if(mImageFile != null && mImageFile.length() > 0) {
             mImageButton.setImageBitmap(BitmapFactory.decodeFile(mImageFile));
             mTapHereTextView.setVisibility(View.INVISIBLE);
         }
