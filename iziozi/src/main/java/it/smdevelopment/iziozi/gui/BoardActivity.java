@@ -215,7 +215,7 @@ public class BoardActivity extends Activity {
             rowLayout.setLayoutParams(rowParams);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
             Random color = new Random();
-            rowLayout.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));
+            rowLayout.setBackgroundColor(Color.WHITE);
             mainLayout.addView(rowLayout);
             this.homeRows.add(rowLayout);
         }
@@ -228,16 +228,16 @@ public class BoardActivity extends Activity {
                 LayoutParams btnContainerParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.f);
                 btnContainer.setLayoutParams(btnContainerParams);
                 btnContainer.setOrientation(LinearLayout.VERTICAL);
-                Random color = new Random();
-                btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));
+                /*Random color = new Random();
+                btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));*/
                 homeRow.addView(btnContainer);
 
                 SMSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new SMSpeakableImageButton(this);
                 imgButton.setmContext(this);
 
                 imgButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                imgButton.setImageDrawable(getResources().getDrawable(R.drawable.btn_background));
-                imgButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
+                imgButton.setScaleType(ImageView.ScaleType.CENTER);
                 imgButton.setBackgroundColor(Color.TRANSPARENT);
 
                 if(imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0)

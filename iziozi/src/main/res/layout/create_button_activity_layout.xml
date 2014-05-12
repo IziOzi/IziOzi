@@ -54,7 +54,8 @@
             android:background="@null"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/create_preview_label"
-            android:onClick="doTapOnImage" />
+            android:onClick="doTapOnImage"
+            android:scaleType="centerInside" />
 
 
 
