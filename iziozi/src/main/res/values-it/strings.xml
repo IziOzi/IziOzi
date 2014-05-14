@@ -23,48 +23,50 @@
 <resources>
 
     <!-- Generic strings -->
-    <string name="apply">Apply</string>
-    <string name="cancel">Cancel</string>
-    <string name="error">Error</string>
-    <string name="continue_string">Continue</string>
-    <string name="c_title">Title:</string>
-    <string name="c_text">Text:</string>
-    <string name="s_search">Search</string>
-
+    <string name="apply">Applica</string>
+    <string name="cancel">Cancella</string>
+    <string name="error">Errore</string>
+    <string name="continue_string">Continua</string>
+    <string name="c_title">Titolo:</string>
+    <string name="c_text">Testo:</string>
+    <string name="s_search">Cerca</string>
 
     <!-- App specific strings -->
     <string name="app_name">IziOzi</string>
-    <string name="btn_inserttext">Enter the text to say:</string>
-    <string name="rows">Rows:</string>
-    <string name="cols">Cols:</string>
-    <string name="preview">Preview</string>
-    <string name="tap_for_image">Tap here to insert an image!</string>
+    <string name="btn_inserttext">Inserire il testo da pronunciare:</string>
+    <string name="rows">Righe:</string>
+    <string name="cols">Colonne:</string>
+    <string name="preview">Anteprima</string>
+    <string name="tap_for_image">Clicca qui per inserire un\'immagine!</string>
 
     <!-- TTS strings -->
-    <string name="tts_ready">I\'m ready to speak on your behalf!</string>
-    <string name="tts_nosentence">This button does not have a phrase associated!</string>
-    <string name="tts_notinitialized">TTS not yet initialized!</string>
+    <string name="tts_ready">Sono pronto a parlare per te!</string>
+    <string name="tts_nosentence">Questo pulsante non ha una frase associata!</string>
+    <string name="tts_notinitialized">TTS non ancora inizializzato!</string>
 
     <!-- Actions strings -->
-    <string name="settings" >Settings</string>
-    <string name="edit_mode">Edit Mode</string>
-    <string name="save">Save</string>
-    <string name="exit">Exit</string>
-
+    <string name="settings">Impostazioni</string>
+    <string name="edit_mode">Modalità di modifica</string>
+    <string name="save">Salva</string>
+    <string name="exit">Esci</string>
 
     <!-- Debugging strings -->
-    <string name="should_say" >I should say:</string>
-    <string name="speak_button">Speak!</string>
-    <string name="tts_init">TTS init complete!</string>
-    <string name="xml_save_fail">Xml save failed!</string>
-
+    <string name="should_say">Dovrei dire:</string>
+    <string name="speak_button">Parla!</string>
+    <string name="tts_init">Completata inizializzazione TTS!</string>
+    <string name="xml_save_fail">Salvataggio xml fallito!</string>
 
     <!-- Device interface lock -->
-    <string name="lock">Lock</string>
-    <string name="unlock">Unlock</string>
+    <string name="lock">Blocca</string>
+    <string name="unlock">Sblocca</string>
+
     <plurals name="unlock_question">
-        <item quantity="one">Are you sure you want to unlock the device UI?\n\nMake a choice in 1 second...</item>
-        <item quantity="other">Are you sure you want to unlock the device UI?\n\nMake a choice in %d seconds...</item>
+        <item quantity="one">Sei sicuro di voler sbloccare l\'interfaccia del dispositivo?\n\nFai una scelta in 1 secondo...</item>
+        <item quantity="other">Sei sicuro di voler sbloccare l\'interfaccia del dispositivo?\n\nFai una scelta in %d secondi...</item>
     </plurals>
+
+    <string name="title_activity_smimages_search">SMImagesSearchActivity</string>
+    <string name="hello_world">Ciao mondo!</string>
+    <string name="action_settings">Impostazioni</string>
 
 </resources>
