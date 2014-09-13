@@ -51,17 +51,17 @@ import java.util.Locale;
 import java.util.Random;
 
 import it.smdevelopment.iziozi.R;
-import it.smdevelopment.iziozi.core.SMIziOziConfiguration;
-import it.smdevelopment.iziozi.core.SMSpeakableImageButton;
+import it.smdevelopment.iziozi.core.IOConfiguration;
+import it.smdevelopment.iziozi.core.IOSpeakableImageButton;
 
 
-public class BoardActivity extends Activity {
+public class IOBoardActivity extends Activity {
 
 
     /*
     * Layout and configuration
     * */
-    private SMIziOziConfiguration mConfig;
+    private IOConfiguration mConfig;
     private Boolean mIsEditing = false, mCanSpeak = false;
     private List<LinearLayout> homeRows = new ArrayList<LinearLayout>();
 
@@ -105,12 +105,12 @@ public class BoardActivity extends Activity {
                     public void onSystemUiVisibilityChange(int visibility) {
                         // Note that system bars will only be "visible" if none of the
                         // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
-                        if (visibility == View.VISIBLE && BoardActivity.this.mUnlockAlert == null) {
+                        if (visibility == View.VISIBLE && IOBoardActivity.this.mUnlockAlert == null) {
                             // TODO: The system bars are visible.
 
-                            BoardActivity.this.mUnlockAlert = new AlertDialog.Builder(BoardActivity.this)
+                            IOBoardActivity.this.mUnlockAlert = new AlertDialog.Builder(IOBoardActivity.this)
                                     .setTitle(getResources().getString(R.string.unlock))
-                                    .setMessage(getResources().getQuantityString(R.plurals.unlock_question, BoardActivity.this.mUnlockTimeout.intValue(), BoardActivity.this.mUnlockTimeout.intValue()))
+                                    .setMessage(getResources().getQuantityString(R.plurals.unlock_question, IOBoardActivity.this.mUnlockTimeout.intValue(), IOBoardActivity.this.mUnlockTimeout.intValue()))
                                     .setPositiveButton(getResources().getString(R.string.unlock), new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
@@ -126,39 +126,39 @@ public class BoardActivity extends Activity {
                                     .setCancelable(false)
                                     .create();
 
-                            BoardActivity.this.mUnlockAlert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            IOBoardActivity.this.mUnlockAlert.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialog) {
-                                    BoardActivity.this.mUnlockCountDown.cancel();
-                                    BoardActivity.this.mUnlockCountDown = null;
-                                    BoardActivity.this.mUnlockAlert = null;
+                                    IOBoardActivity.this.mUnlockCountDown.cancel();
+                                    IOBoardActivity.this.mUnlockCountDown = null;
+                                    IOBoardActivity.this.mUnlockAlert = null;
                                 }
                             });
 
-                            BoardActivity.this.mUnlockAlert.setOnShowListener(new DialogInterface.OnShowListener() {
+                            IOBoardActivity.this.mUnlockAlert.setOnShowListener(new DialogInterface.OnShowListener() {
                                 @Override
                                 public void onShow(DialogInterface dialog) {
-                                    BoardActivity.this.mUnlockCountDown = new CountDownTimer(1000 * BoardActivity.this.mUnlockTimeout, 100) {
+                                    IOBoardActivity.this.mUnlockCountDown = new CountDownTimer(1000 * IOBoardActivity.this.mUnlockTimeout, 100) {
                                         @Override
                                         public void onTick(long millisUntilFinished) {
 
                                             int sVal = ((int) Math.ceil(millisUntilFinished / 1000.f));
 
-                                            BoardActivity.this.mUnlockAlert.setMessage(getResources().getQuantityString(R.plurals.unlock_question, sVal, sVal));
+                                            IOBoardActivity.this.mUnlockAlert.setMessage(getResources().getQuantityString(R.plurals.unlock_question, sVal, sVal));
                                         }
 
                                         @Override
                                         public void onFinish() {
-                                            BoardActivity.this.mUnlockAlert.dismiss();
+                                            IOBoardActivity.this.mUnlockAlert.dismiss();
                                             hideSystemUI();
                                         }
                                     };
 
-                                    BoardActivity.this.mUnlockCountDown.start();
+                                    IOBoardActivity.this.mUnlockCountDown.start();
                                 }
                             });
 
-                            BoardActivity.this.mUnlockAlert.show();
+                            IOBoardActivity.this.mUnlockAlert.show();
 
 
                         } else {
@@ -168,10 +168,10 @@ public class BoardActivity extends Activity {
                 });
 
 
-        this.mConfig = SMIziOziConfiguration.getSavedConfiguration();
+        this.mConfig = IOConfiguration.getSavedConfiguration();
 
         if (this.mConfig == null)
-            this.mConfig = new SMIziOziConfiguration(this);
+            this.mConfig = new IOConfiguration(this);
         else
             this.mConfig.setContext(this);
 
@@ -200,8 +200,8 @@ public class BoardActivity extends Activity {
     private View buildView() {
 
         this.homeRows.clear();
-        final List<SMSpeakableImageButton> mButtons = new ArrayList<SMSpeakableImageButton>();
-        List<SMSpeakableImageButton> configButtons = this.mConfig.getButtons();
+        final List<IOSpeakableImageButton> mButtons = new ArrayList<IOSpeakableImageButton>();
+        List<IOSpeakableImageButton> configButtons = this.mConfig.getButtons();
 
         LinearLayout mainLayout = new LinearLayout(this);
         LayoutParams mainParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -232,7 +232,7 @@ public class BoardActivity extends Activity {
                 btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));*/
                 homeRow.addView(btnContainer);
 
-                SMSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new SMSpeakableImageButton(this);
+                IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(this);
                 imgButton.setmContext(this);
 
                 imgButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -267,10 +267,10 @@ public class BoardActivity extends Activity {
         return mainLayout;
     }
 
-    private void tapOnSpeakableButton(SMSpeakableImageButton spkBtn) {
+    private void tapOnSpeakableButton(IOSpeakableImageButton spkBtn) {
         if (mIsEditing) {
             //spkBtn.showInsertDialog();
-            Intent cIntent = new Intent(getApplicationContext(), CreateButtonActivity.class);
+            Intent cIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
             cIntent.putExtra(BUTTON_INDEX, mConfig.getButtons().indexOf(spkBtn));
 
             cIntent.putExtra(BUTTON_TEXT, spkBtn.getSentence());
@@ -335,8 +335,8 @@ public class BoardActivity extends Activity {
                                 if (newRows == 0)
                                     newRows++;
 
-                                BoardActivity.this.mConfig.setCols(newCols);
-                                BoardActivity.this.mConfig.setRows(newRows);
+                                IOBoardActivity.this.mConfig.setCols(newCols);
+                                IOBoardActivity.this.mConfig.setRows(newRows);
 
                                 createView();
                             }
@@ -415,14 +415,14 @@ public class BoardActivity extends Activity {
                 item.setChecked(!item.isChecked());
                 mIsEditing = item.isChecked();
 
-                if (!BoardActivity.this.mIsEditing)
-                    BoardActivity.this.mConfig.save();
+                if (!IOBoardActivity.this.mIsEditing)
+                    IOBoardActivity.this.mConfig.save();
 
                 break;
             }
 
             case R.id.action_save: {
-                BoardActivity.this.mConfig.save();
+                IOBoardActivity.this.mConfig.save();
                 break;
             }
 
@@ -433,10 +433,10 @@ public class BoardActivity extends Activity {
 
             case R.id.action_lock: {
 
-                if (BoardActivity.this.mIsEditing)
-                    BoardActivity.this.mConfig.save();
+                if (IOBoardActivity.this.mIsEditing)
+                    IOBoardActivity.this.mConfig.save();
 
-                BoardActivity.this.mIsEditing = false;
+                IOBoardActivity.this.mIsEditing = false;
 
                 hideSystemUI();
                 break;
@@ -502,7 +502,7 @@ public class BoardActivity extends Activity {
                 String text = extras.getString(BUTTON_TEXT);
                 String imageFile = extras.getString(BUTTON_IMAGE_FILE);
 
-                SMSpeakableImageButton button = mConfig.getButtons().get(index);
+                IOSpeakableImageButton button = mConfig.getButtons().get(index);
 
                 if(text != null)
                     button.setSentence(text);

@@ -28,48 +28,48 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by martinolessio on 17/04/14.
  */
 
-@DatabaseTable(tableName = "keywords")
-public class Keyword   {
+@DatabaseTable(tableName = "pictograms")
+public class IOPictogram {
 
     public static final String ID_NAME = "id";
-    public static final String TYPE_ID_NAME = "type_id";
-    public static final String PICTOGRAM_ID_NAME = "pictogram_id";
+    public static final String URL_NAME = "url";
+    public static final String FILE_NAME = "file";
 
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 
-    @DatabaseField(columnName = "type_id")
-    private Integer typeId;
+    @DatabaseField(columnName = "url")
+    private String url;
 
-    @DatabaseField(columnName = "pictogram_id")
-    private Integer pictogramId;
+    @DatabaseField(columnName = "file")
+    private String filePath;
 
-    @DatabaseField(foreign = true)
-    private Pictogram pictogram;
+    private String mDescription;
+    private String mType;
 
+    public IOPictogram() {
+    }
 
-    public Keyword(){}
-
-    public Keyword(Integer id, Integer typeId, Integer pictogramId) {
+    public IOPictogram(Integer id, String filePath, String url) {
         this.id = id;
-        this.typeId = typeId;
-        this.pictogramId = pictogramId;
+        this.filePath = filePath;
+        this.url = url;
     }
 
-    public Integer getPictogramId() {
-        return pictogramId;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setPictogramId(Integer pictogramId) {
-        this.pictogramId = pictogramId;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
-    public Integer getTypeId() {
-        return typeId;
+    public String getUrl() {
+        return url;
     }
 
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Integer getId() {
@@ -78,5 +78,21 @@ public class Keyword   {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getType() {
+        return mType;
+    }
+
+    public void setType(String mType) {
+        this.mType = mType;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public void setDescription(String mDescription) {
+        this.mDescription = mDescription;
     }
 }

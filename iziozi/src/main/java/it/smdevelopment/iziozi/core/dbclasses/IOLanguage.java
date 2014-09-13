@@ -29,7 +29,7 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 
 @DatabaseTable(tableName = "languages")
-public class Language {
+public class IOLanguage {
 
     public static String CODE_NAME = "code";
     public static String ID_NAME = "id";
@@ -44,10 +44,10 @@ public class Language {
     @DatabaseField(columnName = "name")
     private String name;
 
-    public Language() {
+    public IOLanguage() {
     }
 
-    public Language(Integer id, String code, String name) {
+    public IOLanguage(Integer id, String code, String name) {
         this.id = id;
         this.code = code;
         this.name = name;

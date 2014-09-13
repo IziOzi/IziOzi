@@ -37,7 +37,7 @@ import java.io.OutputStream;
 /**
  * Created by martinolessio on 17/04/14.
  */
-public class SMIziOziDatabaseHelper extends OrmLiteSqliteOpenHelper {
+public class IODatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     @SuppressLint("SdCardPath")
     private static final String DB_PATH = "/data/data/it.smdevelopment.iziozi/databases/";
@@ -49,7 +49,7 @@ public class SMIziOziDatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 
 
-    public SMIziOziDatabaseHelper(Context context) {
+    public IODatabaseHelper(Context context) {
         super(context, DB_NAME, null, 300500);
         this.context = context;
     }

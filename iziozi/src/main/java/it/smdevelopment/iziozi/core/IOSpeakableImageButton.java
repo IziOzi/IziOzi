@@ -35,7 +35,7 @@ import org.simpleframework.xml.Root;
 
 import it.smdevelopment.iziozi.R;
 @Root(name = "SMSpeakableImageButton")
-public class SMSpeakableImageButton extends ImageButton {
+public class IOSpeakableImageButton extends ImageButton {
 
     @Element(required = false)
 	private String mSentence = "";
@@ -48,18 +48,18 @@ public class SMSpeakableImageButton extends ImageButton {
 
 	private Context mContext;
 	
-	public SMSpeakableImageButton(Context ctx) {
+	public IOSpeakableImageButton(Context ctx) {
 		super(ctx);
 		mContext = ctx;
 	}
 
-    public SMSpeakableImageButton(@Element(name = "mSentence") String sentence){
-        super(SMIziOziApplication.CONTEXT);
+    public IOSpeakableImageButton(@Element(name = "mSentence") String sentence){
+        super(IOApplication.CONTEXT);
         this.mSentence = sentence;
     }
 
-    public SMSpeakableImageButton(){
-        super(SMIziOziApplication.CONTEXT);
+    public IOSpeakableImageButton(){
+        super(IOApplication.CONTEXT);
     }
 
     public String getmSentence() {

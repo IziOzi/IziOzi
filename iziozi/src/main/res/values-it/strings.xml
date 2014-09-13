@@ -42,7 +42,7 @@
     <!-- TTS strings -->
     <string name="tts_ready">Sono pronto a parlare per te!</string>
     <string name="tts_nosentence">Questo pulsante non ha una frase associata!</string>
-    <string name="tts_notinitialized">TTS non ancora inizializzato!</string>
+    <string name="tts_notinitialized">TTS non 22 inizializzato!</string>
 
     <!-- Actions strings -->
     <string name="settings">Impostazioni</string>

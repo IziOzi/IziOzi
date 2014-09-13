@@ -28,45 +28,24 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by martinolessio on 17/04/14.
  */
 
-@DatabaseTable(tableName = "pictograms")
-public class Pictogram {
+@DatabaseTable(tableName = "types")
+public class IOType {
 
     public static final String ID_NAME = "id";
-    public static final String URL_NAME = "url";
-    public static final String FILE_NAME = "file";
+    public static final String TYPE_NAME = "type";
 
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 
-    @DatabaseField(columnName = "url")
-    private String url;
+    @DatabaseField(columnName = "type")
+    private Integer type;
 
-    @DatabaseField(columnName = "file")
-    private String filePath;
-
-    public Pictogram() {
+    public IOType() {
     }
 
-    public Pictogram(Integer id, String filePath, String url) {
+    public IOType(Integer id, Integer type) {
         this.id = id;
-        this.filePath = filePath;
-        this.url = url;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+        this.type = type;
     }
 
     public Integer getId() {
@@ -75,5 +54,13 @@ public class Pictogram {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

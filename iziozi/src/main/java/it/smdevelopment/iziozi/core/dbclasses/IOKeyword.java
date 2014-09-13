@@ -28,58 +28,40 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by martinolessio on 17/04/14.
  */
 
-@DatabaseTable(tableName = "typetexts")
-public class TypeText {
+@DatabaseTable(tableName = "keywords")
+public class IOKeyword {
 
     public static final String ID_NAME = "id";
-    public static final String TEXT_NAME = "text";
     public static final String TYPE_ID_NAME = "type_id";
-    public static final String LANGUAGE_ID_NAME = "language_id";
-
+    public static final String PICTOGRAM_ID_NAME = "pictogram_id";
 
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 
-    @DatabaseField(columnName = "text")
-    private String text;
-
     @DatabaseField(columnName = "type_id")
     private Integer typeId;
 
-    @DatabaseField(columnName = "language_id")
-    private Integer languageId;
+    @DatabaseField(columnName = "pictogram_id")
+    private Integer pictogramId;
 
     @DatabaseField(foreign = true)
-    private Type type;
-
-    @DatabaseField(foreign = true)
-    private Language language;
+    private IOPictogram pictogram;
 
 
-    public TypeText() {
-    }
+    public IOKeyword(){}
 
-    public TypeText(Integer id, String text, Integer typeId, Integer languageId) {
+    public IOKeyword(Integer id, Integer typeId, Integer pictogramId) {
         this.id = id;
-        this.text = text;
         this.typeId = typeId;
-        this.languageId = languageId;
+        this.pictogramId = pictogramId;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getPictogramId() {
+        return pictogramId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
+    public void setPictogramId(Integer pictogramId) {
+        this.pictogramId = pictogramId;
     }
 
     public Integer getTypeId() {
@@ -90,11 +72,11 @@ public class TypeText {
         this.typeId = typeId;
     }
 
-    public Integer getLanguageId() {
-        return languageId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setLanguageId(Integer languageId) {
-        this.languageId = languageId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

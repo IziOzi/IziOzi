@@ -28,24 +28,42 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by martinolessio on 17/04/14.
  */
 
-@DatabaseTable(tableName = "types")
-public class Type {
+@DatabaseTable(tableName = "typetexts")
+public class IOTypeText {
 
     public static final String ID_NAME = "id";
-    public static final String TYPE_NAME = "type";
+    public static final String TEXT_NAME = "text";
+    public static final String TYPE_ID_NAME = "type_id";
+    public static final String LANGUAGE_ID_NAME = "language_id";
+
 
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 
-    @DatabaseField(columnName = "type")
-    private Integer type;
+    @DatabaseField(columnName = "text")
+    private String text;
 
-    public Type() {
+    @DatabaseField(columnName = "type_id")
+    private Integer typeId;
+
+    @DatabaseField(columnName = "language_id")
+    private Integer languageId;
+
+    @DatabaseField(foreign = true)
+    private IOType type;
+
+    @DatabaseField(foreign = true)
+    private IOLanguage language;
+
+
+    public IOTypeText() {
     }
 
-    public Type(Integer id, Integer type) {
+    public IOTypeText(Integer id, String text, Integer typeId, Integer languageId) {
         this.id = id;
-        this.type = type;
+        this.text = text;
+        this.typeId = typeId;
+        this.languageId = languageId;
     }
 
     public Integer getId() {
@@ -56,11 +74,27 @@ public class Type {
         this.id = id;
     }
 
-    public Integer getType() {
-        return type;
+    public String getText() {
+        return text;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+
+    public Integer getLanguageId() {
+        return languageId;
+    }
+
+    public void setLanguageId(Integer languageId) {
+        this.languageId = languageId;
     }
 }

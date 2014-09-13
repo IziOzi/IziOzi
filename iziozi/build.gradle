@@ -23,7 +23,7 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
         minSdkVersion 15
@@ -50,4 +50,6 @@ dependencies {
 
     compile 'com.android.support:support-v4:19.0.0'
     compile 'com.android.support:appcompat-v7:19.+'
+    compile 'com.loopj.android:android-async-http:1.4.5'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
 }

@@ -49,7 +49,7 @@ import it.smdevelopment.iziozi.R;
  */
 
 @Root(name = "SMIziOziConfiguration")
-public class SMIziOziConfiguration {
+public class IOConfiguration {
 
     Context context;
 
@@ -59,22 +59,22 @@ public class SMIziOziConfiguration {
     private Integer cols = 3;
 
     @ElementList(inline = true, required = false)
-    private List<SMSpeakableImageButton> mButtons;
+    private List<IOSpeakableImageButton> mButtons;
 
-    public SMIziOziConfiguration(){
+    public IOConfiguration(){
 
     }
 
-    public SMIziOziConfiguration(Context ctx){
-        this.mButtons = new ArrayList<SMSpeakableImageButton>();
+    public IOConfiguration(Context ctx){
+        this.mButtons = new ArrayList<IOSpeakableImageButton>();
         this.context = ctx;
     }
 
-    public List<SMSpeakableImageButton> getButtons() {
+    public List<IOSpeakableImageButton> getButtons() {
         return mButtons;
     }
 
-    public void setButtons(List<SMSpeakableImageButton> mButtons) {
+    public void setButtons(List<IOSpeakableImageButton> mButtons) {
         this.mButtons = mButtons;
     }
 
@@ -124,17 +124,17 @@ public class SMIziOziConfiguration {
     }
 
 
-    public static SMIziOziConfiguration getSavedConfiguration(){
+    public static IOConfiguration getSavedConfiguration(){
         Serializer serializer = new Persister();
-        File file = new File(SMIziOziApplication.CONTEXT.getFilesDir(),"config.xml");
+        File file = new File(IOApplication.CONTEXT.getFilesDir(),"config.xml");
 
-        SMIziOziConfiguration config = null;
+        IOConfiguration config = null;
 
         try {
-            config = serializer.read(SMIziOziConfiguration.class, file);
+            config = serializer.read(IOConfiguration.class, file);
         } catch (Exception e) {
             Log.w("XmlSeializer", "Unable to read config.xml");
-            Log.d("XmlSerializer", ""+SMIziOziApplication.CONTEXT.getFilesDir());
+            Log.d("XmlSerializer", ""+ IOApplication.CONTEXT.getFilesDir());
             e.printStackTrace();
         }
 

@@ -26,7 +26,7 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:paddingTop="10dp"
-    tools:context="it.smdevelopment.iziozi.gui.SMImagesSearchActivity">
+    tools:context="it.smdevelopment.iziozi.gui.IOLocalImageSearchActivity">
 
     <GridView
         android:layout_width="match_parent"

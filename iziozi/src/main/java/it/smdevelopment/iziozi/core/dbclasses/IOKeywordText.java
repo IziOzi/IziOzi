@@ -29,7 +29,7 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 
 @DatabaseTable(tableName = "keywordtexts")
-public class KeywordText {
+public class IOKeywordText {
 
     public static final String ID_NAME = "id";
     public static final String KEYWORD_ID_NAME = "keyword_id";
@@ -49,16 +49,16 @@ public class KeywordText {
     private String text;
 
     @DatabaseField(foreign = true)
-    private Keyword keyword;
+    private IOKeyword keyword;
 
     @DatabaseField(foreign = true)
-    private Language language;
+    private IOLanguage language;
 
 
-    public KeywordText() {
+    public IOKeywordText() {
     }
 
-    public KeywordText(Integer id, Integer keywordId, Integer languageId,String text) {
+    public IOKeywordText(Integer id, Integer keywordId, Integer languageId, String text) {
         this.id = id;
         this.keywordId = keywordId;
         this.languageId = languageId;

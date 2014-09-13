@@ -48,17 +48,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 import it.smdevelopment.iziozi.R;
-import it.smdevelopment.iziozi.core.SMIziOziApplication;
-import it.smdevelopment.iziozi.core.SMIziOziDatabaseHelper;
-import it.smdevelopment.iziozi.core.dbclasses.Keyword;
-import it.smdevelopment.iziozi.core.dbclasses.KeywordText;
-import it.smdevelopment.iziozi.core.dbclasses.Language;
-import it.smdevelopment.iziozi.core.dbclasses.Pictogram;
+import it.smdevelopment.iziozi.core.IOApplication;
+import it.smdevelopment.iziozi.core.IODatabaseHelper;
+import it.smdevelopment.iziozi.core.dbclasses.IOKeyword;
+import it.smdevelopment.iziozi.core.dbclasses.IOKeywordText;
+import it.smdevelopment.iziozi.core.dbclasses.IOLanguage;
+import it.smdevelopment.iziozi.core.dbclasses.IOPictogram;
 
-public class SMImagesSearchActivity extends OrmLiteBaseActivity<SMIziOziDatabaseHelper> {
+public class IOLocalImageSearchActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
 
     private GridView mGridView;
-    private List<Pictogram> mPictograms;
+    private List<IOPictogram> mPictograms;
 
 
     @Override
@@ -74,15 +74,15 @@ public class SMImagesSearchActivity extends OrmLiteBaseActivity<SMIziOziDatabase
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Pictogram pictogram = mPictograms.get(position);
+                IOPictogram pictogram = mPictograms.get(position);
 
-                Intent backIntent = new Intent(getApplicationContext(), CreateButtonActivity.class);
+                Intent backIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
 
-                File pictoFile =new File( Environment.getExternalStorageDirectory() + "/" + SMIziOziApplication.APPLICATION_FOLDER + "/pictograms" );
+                File pictoFile =new File( Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms" );
                 Character pictoFolder = pictogram.getFilePath().charAt(0);
 
                 pictoFile = new File(pictoFile + "/" + pictoFolder + "/" + pictogram.getFilePath());
-                backIntent.putExtra(CreateButtonActivity.IMAGE_FILE, pictoFile.toString() );
+                backIntent.putExtra(IOCreateButtonActivity.IMAGE_FILE, pictoFile.toString() );
 
                 finish();
                 startActivity(backIntent);
@@ -110,26 +110,26 @@ public class SMImagesSearchActivity extends OrmLiteBaseActivity<SMIziOziDatabase
         String[] queryList = queryString.split("\\s+");
 
         try {
-            Dao<Pictogram, String> pictoDao = getHelper().getDao(Pictogram.class);
-            Dao<Keyword, String> keywordDao = getHelper().getDao(Keyword.class);
-            Dao<KeywordText, String> keywordTextDao = getHelper().getDao(KeywordText.class);
-            Dao<Language, String> languagedDao = getHelper().getDao(Language.class);
+            Dao<IOPictogram, String> pictoDao = getHelper().getDao(IOPictogram.class);
+            Dao<IOKeyword, String> keywordDao = getHelper().getDao(IOKeyword.class);
+            Dao<IOKeywordText, String> keywordTextDao = getHelper().getDao(IOKeywordText.class);
+            Dao<IOLanguage, String> languagedDao = getHelper().getDao(IOLanguage.class);
 
-            QueryBuilder<Pictogram, String> pQueryBuilder = pictoDao.queryBuilder();
-            QueryBuilder<Keyword, String> kQueryBuilder = keywordDao.queryBuilder();
-            QueryBuilder<KeywordText, String> ktQueryBuilder = keywordTextDao.queryBuilder();
-            QueryBuilder<Language, String> lQueryBuilder = languagedDao.queryBuilder();
+            QueryBuilder<IOPictogram, String> pQueryBuilder = pictoDao.queryBuilder();
+            QueryBuilder<IOKeyword, String> kQueryBuilder = keywordDao.queryBuilder();
+            QueryBuilder<IOKeywordText, String> ktQueryBuilder = keywordTextDao.queryBuilder();
+            QueryBuilder<IOLanguage, String> lQueryBuilder = languagedDao.queryBuilder();
 
-            pQueryBuilder.distinct().orderBy(Pictogram.FILE_NAME, true);
+            pQueryBuilder.distinct().orderBy(IOPictogram.FILE_NAME, true);
 
-            ktQueryBuilder.where().like(KeywordText.TEXT_NAME, "%"+queryString+"%");
+            ktQueryBuilder.where().like(IOKeywordText.TEXT_NAME, "%"+queryString+"%");
 
-            SharedPreferences prefs = getSharedPreferences(SMIziOziApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
-            int languageId = prefs.getInt(SMIziOziApplication.APPLICATION_LANGUAGE_ID,1);
+            SharedPreferences prefs = getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
+            int languageId = prefs.getInt(IOApplication.APPLICATION_LANGUAGE_ID,1);
 
-            lQueryBuilder.where().eq(Language.ID_NAME, languageId);
+            lQueryBuilder.where().eq(IOLanguage.ID_NAME, languageId);
 
-            PreparedQuery<Pictogram> query = null;
+            PreparedQuery<IOPictogram> query = null;
 
             query = pQueryBuilder.leftJoin(kQueryBuilder.leftJoin(ktQueryBuilder.leftJoin(lQueryBuilder))).prepare();
             mPictograms = pictoDao.query(query);
@@ -165,7 +165,7 @@ public class SMImagesSearchActivity extends OrmLiteBaseActivity<SMIziOziDatabase
         return super.onOptionsItemSelected(item);
     }
 
-    private class ImagesGridAdapter extends ArrayAdapter<Pictogram>
+    private class ImagesGridAdapter extends ArrayAdapter<IOPictogram>
     {
 
         private int resId;
@@ -175,7 +175,7 @@ public class SMImagesSearchActivity extends OrmLiteBaseActivity<SMIziOziDatabase
         {
             super(context,resId);
             this.resId = resId;
-            this.filesRoot = new File(Environment.getExternalStorageDirectory() + "/" + SMIziOziApplication.APPLICATION_FOLDER + "/pictograms");
+            this.filesRoot = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
         }
 
         @Override
@@ -191,7 +191,7 @@ public class SMImagesSearchActivity extends OrmLiteBaseActivity<SMIziOziDatabase
 
             ImageView imageView = (ImageView) convertView.findViewById(R.id.ImageSearchCellImageView);
 
-            Pictogram pictogram = mPictograms.get(position);
+            IOPictogram pictogram = mPictograms.get(position);
             Character pictoFolder = pictogram.getFilePath().charAt(0);
 
             File pictoFile = new File(filesRoot + "/" + pictoFolder + "/" + pictogram.getFilePath());

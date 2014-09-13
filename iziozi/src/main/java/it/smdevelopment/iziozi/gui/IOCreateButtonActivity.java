@@ -37,12 +37,10 @@ import android.widget.TextView;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 import it.smdevelopment.iziozi.R;
-import it.smdevelopment.iziozi.core.SMIziOziDatabaseHelper;
+import it.smdevelopment.iziozi.core.IODatabaseHelper;
 
 
-
-
-public class CreateButtonActivity extends OrmLiteBaseActivity<SMIziOziDatabaseHelper> {
+public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
 
     public final static String IMAGE_FILE = "image_file";
 
@@ -66,12 +64,12 @@ public class CreateButtonActivity extends OrmLiteBaseActivity<SMIziOziDatabaseHe
 
         if(extras != null)
         {
-            mImageTitle = extras.getString(BoardActivity.BUTTON_TITLE);
-            mImageFile = extras.getString(BoardActivity.BUTTON_IMAGE_FILE);
-            mImageText = extras.getString(BoardActivity.BUTTON_TEXT);
+            mImageTitle = extras.getString(IOBoardActivity.BUTTON_TITLE);
+            mImageFile = extras.getString(IOBoardActivity.BUTTON_IMAGE_FILE);
+            mImageText = extras.getString(IOBoardActivity.BUTTON_TEXT);
         }
 
-        mButtonIndex = getIntent().getExtras().getInt(BoardActivity.BUTTON_INDEX);
+        mButtonIndex = getIntent().getExtras().getInt(IOBoardActivity.BUTTON_INDEX);
 		
 		setContentView(R.layout.create_button_activity_layout);
 
@@ -120,6 +118,7 @@ public class CreateButtonActivity extends OrmLiteBaseActivity<SMIziOziDatabaseHe
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setSubmitButtonEnabled(true);
 
+
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -136,19 +135,19 @@ public class CreateButtonActivity extends OrmLiteBaseActivity<SMIziOziDatabaseHe
     public void doSave(View v){
         Intent resultIntent = new Intent();
         if(mImageFile != null)
-            resultIntent.putExtra(BoardActivity.BUTTON_IMAGE_FILE, mImageFile);
+            resultIntent.putExtra(IOBoardActivity.BUTTON_IMAGE_FILE, mImageFile);
 
         mImageTitle = mTitleText.getText().toString();
 
         if(mImageTitle != null && mImageTitle.length() > 0)
-            resultIntent.putExtra(BoardActivity.BUTTON_TITLE, mImageTitle);
+            resultIntent.putExtra(IOBoardActivity.BUTTON_TITLE, mImageTitle);
 
         mImageText = mTextText.getText().toString();
 
         if(mImageText != null && mImageText.length() > 0)
-            resultIntent.putExtra(BoardActivity.BUTTON_TEXT, mImageText);
+            resultIntent.putExtra(IOBoardActivity.BUTTON_TEXT, mImageText);
 
-        resultIntent.putExtra(BoardActivity.BUTTON_INDEX, mButtonIndex);
+        resultIntent.putExtra(IOBoardActivity.BUTTON_INDEX, mButtonIndex);
 
         setResult(RESULT_OK, resultIntent);
         finish();
