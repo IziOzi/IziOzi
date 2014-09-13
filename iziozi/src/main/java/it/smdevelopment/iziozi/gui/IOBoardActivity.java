@@ -30,6 +30,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,12 +46,19 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.FileAsyncHttpResponseHandler;
+
+import org.apache.http.Header;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
 import it.smdevelopment.iziozi.R;
+import it.smdevelopment.iziozi.core.IOApplication;
 import it.smdevelopment.iziozi.core.IOConfiguration;
 import it.smdevelopment.iziozi.core.IOSpeakableImageButton;
 
@@ -80,12 +88,18 @@ public class IOBoardActivity extends Activity {
     private View mDecorView;
     private TextToSpeech tts;
 
+    /*
+    * Interface widgets
+    * */
+    private AlertDialog mAlertDialog;
+
     public static final int CREATE_BUTTON_CODE = 8001;
 
     public static final String BUTTON_IMAGE_FILE = "button_image_file";
     public static final String BUTTON_TITLE = "button_title";
     public static final String BUTTON_TEXT = "button_text";
     public static final String BUTTON_INDEX = "button_index";
+    public static final String BUTTON_URL = "button_url";
 
     int newRows, newCols;
 
@@ -180,7 +194,7 @@ public class IOBoardActivity extends Activity {
         this.tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-                if(tts.isLanguageAvailable(Locale.getDefault()) >= 0)
+                if (tts.isLanguageAvailable(Locale.getDefault()) >= 0)
                     tts.setLanguage(Locale.getDefault());
                 else
                     tts.setLanguage(Locale.ENGLISH);
@@ -232,7 +246,7 @@ public class IOBoardActivity extends Activity {
                 btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));*/
                 homeRow.addView(btnContainer);
 
-                IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(this);
+                final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(this);
                 imgButton.setmContext(this);
 
                 imgButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -240,12 +254,68 @@ public class IOBoardActivity extends Activity {
                 imgButton.setScaleType(ImageView.ScaleType.CENTER);
                 imgButton.setBackgroundColor(Color.TRANSPARENT);
 
-                if(imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0)
-                    imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
+                if (imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0) {
 
-                ViewGroup parent = (ViewGroup)imgButton.getParent();
+                    if (!new File(imgButton.getmImageFile()).exists()) {
+                        if (mAlertDialog == null || !mAlertDialog.isShowing()) {
+                            mAlertDialog = new AlertDialog.Builder(this)
+                                    .setCancelable(true)
+                                    .setTitle("Missing images!")
+                                    .setMessage("Application will now download missing files. Please wait until all images are shown.")
+                                    .setNegativeButton("Continue", null)
+                                    .create();
+                            mAlertDialog.show();
+                        }
 
-                if(parent != null)
+                        //download image
+
+                        if (isExternalStorageReadable()) {
+
+                            File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
+                            Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/")+1);
+                            File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
+
+                            if ( isExternalStorageWritable() ) {
+
+                                pictoFolder.mkdirs();
+
+                                //download it
+
+                                AsyncHttpClient client = new AsyncHttpClient();
+                                client.get(imgButton.getmUrl(), new FileAsyncHttpResponseHandler(new File(imgButton.getmImageFile())) {
+                                    @Override
+                                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
+                                        Toast.makeText(getApplicationContext(), "File download error!" + file.toString(), Toast.LENGTH_LONG).show();
+                                    }
+
+
+                                    @Override
+                                    public void onSuccess(int statusCode, Header[] headers, File downloadedFile) {
+
+
+                                        if (new File(imgButton.getmImageFile()).exists()) {
+                                            imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "There was a problem saving the image file!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } else {
+
+                                Toast.makeText(getApplicationContext(), "There was a problem saving the image file!", Toast.LENGTH_SHORT).show();
+                            }
+                        }else
+                        {
+                            Toast.makeText(getApplicationContext(), "There was a problem saving the image file!", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else
+                        imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
+                }
+
+                ViewGroup parent = (ViewGroup) imgButton.getParent();
+
+                if (parent != null)
                     parent.removeAllViews();
 
                 btnContainer.addView(imgButton);
@@ -477,7 +547,6 @@ public class IOBoardActivity extends Activity {
     }
 
 
-
     /*
     * This snippet shows the system bars. It does this by removing all the flags
     * except for the ones that make the content appear under the system bars.
@@ -492,30 +561,53 @@ public class IOBoardActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == CREATE_BUTTON_CODE)
-        {
-            if(resultCode == RESULT_OK)
-            {
+        if (requestCode == CREATE_BUTTON_CODE) {
+            if (resultCode == RESULT_OK) {
                 Bundle extras = data.getExtras();
                 int index = extras.getInt(BUTTON_INDEX);
                 String title = extras.getString(BUTTON_TITLE);
                 String text = extras.getString(BUTTON_TEXT);
                 String imageFile = extras.getString(BUTTON_IMAGE_FILE);
+                String imageUrl = extras.getString(BUTTON_URL);
 
                 IOSpeakableImageButton button = mConfig.getButtons().get(index);
 
-                if(text != null)
+                if (text != null)
                     button.setSentence(text);
 
-                if(title != null)
+                if (title != null)
                     button.setmTitle(title);
 
-                if(imageFile != null) {
+                if (imageFile != null) {
                     button.setImageBitmap(BitmapFactory.decodeFile(imageFile));
                     button.setmImageFile(imageFile);
                 }
+
+                if(imageUrl != null)
+                    button.setmUrl(imageUrl);
             }
-        }else
+        } else
             super.onActivityResult(requestCode, resultCode, data);
     }
+
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+
 }

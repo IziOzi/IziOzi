@@ -21,6 +21,7 @@
 
 package it.smdevelopment.iziozi.gui;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -64,6 +67,8 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
     private GridView mGridView;
     private List<IOPictogram> mPictograms;
 
+    ProgressDialog barProgressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,22 +83,80 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                IOPictogram pictogram = mPictograms.get(position);
 
-                Intent backIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
+                if(isExternalStorageReadable()) {
+                    final IOPictogram pictogram = mPictograms.get(position);
 
-                File pictoFile =new File( Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms" );
-                Character pictoFolder = pictogram.getFilePath().charAt(0);
+                    File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
+                    Character pictoChar = pictogram.getFilePath().charAt(0);
+                    File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
+                    final File pictoFile = new File(baseFolder + "/" + pictoChar + "/" + pictogram.getFilePath());
 
-                pictoFile = new File(pictoFile + "/" + pictoFolder + "/" + pictogram.getFilePath());
-                backIntent.putExtra(IOCreateButtonActivity.IMAGE_FILE, pictoFile.toString() );
+                    final Intent backIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
+                    backIntent.putExtra(IOCreateButtonActivity.IMAGE_URL, pictogram.getUrl());
 
-                finish();
-                startActivity(backIntent);
+                    if (!pictoFile.exists() && isExternalStorageWritable()) {
+
+                        pictoFolder.mkdirs();
+
+                        //download it
+
+                        barProgressDialog = new ProgressDialog(IORemoteImageSearchActivity.this);
+                        barProgressDialog.setTitle("Downloading Image ...");
+                        barProgressDialog.setMessage("Download in progress ...");
+                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_HORIZONTAL);
+                        barProgressDialog.setProgress(0);
+                        barProgressDialog.setMax(100);
+                        barProgressDialog.show();
+
+
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        client.get(pictogram.getUrl(), new FileAsyncHttpResponseHandler(pictoFile) {
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
+                                barProgressDialog.cancel();
+                                Toast.makeText(getApplicationContext(), "File download error!", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onProgress(int bytesWritten, int totalSize) {
+                                super.onProgress(bytesWritten, totalSize);
+
+                                int progress = bytesWritten / totalSize;
+                                progress *= 100;
+
+                                barProgressDialog.setProgress(progress);
+                            }
+
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, File downloadedFile) {
+
+
+
+                                if(pictoFile.exists())
+                                {
+                                    backIntent.putExtra(IOCreateButtonActivity.IMAGE_FILE, pictoFile.toString());
+                                    finish();
+                                    startActivity(backIntent);
+                                }else
+                                {
+                                    Toast.makeText(getApplicationContext(), "There was a problem saving the image file!", Toast.LENGTH_SHORT).show();
+                                    barProgressDialog.cancel();
+                                }
+                            }
+                        });
+                    } else {
+                        //file already exists
+                        backIntent.putExtra(IOCreateButtonActivity.IMAGE_FILE, pictoFile.toString());
+                        finish();
+                        startActivity(backIntent);
+                    }
+                }
             }
         });
 
         handleIntent(getIntent());
+
     }
 
     @Override
@@ -118,9 +181,9 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
          prefs.getString(IOApplication.APPLICATION_LOCALE, Locale.getDefault().getLanguage());
 
         RequestParams params = new RequestParams();
-        params.put("q", queryString);
 
-        params.put("lang", prefs.getString(IOApplication.APPLICATION_LOCALE, Locale.getDefault().getLanguage()));
+        params.put("q", queryString);
+        params.put("lang", Locale.getDefault().getLanguage());
 
         IOApiClient.get("pictures", params, new JsonHttpResponseHandler() {
 
@@ -242,4 +305,25 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
             return convertView;
         }
     }
+
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+
 }

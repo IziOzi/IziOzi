@@ -46,6 +46,9 @@ public class IOSpeakableImageButton extends ImageButton {
     @Element(required = false)
     private String mTitle = "";
 
+    @Element(required = false)
+    private String mUrl = "";
+
 	private Context mContext;
 	
 	public IOSpeakableImageButton(Context ctx) {
@@ -96,6 +99,14 @@ public class IOSpeakableImageButton extends ImageButton {
 
     public String getmTitle() {
         return mTitle;
+    }
+
+    public String getmUrl() {
+        return mUrl;
+    }
+
+    public void setmUrl(String mUrl) {
+        this.mUrl = mUrl;
     }
 
     public void setmTitle(String mTitle) {

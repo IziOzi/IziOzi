@@ -43,6 +43,7 @@ import it.smdevelopment.iziozi.core.IODatabaseHelper;
 public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
 
     public final static String IMAGE_FILE = "image_file";
+    public final static String IMAGE_URL = "image_url";
 
     private SearchView mSearchView;
     private ImageButton mImageButton;
@@ -52,6 +53,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     private String mImageFile;
     private String mImageTitle;
     private String mImageText;
+    private String mImageUrl;
 
     private int mButtonIndex;
 
@@ -67,6 +69,8 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
             mImageTitle = extras.getString(IOBoardActivity.BUTTON_TITLE);
             mImageFile = extras.getString(IOBoardActivity.BUTTON_IMAGE_FILE);
             mImageText = extras.getString(IOBoardActivity.BUTTON_TEXT);
+            mImageUrl = extras.getString(IOBoardActivity.BUTTON_URL);
+
         }
 
         mButtonIndex = getIntent().getExtras().getInt(IOBoardActivity.BUTTON_INDEX);
@@ -97,12 +101,20 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
         Bundle extras = intent.getExtras();
         String pictoFile = extras.getString(IMAGE_FILE);
+
+        String pictoUrl = extras.getString(IMAGE_URL);
+
         if(pictoFile != null)
         {
             mImageFile = pictoFile;
 
             mImageButton.setImageBitmap(BitmapFactory.decodeFile(pictoFile));
             mTapHereTextView.setVisibility(View.INVISIBLE);
+        }
+
+        if(pictoUrl != null)
+        {
+            mImageUrl = pictoUrl;
         }
     }
 
@@ -146,6 +158,9 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
         if(mImageText != null && mImageText.length() > 0)
             resultIntent.putExtra(IOBoardActivity.BUTTON_TEXT, mImageText);
+
+        if(mImageUrl != null && mImageUrl.length() > 0)
+            resultIntent.putExtra(IOBoardActivity.BUTTON_URL, mImageUrl);
 
         resultIntent.putExtra(IOBoardActivity.BUTTON_INDEX, mButtonIndex);
 
