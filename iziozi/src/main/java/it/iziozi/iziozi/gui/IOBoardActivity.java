@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.smdevelopment.iziozi.gui;
+package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -57,10 +57,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import it.smdevelopment.iziozi.R;
-import it.smdevelopment.iziozi.core.IOApplication;
-import it.smdevelopment.iziozi.core.IOConfiguration;
-import it.smdevelopment.iziozi.core.IOSpeakableImageButton;
+import it.iziozi.iziozi.R;
+import it.iziozi.iziozi.core.IOApplication;
+import it.iziozi.iziozi.core.IOConfiguration;
+import it.iziozi.iziozi.core.IOSpeakableImageButton;
 
 
 public class IOBoardActivity extends Activity {

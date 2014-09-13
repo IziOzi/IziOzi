@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.smdevelopment.iziozi.core;
+package it.iziozi.iziozi.core;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -33,7 +33,7 @@ import android.widget.ImageButton;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
-import it.smdevelopment.iziozi.R;
+import it.iziozi.iziozi.R;
 @Root(name = "SMSpeakableImageButton")
 public class IOSpeakableImageButton extends ImageButton {
 

@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.smdevelopment.iziozi.gui;
+package it.iziozi.iziozi.gui;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -61,11 +61,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import it.smdevelopment.iziozi.R;
-import it.smdevelopment.iziozi.core.IOApiClient;
-import it.smdevelopment.iziozi.core.IOApplication;
-import it.smdevelopment.iziozi.core.IODatabaseHelper;
-import it.smdevelopment.iziozi.core.dbclasses.IOPictogram;
+import it.iziozi.iziozi.R;
+import it.iziozi.iziozi.core.IOApiClient;
+import it.iziozi.iziozi.core.IOApplication;
+import it.iziozi.iziozi.core.IODatabaseHelper;
+import it.iziozi.iziozi.core.dbclasses.IOPictogram;
 
 public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
 

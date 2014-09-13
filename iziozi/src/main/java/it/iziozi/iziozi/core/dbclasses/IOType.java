@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.smdevelopment.iziozi.core.dbclasses;
+package it.iziozi.iziozi.core.dbclasses;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -28,48 +28,24 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by martinolessio on 17/04/14.
  */
 
-@DatabaseTable(tableName = "keywords")
-public class IOKeyword {
+@DatabaseTable(tableName = "types")
+public class IOType {
 
     public static final String ID_NAME = "id";
-    public static final String TYPE_ID_NAME = "type_id";
-    public static final String PICTOGRAM_ID_NAME = "pictogram_id";
+    public static final String TYPE_NAME = "type";
 
     @DatabaseField(id = true, columnName = "id")
     private Integer id;
 
-    @DatabaseField(columnName = "type_id")
-    private Integer typeId;
+    @DatabaseField(columnName = "type")
+    private Integer type;
 
-    @DatabaseField(columnName = "pictogram_id")
-    private Integer pictogramId;
+    public IOType() {
+    }
 
-    @DatabaseField(foreign = true)
-    private IOPictogram pictogram;
-
-
-    public IOKeyword(){}
-
-    public IOKeyword(Integer id, Integer typeId, Integer pictogramId) {
+    public IOType(Integer id, Integer type) {
         this.id = id;
-        this.typeId = typeId;
-        this.pictogramId = pictogramId;
-    }
-
-    public Integer getPictogramId() {
-        return pictogramId;
-    }
-
-    public void setPictogramId(Integer pictogramId) {
-        this.pictogramId = pictogramId;
-    }
-
-    public Integer getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
+        this.type = type;
     }
 
     public Integer getId() {
@@ -78,5 +54,13 @@ public class IOKeyword {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

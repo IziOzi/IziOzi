@@ -18,12 +18,11 @@
   ~
   ~ You should have received a copy of the GNU General Public License along with IziOzi.
   ~ If not, see http://www.gnu.org/licenses/.
-  -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.smdevelopment.iziozi" >
+    package="it.iziozi.iziozi" >
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- Include following permission if you load images from Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Include following permission if you want to allow UIL to cache images on SD card -->
@@ -31,22 +30,23 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".core.IOApplication"
+        android:name="it.iziozi.iziozi.core.IOApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo_org"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
 
         <!--
             <meta-data android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         -->
 
-        <meta-data android:name="android.app.default_searchable" android:value=".SMImagesSearchActivity" />
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".SMImagesSearchActivity" />
 
         <activity
-            android:name=".gui.IOBoardActivity"
+            android:name="it.iziozi.iziozi.gui.IOBoardActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
@@ -56,42 +56,43 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".gui.IOCreateButtonActivity"
+            android:name="it.iziozi.iziozi.gui.IOCreateButtonActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
-            <meta-data android:name="android.app.default_searchable"
-                android:value="it.smdevelopment.iziozi.gui.IORemoteImageSearchActivity"/>
-
+            android:launchMode="singleTop" >
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value="it.iziozi.iziozi.gui.IORemoteImageSearchActivity" />
         </activity>
-
         <activity
-            android:name=".gui.IOLocalImageSearchActivity"
+            android:name="it.iziozi.iziozi.gui.IOLocalImageSearchActivity"
             android:label="@string/app_name" >
-<!--
+
+            <!--
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
             <meta-data android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
--->
+            -->
         </activity>
-
         <activity
-            android:name=".gui.IORemoteImageSearchActivity"
+            android:name="it.iziozi.iziozi.gui.IORemoteImageSearchActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
-
-
+        <activity
+            android:name="it.iziozi.iziozi.gui.IOAboutActivity"
+            android:label="@string/title_activity_ioabout" >
+        </activity>
     </application>
 
 </manifest>

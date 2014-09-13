@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.smdevelopment.iziozi.core;
+package it.iziozi.iziozi.core;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -40,7 +40,7 @@ import java.io.OutputStream;
 public class IODatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     @SuppressLint("SdCardPath")
-    private static final String DB_PATH = "/data/data/it.smdevelopment.iziozi/databases/";
+    private static final String DB_PATH = "/data/data/it.iziozi.iziozi/databases/";
     private static final String DB_NAME = "iziozi_images.sqlite";
 
     private SQLiteDatabase myDatabase;

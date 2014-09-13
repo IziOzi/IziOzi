@@ -18,8 +18,7 @@
   ~
   ~ You should have received a copy of the GNU General Public License along with IziOzi.
   ~ If not, see http://www.gnu.org/licenses/.
-  -->
-
+-->
 <resources>
 
     <!-- Generic strings -->
@@ -68,5 +67,6 @@
     <string name="title_activity_smimages_search">SMImagesSearchActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_ioabout">IOAboutActivity</string>
 
 </resources>

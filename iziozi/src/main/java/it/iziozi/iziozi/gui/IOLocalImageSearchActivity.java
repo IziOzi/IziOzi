@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.smdevelopment.iziozi.gui;
+package it.iziozi.iziozi.gui;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -47,13 +47,13 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
-import it.smdevelopment.iziozi.R;
-import it.smdevelopment.iziozi.core.IOApplication;
-import it.smdevelopment.iziozi.core.IODatabaseHelper;
-import it.smdevelopment.iziozi.core.dbclasses.IOKeyword;
-import it.smdevelopment.iziozi.core.dbclasses.IOKeywordText;
-import it.smdevelopment.iziozi.core.dbclasses.IOLanguage;
-import it.smdevelopment.iziozi.core.dbclasses.IOPictogram;
+import it.iziozi.iziozi.R;
+import it.iziozi.iziozi.core.IOApplication;
+import it.iziozi.iziozi.core.IODatabaseHelper;
+import it.iziozi.iziozi.core.dbclasses.IOKeyword;
+import it.iziozi.iziozi.core.dbclasses.IOKeywordText;
+import it.iziozi.iziozi.core.dbclasses.IOLanguage;
+import it.iziozi.iziozi.core.dbclasses.IOPictogram;
 
 public class IOLocalImageSearchActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
 

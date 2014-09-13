@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.smdevelopment.iziozi.core;
+package it.iziozi.iziozi.core;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -36,7 +36,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.smdevelopment.iziozi.R;
+import it.iziozi.iziozi.R;
 
 /**
  * Created by martinolessio on 07/04/14.

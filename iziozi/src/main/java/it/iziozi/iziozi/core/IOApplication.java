@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.smdevelopment.iziozi.core;
+package it.iziozi.iziozi.core;
 
 import android.app.Application;
 import android.content.Context;
@@ -29,7 +29,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import it.smdevelopment.iziozi.R;
+import it.iziozi.iziozi.R;
 
 /**
  * Created by martinolessio on 07/04/14.

@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.smdevelopment.iziozi.gui;
+package it.iziozi.iziozi.gui;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -39,8 +39,8 @@ import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
-import it.smdevelopment.iziozi.R;
-import it.smdevelopment.iziozi.core.IODatabaseHelper;
+import it.iziozi.iziozi.R;
+import it.iziozi.iziozi.core.IODatabaseHelper;
 
 
 public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
