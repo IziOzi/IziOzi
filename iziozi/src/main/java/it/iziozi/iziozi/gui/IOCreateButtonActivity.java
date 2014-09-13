@@ -103,9 +103,9 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         if (activeNetwork == null) {
              new AlertDialog.Builder(this)
                     .setCancelable(true)
-                    .setTitle("Warning!")
-                    .setMessage("You need an active data connection to configure a new button! You can't search new pictograms until data connection is unavailable!")
-                    .setNegativeButton("Continue", null)
+                    .setTitle(getString(R.string.warning))
+                    .setMessage(getString(R.string.data_connection_needed))
+                    .setNegativeButton(getString(R.string.continue_string), null)
                     .create()
                     .show();
         }

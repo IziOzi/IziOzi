@@ -260,9 +260,9 @@ public class IOBoardActivity extends Activity {
                         if (mAlertDialog == null || !mAlertDialog.isShowing()) {
                             mAlertDialog = new AlertDialog.Builder(this)
                                     .setCancelable(true)
-                                    .setTitle("Missing images!")
-                                    .setMessage("Application will now download missing files. Please wait until all images are shown.")
-                                    .setNegativeButton("Continue", null)
+                                    .setTitle(getString(R.string.image_missing))
+                                    .setMessage(getString(R.string.image_missing_text))
+                                    .setNegativeButton(getString(R.string.continue_string), null)
                                     .create();
                             mAlertDialog.show();
                         }
@@ -285,7 +285,7 @@ public class IOBoardActivity extends Activity {
                                 client.get(imgButton.getmUrl(), new FileAsyncHttpResponseHandler(new File(imgButton.getmImageFile())) {
                                     @Override
                                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-                                        Toast.makeText(getApplicationContext(), "File download error!" + file.toString(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), getString(R.string.download_error) + file.toString(), Toast.LENGTH_LONG).show();
                                     }
 
 
@@ -296,17 +296,17 @@ public class IOBoardActivity extends Activity {
                                         if (new File(imgButton.getmImageFile()).exists()) {
                                             imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
                                         } else {
-                                            Toast.makeText(getApplicationContext(), "There was a problem saving the image file!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
                             } else {
 
-                                Toast.makeText(getApplicationContext(), "There was a problem saving the image file!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                             }
                         }else
                         {
-                            Toast.makeText(getApplicationContext(), "There was a problem saving the image file!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                         }
 
                     } else
@@ -493,6 +493,12 @@ public class IOBoardActivity extends Activity {
 
             case R.id.action_save: {
                 IOBoardActivity.this.mConfig.save();
+                break;
+            }
+
+            case R.id.action_about: {
+                Intent aboutIntent = new Intent(getApplicationContext(), IOAboutActivity.class);
+                startActivity(aboutIntent);
                 break;
             }
 

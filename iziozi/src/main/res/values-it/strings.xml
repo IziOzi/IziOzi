@@ -48,6 +48,7 @@
     <string name="settings">Impostazioni</string>
     <string name="edit_mode">Modalità di modifica</string>
     <string name="save">Salva</string>
+    <string name="about">Informazioni</string>
     <string name="exit">Esci</string>
 
     <!-- Debugging strings -->
@@ -68,5 +69,26 @@
     <string name="title_activity_smimages_search">SMImagesSearchActivity</string>
     <string name="hello_world">Ciao mondo!</string>
     <string name="action_settings">Impostazioni</string>
+    <string name="send_mail">Invia email...</string>
+    <string name="title_activity_ioabout">IOAboutActivity</string>
+
+
+    <string name="app_description">IziOzi è un\'applicazione di comunicazione aumentativa e argomentativa open source, completamente gratuita e in continuo sviluppo.\n
+        Se hai delle richieste, dei suggerimenti o se vuoi dirci qualcosa, scrivici cliccando il pulsante qui sotto!\n
+        Se infine credi che questo sia un progetto utile e vuoi darci una mano, usa il pulsante in fondo alla pagina per effettuare una donazione spontanea
+        per supportare i costi di sviluppo! Grazie!</string>
+    <string name="image_missing">Pittogrammi mancanti!</string>
+    <string name="image_missing_text">L\'applicazione scaricherà ora i file mancanti. Per favore attendere fino a che non verranno visualizzate tutte le immagini.</string>
+    <string name="download_error">Errore nel download del file!</string>
+    <string name="image_save_error">C\'è stato un problema nel salvataggio dell\'immagine!</string>
+    <string name="warning">Attenzione!</string>
+    <string name="data_connection_needed">Serve una connessione attiva a internet per configurare un nuovo pulsante! Non potrai cercare nuovi pittogrammi finchè la connessione non tornerà disponibile!</string>
+    <string name="no_picto_found">Nessun pittogramma trovato!</string>
+    <string name="download_text">Download in corso ...</string>
+    <string name="please_wait">Attendere prego ...</string>
+    <string name="search_in_progress">Ricerca in corso ...</string>
+    <string name="unexpected_response">Oggetto non riconosciuto, contattare gli sviluppatori se possibile!</string>
+    <string name="request_error">Errore sulla richiesta, contattare gli sviluppatori se possibile!</string>
+    <string name="image_download_title">Download dell\'immagine ...</string>
 
 </resources>

@@ -85,7 +85,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
 
         mGridView = (GridView) findViewById(R.id.ImageSearchGridView);
         mEmptyTextView = (TextView) findViewById(R.id.ImageSearchNotFoundText);
-        mEmptyTextView.setText("No pictograms Found!");
+        mEmptyTextView.setText(getString(R.string.no_picto_found));
         mEmptyTextView.setVisibility(View.INVISIBLE);
 
         mGridView.setNumColumns(5);
@@ -114,8 +114,8 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
                         //download it
 
                         mBarProgressDialog = new ProgressDialog(IORemoteImageSearchActivity.this);
-                        mBarProgressDialog.setTitle("Downloading Image ...");
-                        mBarProgressDialog.setMessage("Download in progress ...");
+                        mBarProgressDialog.setTitle(getString(R.string.image_download_title));
+                        mBarProgressDialog.setMessage(getString(R.string.download_text));
                         mBarProgressDialog.setProgressStyle(mBarProgressDialog.STYLE_HORIZONTAL);
                         mBarProgressDialog.setProgress(0);
                         mBarProgressDialog.setMax(100);
@@ -127,7 +127,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
                             @Override
                             public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
                                 mBarProgressDialog.cancel();
-                                Toast.makeText(getApplicationContext(), "File download error!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.download_error), Toast.LENGTH_LONG).show();
                             }
 
                             @Override
@@ -149,7 +149,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
                                     finish();
                                     startActivity(backIntent);
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "There was a problem saving the image file!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                                     mBarProgressDialog.cancel();
                                 }
                             }
@@ -169,9 +169,9 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
         if (activeNetwork == null) {
             new AlertDialog.Builder(this)
                     .setCancelable(true)
-                    .setTitle("Warning!")
-                    .setMessage("You need an active data connection to configure a new button! You can't search new pictograms until data connection is unavailable!")
-                    .setNegativeButton("Continue", new DialogInterface.OnClickListener() {
+                    .setTitle(getString(R.string.warning))
+                    .setMessage(getString(R.string.data_connection_needed))
+                    .setNegativeButton(getString(R.string.continue_string), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();
@@ -199,7 +199,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
 
     private void searchImages(String queryString) {
 
-        mRingProgressDialog = ProgressDialog.show(this, "Please wait ...", "Search in progress ...", true);
+        mRingProgressDialog = ProgressDialog.show(this, getString(R.string.please_wait), getString(R.string.search_in_progress), true);
 
         mPictograms = new ArrayList<IOPictogram>();
 
@@ -226,7 +226,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
 
                 //something went wrong
 
-                Toast.makeText(getApplicationContext(), "received an unexpected object!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.unexpected_response), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -281,7 +281,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
 
                 //Timeout, 500, no connection
 
-                Toast.makeText(getApplicationContext(), "Error on http request!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.request_error), Toast.LENGTH_SHORT).show();
             }
         });
 

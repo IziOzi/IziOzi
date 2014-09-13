@@ -22,9 +22,14 @@
 package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
 import it.iziozi.iziozi.R;
 
 public class IOAboutActivity extends Activity {
@@ -44,6 +49,13 @@ public class IOAboutActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -57,4 +69,50 @@ public class IOAboutActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void openWebsite(View v)
+    {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.iziozi.org"));
+        startActivity(browserIntent);
+    }
+
+    public void sendMail(View v)
+    {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto","info@iziozi.org", null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "IziOzi Info");
+        startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.send_mail)));
+    }
+
+    public void openFb(View v)
+    {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/iziozi.org"));
+        startActivity(browserIntent);
+    }
+
+    public void openTw(View v)
+    {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/IziOziorg"));
+        startActivity(browserIntent);
+    }
+
+    public void openGplus(View v)
+    {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://plus.google.com/+IzioziOrganization/"));
+        startActivity(browserIntent);
+    }
+
+    public void openGithub(View v)
+    {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/IziOzi/IziOzi"));
+        startActivity(browserIntent);
+    }
+
+    public void pleaseDonate(View v)
+    {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=HMEFXQHF35PTY&lc=IT&item_name=IziOzi&item_number=IziOzi%20Android%20app&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"));
+        startActivity(browserIntent);
+    }
+
+
 }
