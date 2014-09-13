@@ -26,6 +26,7 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:paddingTop="10dp"
+    android:background="@android:color/white"
     tools:context="it.smdevelopment.iziozi.gui.IOLocalImageSearchActivity">
 
     <GridView
@@ -38,4 +39,14 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="No images Found!"
+        android:id="@+id/ImageSearchNotFoundText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center" />
 </RelativeLayout>

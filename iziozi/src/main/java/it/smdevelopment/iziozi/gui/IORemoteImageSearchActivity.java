@@ -21,11 +21,15 @@
 
 package it.smdevelopment.iziozi.gui;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -37,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
@@ -67,7 +72,10 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
     private GridView mGridView;
     private List<IOPictogram> mPictograms;
 
-    ProgressDialog barProgressDialog;
+    private TextView mEmptyTextView;
+
+    private ProgressDialog mBarProgressDialog;
+    private ProgressDialog mRingProgressDialog;
 
 
     @Override
@@ -76,6 +84,9 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
         setContentView(R.layout.activity_smimages_search);
 
         mGridView = (GridView) findViewById(R.id.ImageSearchGridView);
+        mEmptyTextView = (TextView) findViewById(R.id.ImageSearchNotFoundText);
+        mEmptyTextView.setText("No pictograms Found!");
+        mEmptyTextView.setVisibility(View.INVISIBLE);
 
         mGridView.setNumColumns(5);
         mGridView.setAdapter(new RemoteImagesGridAdapter(this, R.layout.image_grid_cell));
@@ -84,7 +95,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if(isExternalStorageReadable()) {
+                if (isExternalStorageReadable()) {
                     final IOPictogram pictogram = mPictograms.get(position);
 
                     File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
@@ -94,6 +105,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
 
                     final Intent backIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
                     backIntent.putExtra(IOCreateButtonActivity.IMAGE_URL, pictogram.getUrl());
+                    backIntent.putExtra(IOCreateButtonActivity.IMAGE_TITLE, pictogram.getDescription());
 
                     if (!pictoFile.exists() && isExternalStorageWritable()) {
 
@@ -101,20 +113,20 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
 
                         //download it
 
-                        barProgressDialog = new ProgressDialog(IORemoteImageSearchActivity.this);
-                        barProgressDialog.setTitle("Downloading Image ...");
-                        barProgressDialog.setMessage("Download in progress ...");
-                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_HORIZONTAL);
-                        barProgressDialog.setProgress(0);
-                        barProgressDialog.setMax(100);
-                        barProgressDialog.show();
+                        mBarProgressDialog = new ProgressDialog(IORemoteImageSearchActivity.this);
+                        mBarProgressDialog.setTitle("Downloading Image ...");
+                        mBarProgressDialog.setMessage("Download in progress ...");
+                        mBarProgressDialog.setProgressStyle(mBarProgressDialog.STYLE_HORIZONTAL);
+                        mBarProgressDialog.setProgress(0);
+                        mBarProgressDialog.setMax(100);
+                        mBarProgressDialog.show();
 
 
                         AsyncHttpClient client = new AsyncHttpClient();
                         client.get(pictogram.getUrl(), new FileAsyncHttpResponseHandler(pictoFile) {
                             @Override
                             public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-                                barProgressDialog.cancel();
+                                mBarProgressDialog.cancel();
                                 Toast.makeText(getApplicationContext(), "File download error!", Toast.LENGTH_LONG).show();
                             }
 
@@ -125,23 +137,20 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
                                 int progress = bytesWritten / totalSize;
                                 progress *= 100;
 
-                                barProgressDialog.setProgress(progress);
+                                mBarProgressDialog.setProgress(progress);
                             }
 
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, File downloadedFile) {
 
 
-
-                                if(pictoFile.exists())
-                                {
+                                if (pictoFile.exists()) {
                                     backIntent.putExtra(IOCreateButtonActivity.IMAGE_FILE, pictoFile.toString());
                                     finish();
                                     startActivity(backIntent);
-                                }else
-                                {
+                                } else {
                                     Toast.makeText(getApplicationContext(), "There was a problem saving the image file!", Toast.LENGTH_SHORT).show();
-                                    barProgressDialog.cancel();
+                                    mBarProgressDialog.cancel();
                                 }
                             }
                         });
@@ -155,7 +164,23 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
             }
         });
 
-        handleIntent(getIntent());
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork == null) {
+            new AlertDialog.Builder(this)
+                    .setCancelable(true)
+                    .setTitle("Warning!")
+                    .setMessage("You need an active data connection to configure a new button! You can't search new pictograms until data connection is unavailable!")
+                    .setNegativeButton("Continue", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .create()
+                    .show();
+        }else
+            handleIntent(getIntent());
 
     }
 
@@ -174,11 +199,13 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
 
     private void searchImages(String queryString) {
 
+        mRingProgressDialog = ProgressDialog.show(this, "Please wait ...", "Search in progress ...", true);
+
         mPictograms = new ArrayList<IOPictogram>();
 
         SharedPreferences prefs = getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
 
-         prefs.getString(IOApplication.APPLICATION_LOCALE, Locale.getDefault().getLanguage());
+        prefs.getString(IOApplication.APPLICATION_LOCALE, Locale.getDefault().getLanguage());
 
         RequestParams params = new RequestParams();
 
@@ -203,31 +230,48 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
             }
 
             @Override
+            public void onFinish() {
+                super.onFinish();
+
+                mRingProgressDialog.cancel();
+            }
+
+            @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
 
                 //Correct response
 
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject jsonObject = response.getJSONObject(i);
+                int iter = response.length();
 
-                        IOPictogram pictogram = new IOPictogram();
+                if (iter == 0) {
 
-                        pictogram.setId(jsonObject.getInt("id"));
-                        pictogram.setFilePath(jsonObject.getString("file"));
-                        pictogram.setUrl(jsonObject.getString("deepurl"));
-                        pictogram.setDescription(jsonObject.getString("text"));
+                    mEmptyTextView.setVisibility(View.VISIBLE);
 
-                        mPictograms.add(pictogram);
+                } else {
+                    for (int i = 0; i < iter; i++) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                            IOPictogram pictogram = new IOPictogram();
+
+                            pictogram.setId(jsonObject.getInt("id"));
+                            pictogram.setFilePath(jsonObject.getString("file"));
+                            pictogram.setUrl(jsonObject.getString("deepurl"));
+                            String text = jsonObject.getString("text");
+                            pictogram.setDescription(text.substring(0,1).toUpperCase() + text.substring(1).toLowerCase());
+                            //TODO: add type or category
+
+                            mPictograms.add(pictogram);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        RemoteImagesGridAdapter gridAdapter = (RemoteImagesGridAdapter) mGridView.getAdapter();
+                        gridAdapter.notifyDataSetChanged();
+                        gridAdapter.notifyDataSetInvalidated();
                     }
-
-                    RemoteImagesGridAdapter gridAdapter = (RemoteImagesGridAdapter) mGridView.getAdapter();
-                    gridAdapter.notifyDataSetChanged();
-                    gridAdapter.notifyDataSetInvalidated();
                 }
             }
 
@@ -240,11 +284,6 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
                 Toast.makeText(getApplicationContext(), "Error on http request!", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
-
-
 
 
     }
@@ -269,29 +308,30 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
         return super.onOptionsItemSelected(item);
     }
 
-    private class RemoteImagesGridAdapter extends ArrayAdapter<IOPictogram>
-    {
+    private class RemoteImagesGridAdapter extends ArrayAdapter<IOPictogram> {
 
         private int resId;
 
-        public RemoteImagesGridAdapter(Context context, int resId)
-        {
-            super(context,resId);
+        public RemoteImagesGridAdapter(Context context, int resId) {
+            super(context, resId);
             this.resId = resId;
         }
 
         @Override
         public int getCount() {
-            return mPictograms != null ? mPictograms.size():0;
+            return mPictograms != null ? mPictograms.size() : 0;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            if(convertView == null)
+            if (convertView == null)
                 convertView = getLayoutInflater().inflate(resId, parent, false);
 
             ImageView imageView = (ImageView) convertView.findViewById(R.id.ImageSearchCellImageView);
+
+            TextView titleText = (TextView) convertView.findViewById(R.id.ImageSearchCellTitleText);
+            TextView categoryText = (TextView) convertView.findViewById(R.id.ImageSearchCellCategoryText);
 
             IOPictogram pictogram = mPictograms.get(position);
 
@@ -300,6 +340,9 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
             imageLoader.displayImage(pictogram.getUrl(), imageView);
 
             Log.d("pictogram debug", pictogram.getUrl());
+
+            categoryText.setText(pictogram.getType());
+            titleText.setText(pictogram.getDescription());
 
 
             return convertView;

@@ -27,6 +27,7 @@
     android:weightSum="1"
     android:orientation="vertical"
     android:focusableInTouchMode="true"
+    android:background="@android:color/white"
     android:focusable="true"
     android:onClick="doTapOnImage">
 

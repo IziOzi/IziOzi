@@ -21,10 +21,13 @@
 
 package it.smdevelopment.iziozi.gui;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +46,7 @@ import it.smdevelopment.iziozi.core.IODatabaseHelper;
 public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
 
     public final static String IMAGE_FILE = "image_file";
+    public final static String IMAGE_TITLE = "image_title";
     public final static String IMAGE_URL = "image_url";
 
     private SearchView mSearchView;
@@ -93,7 +97,20 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
             mTapHereTextView.setVisibility(View.INVISIBLE);
         }
 
-	}
+
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork == null) {
+             new AlertDialog.Builder(this)
+                    .setCancelable(true)
+                    .setTitle("Warning!")
+                    .setMessage("You need an active data connection to configure a new button! You can't search new pictograms until data connection is unavailable!")
+                    .setNegativeButton("Continue", null)
+                    .create()
+                    .show();
+        }
+
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -103,6 +120,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         String pictoFile = extras.getString(IMAGE_FILE);
 
         String pictoUrl = extras.getString(IMAGE_URL);
+        String pictoTitle = extras.getString(IMAGE_TITLE);
 
         if(pictoFile != null)
         {
@@ -116,7 +134,12 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         {
             mImageUrl = pictoUrl;
         }
+
+        mImageTitle = pictoTitle;
+
+        mTitleText.setText(pictoTitle);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

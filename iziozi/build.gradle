@@ -22,9 +22,12 @@
 apply plugin: 'android'
 
 android {
+    signingConfigs {
+        Ma {
+        }
+    }
     compileSdkVersion 19
-    buildToolsVersion '19.1.0'
-
+    buildToolsVersion '20.0.0'
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 19
@@ -44,10 +47,9 @@ dependencies {
     compile files('libs/simple-xml-2.7.1.jar')
     compile files('libs/ormlite-core-4.48.jar')
     compile files('libs/ormlite-android-4.48.jar')
-//chromecast support
+    //chromecast support
     //compile 'com.google.android.gms:play-services:4.3.23'
     //compile 'com.android.support:support-v7-mediarouter:19.0.0'
-
     compile 'com.android.support:support-v4:19.0.0'
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.loopj.android:android-async-http:1.4.5'
