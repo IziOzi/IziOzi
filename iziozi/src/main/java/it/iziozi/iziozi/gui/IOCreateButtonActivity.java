@@ -25,6 +25,7 @@ import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -140,6 +141,13 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         mTitleText.setText(pictoTitle);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
