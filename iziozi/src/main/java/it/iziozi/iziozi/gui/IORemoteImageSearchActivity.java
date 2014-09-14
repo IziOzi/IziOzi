@@ -88,7 +88,9 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
         mEmptyTextView.setText(getString(R.string.no_picto_found));
         mEmptyTextView.setVisibility(View.INVISIBLE);
 
+/*
         mGridView.setNumColumns(5);
+*/
         mGridView.setAdapter(new RemoteImagesGridAdapter(this, R.layout.image_grid_cell));
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
