@@ -44,6 +44,11 @@
     <string name="choose">Scegli...</string>
     <string name="tap_for_image">Clicca qui per inserire un\'immagine!</string>
 
+    <!-- Hint Alert-->
+    <string name="welcome">Benvenuto</string>
+    <string name="welcome_text">Benvenuto in IziOzi! Per creare un nuovo pulsante, ora ti abiliterò la modalità di modifica! Tocca un pulsante qualsiasi per iniziare la configurazione. Quando hai finito, disabilita la modalità di modifica, blocca l\'interfaccia nel menu e sarai pronto a cominciare! Per altre informazioni, vai su www.iziozi.org!</string>
+
+
     <!-- TTS strings -->
     <string name="tts_ready">Sono pronto a parlare per te!</string>
     <string name="tts_nosentence">Questo pulsante non ha una frase associata!</string>

@@ -44,6 +44,11 @@
 
     <string name="tap_for_image">Tap here to insert an image!</string>
 
+    <!-- Hint Alert-->
+    <string name="welcome">Welcome</string>
+    <string name="welcome_text">Welcome in IziOzi! To setup a new button, i\'m gonna enable the edit mode! Tap on any button to begin the configuration. When you have finished, disable the edit mode, lock the user interface in the menu and you\'re ready! To get more info, please refer to www.iziozi.org!</string>
+
+
     <!-- TTS strings -->
     <string name="tts_ready">I\'m ready to speak on your behalf!</string>
     <string name="tts_nosentence">This button does not have a phrase associated!</string>

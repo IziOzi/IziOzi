@@ -111,34 +111,17 @@ public class IOBoardActivity extends Activity {
 
         this.mDecorView = getWindow().getDecorView();
 
-        lockUI();
-
-        this.mDecorView.setOnSystemUiVisibilityChangeListener
-                (new View.OnSystemUiVisibilityChangeListener() {
-
-                    @Override
-                    public void onSystemUiVisibilityChange(int visibility) {
-                        // Note that system bars will only be "visible" if none of the
-                        // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
-                        if (visibility == View.VISIBLE && IOBoardActivity.this.mUnlockAlert == null) {
-                            // TODO: The system bars are visible.
-
-                            showUnlockAlert();
-
-
-                        } else {
-                            // TODO: The system bars are NOT visible.
-                        }
-                    }
-                });
-
 
         this.mConfig = IOConfiguration.getSavedConfiguration();
 
-        if (this.mConfig == null)
+        if (this.mConfig == null) {
             this.mConfig = new IOConfiguration(this);
-        else
+            showHintAlert();
+        } else {
+
+            lockUI();
             this.mConfig.setContext(this);
+        }
 
         createView();
 
@@ -154,6 +137,26 @@ public class IOBoardActivity extends Activity {
                 mCanSpeak = true;
             }
         });
+
+        this.mDecorView.setOnSystemUiVisibilityChangeListener
+                (new View.OnSystemUiVisibilityChangeListener() {
+
+                    @Override
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        // Note that system bars will only be "visible" if none of the
+                        // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+                        if (visibility == View.VISIBLE && IOBoardActivity.this.mUnlockAlert == null) {
+                            // TODO: The system bars are visible.
+                            if(mUILocked && !mIsEditing && canGoImmersive())
+                                showUnlockAlert();
+
+
+                        } else {
+                            // TODO: The system bars are NOT visible.
+                        }
+                    }
+                });
+
 
     }
 
@@ -289,9 +292,13 @@ public class IOBoardActivity extends Activity {
             }
         }
 
-/*
-        this.mConfig.setButtons(mButtons);
-*/
+        this.mConfig.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);
+       /* while (this.mConfig.getButtons().size() < (mConfig.getCols() * mConfig.getRows()))
+        {
+            List<IOSpeakableImageButton> btns = mConfig.getButtons();
+            btns.add(new IOSpeakableImageButton(this));
+            mConfig.setButtons(btns);
+        }*/
 
         return mainLayout;
     }
@@ -350,7 +357,7 @@ public class IOBoardActivity extends Activity {
     public boolean onMenuOpened(int featureId, Menu menu) {
 
 
-        if(mUILocked) {
+        if (mUILocked) {
             closeOptionsMenu();
             showUnlockAlert();
         }
@@ -555,9 +562,6 @@ public class IOBoardActivity extends Activity {
                 String imageFile = extras.getString(BUTTON_IMAGE_FILE);
                 String imageUrl = extras.getString(BUTTON_URL);
 
-                while (mConfig.getButtons().size() < index)
-                    mConfig.getButtons().add(new IOSpeakableImageButton(this));
-
                 IOSpeakableImageButton button = mConfig.getButtons().get(index);
 
                 if (text != null)
@@ -597,18 +601,15 @@ public class IOBoardActivity extends Activity {
         return false;
     }
 
-    private void lockUI()
-    {
-        if(canGoImmersive())
+    private void lockUI() {
+        if (canGoImmersive())
             hideSystemUI();
 
         mUILocked = true;
     }
 
 
-
-    private void showUnlockAlert()
-    {
+    private void showUnlockAlert() {
         this.mUnlockAlert = new AlertDialog.Builder(IOBoardActivity.this)
                 .setTitle(getResources().getString(R.string.unlock))
                 .setMessage(getResources().getQuantityString(R.plurals.unlock_question, IOBoardActivity.this.mUnlockTimeout.intValue(), IOBoardActivity.this.mUnlockTimeout.intValue()))
@@ -616,7 +617,7 @@ public class IOBoardActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mUILocked = false;
-                        if(canGoImmersive() == false)
+                        if (canGoImmersive() == false)
                             openOptionsMenu();
                     }
                 })
@@ -665,9 +666,26 @@ public class IOBoardActivity extends Activity {
     }
 
     private Boolean canGoImmersive() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             return true;
         return false;
+    }
+
+    private void showHintAlert() {
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.welcome))
+                .setMessage(getString(R.string.welcome_text))
+                .setPositiveButton(getResources().getString(R.string.continue_string), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mUILocked = false;
+                        mIsEditing = true;
+                        openOptionsMenu();
+                    }
+                })
+                .setCancelable(false)
+                .create()
+                .show();
     }
 
 }
