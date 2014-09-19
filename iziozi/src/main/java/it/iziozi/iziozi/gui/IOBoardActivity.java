@@ -25,7 +25,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -242,9 +241,16 @@ public class IOBoardActivity extends Activity {
                 LayoutParams btnContainerParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.f);
                 btnContainer.setLayoutParams(btnContainerParams);
                 btnContainer.setOrientation(LinearLayout.VERTICAL);
-                /*Random color = new Random();
-                btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));*/
+/*
+                btnContainer.setPadding(2,2,2,2);
+*/
+                btnContainer.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_bg));
+/*
+                Random color = new Random();
+                btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));
+*/
                 homeRow.addView(btnContainer);
+
 
                 final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(this);
                 imgButton.setmContext(this);
@@ -364,7 +370,9 @@ public class IOBoardActivity extends Activity {
 
     @Override
     protected void onResume() {
+/*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+*/
         super.onResume();
     }
 

@@ -21,18 +21,26 @@
 
 package it.iziozi.iziozi.gui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SearchView;
@@ -40,7 +48,15 @@ import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+
 import it.iziozi.iziozi.R;
+import it.iziozi.iziozi.core.IOApplication;
 import it.iziozi.iziozi.core.IODatabaseHelper;
 
 
@@ -49,6 +65,9 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     public final static String IMAGE_FILE = "image_file";
     public final static String IMAGE_TITLE = "image_title";
     public final static String IMAGE_URL = "image_url";
+
+    private final static int IMAGE_CAMERA_PICK_INTENT = 101;
+    private final static int IMAGE_GALLERY_PICK_INTENT = 100;
 
     private SearchView mSearchView;
     private ImageButton mImageButton;
@@ -60,17 +79,19 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     private String mImageText;
     private String mImageUrl;
 
+    private File mFileDir, mDestinationFile, mFile;
+    private String cameraFile = null;
+
     private int mButtonIndex;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
 
         Bundle extras = getIntent().getExtras();
 
-        if(extras != null)
-        {
+        if (extras != null) {
             mImageTitle = extras.getString(IOBoardActivity.BUTTON_TITLE);
             mImageFile = extras.getString(IOBoardActivity.BUTTON_IMAGE_FILE);
             mImageText = extras.getString(IOBoardActivity.BUTTON_TEXT);
@@ -79,21 +100,21 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         }
 
         mButtonIndex = getIntent().getExtras().getInt(IOBoardActivity.BUTTON_INDEX);
-		
-		setContentView(R.layout.create_button_activity_layout);
+
+        setContentView(R.layout.create_button_activity_layout);
 
         mImageButton = (ImageButton) findViewById(R.id.CreateButtonImageBtn);
         mTitleText = (EditText) findViewById(R.id.CreateButtonTitleText);
         mTextText = (EditText) findViewById(R.id.CreateButtonTextText);
         mTapHereTextView = (TextView) findViewById(R.id.CreateButtonTapLabel);
 
-        if(mImageTitle != null)
+        if (mImageTitle != null)
             mTitleText.setText(mImageTitle);
 
-        if(mImageText != null)
+        if (mImageText != null)
             mTextText.setText(mImageText);
 
-        if(mImageFile != null && mImageFile.length() > 0) {
+        if (mImageFile != null && mImageFile.length() > 0) {
             mImageButton.setImageBitmap(BitmapFactory.decodeFile(mImageFile));
             mTapHereTextView.setVisibility(View.INVISIBLE);
         }
@@ -102,7 +123,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork == null) {
-             new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setCancelable(true)
                     .setTitle(getString(R.string.warning))
                     .setMessage(getString(R.string.data_connection_needed))
@@ -123,16 +144,14 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         String pictoUrl = extras.getString(IMAGE_URL);
         String pictoTitle = extras.getString(IMAGE_TITLE);
 
-        if(pictoFile != null)
-        {
+        if (pictoFile != null) {
             mImageFile = pictoFile;
 
             mImageButton.setImageBitmap(BitmapFactory.decodeFile(pictoFile));
             mTapHereTextView.setVisibility(View.INVISIBLE);
         }
 
-        if(pictoUrl != null)
-        {
+        if (pictoUrl != null) {
             mImageUrl = pictoUrl;
         }
 
@@ -145,7 +164,9 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     protected void onResume() {
         super.onResume();
 
+/*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+*/
 
     }
 
@@ -165,7 +186,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(! hasFocus)
+                if (!hasFocus)
                     mSearchView.setIconified(true);
             }
         });
@@ -175,22 +196,22 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         return true;
     }
 
-    public void doSave(View v){
+    public void doSave(View v) {
         Intent resultIntent = new Intent();
-        if(mImageFile != null)
+        if (mImageFile != null)
             resultIntent.putExtra(IOBoardActivity.BUTTON_IMAGE_FILE, mImageFile);
 
         mImageTitle = mTitleText.getText().toString();
 
-        if(mImageTitle != null && mImageTitle.length() > 0)
+        if (mImageTitle != null && mImageTitle.length() > 0)
             resultIntent.putExtra(IOBoardActivity.BUTTON_TITLE, mImageTitle);
 
         mImageText = mTextText.getText().toString();
 
-        if(mImageText != null && mImageText.length() > 0)
+        if (mImageText != null && mImageText.length() > 0)
             resultIntent.putExtra(IOBoardActivity.BUTTON_TEXT, mImageText);
 
-        if(mImageUrl != null && mImageUrl.length() > 0)
+        if (mImageUrl != null && mImageUrl.length() > 0)
             resultIntent.putExtra(IOBoardActivity.BUTTON_URL, mImageUrl);
 
         resultIntent.putExtra(IOBoardActivity.BUTTON_INDEX, mButtonIndex);
@@ -199,9 +220,179 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         finish();
     }
 
-    public void doTapOnImage(View v){
+    public void doTapOnImage(View v) {
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item);
+        adapter.add(getResources().getString(R.string.img_search));
+        adapter.add(getResources().getString(R.string.img_gallery));
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY))
+            adapter.add(getResources().getString(R.string.img_camera));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.choose))
+                .setAdapter(adapter, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("media_debug", "click on item " + which);
+                        if (which == 0)
+                            searchImage();
+                        else if (which == 1)
+                            pickFromGallery();
+                        else if(which == 2)
+                            pickFromCamera();
+
+                    }
+                }).setNegativeButton(getResources().getString(R.string.cancel), null)
+                .create().show();
+
+
+    }
+
+    private void searchImage()
+    {
         mSearchView.setIconified(false);
         mSearchView.requestFocus();
+
+    }
+
+    private void pickFromCamera() {
+
+        mFileDir = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/camera");
+        if (!mFileDir.isDirectory())
+            mFileDir.mkdirs();
+
+        mDestinationFile = new File(mFileDir, new Date().getTime() + ".jpg");
+        cameraFile = mDestinationFile.getAbsolutePath();
+        try{
+            if(!mDestinationFile.createNewFile())
+                Log.e("check", "unable to create empty file");
+
+            mFile = new File(mDestinationFile.getAbsolutePath());
+            Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mDestinationFile));
+            startActivityForResult(i,IMAGE_CAMERA_PICK_INTENT);
+
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+
+
+    }
+
+    private void pickFromGallery() {
+        Intent pickIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        pickIntent.setType("image/*");
+        startActivityForResult(pickIntent, IMAGE_GALLERY_PICK_INTENT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        Log.d("img_picker_debug", "enter with code "+resultCode +"req:"+requestCode);
+
+        if(resultCode == Activity.RESULT_OK)
+        {
+            switch (requestCode) {
+                case IMAGE_GALLERY_PICK_INTENT:
+                {
+
+                    Uri selectedImage = data.getData();
+                    Log.d("image_debug", selectedImage.toString());
+                    InputStream imageStream;
+                    try {
+                        imageStream = getContentResolver().openInputStream(selectedImage);
+                        Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                        Log.d("image_debug", "onActivityResult:"+bitmap.getWidth()+" " + bitmap.getHeight());
+                        if(bitmap.getHeight()>=2048||bitmap.getWidth()>=2048){
+                            bitmap = scaleToFill(bitmap, 1024, 1024);
+                        }
+
+                        mFileDir = new File(Environment.getExternalStorageDirectory()
+                                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/gallery");
+                        if (!mFileDir.isDirectory())
+                            mFileDir.mkdirs();
+
+                        mDestinationFile = new File(mFileDir, new Date().getTime() + ".jpg");
+
+                        FileOutputStream out = null;
+                        try {
+                            out = new FileOutputStream(mDestinationFile);
+
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            try {
+                                if (out != null) {
+                                    out.close();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
+                        mImageButton.setImageBitmap(bitmap);
+                        mImageFile = mDestinationFile.toString();
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+
+                case IMAGE_CAMERA_PICK_INTENT:
+                {
+                    if(mFile ==null){
+                        if(cameraFile!=null)
+                            mFile = new File(cameraFile);
+                        else
+                            Log.e("check", "camera file object null");
+                    }else
+                        Log.e("check", mFile.getAbsolutePath());
+                    Bitmap bitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
+                    if(bitmap.getHeight()>=2048||bitmap.getWidth()>=2048){
+                        bitmap = scaleToFill(bitmap, 1024, 1024);
+                    }
+
+                    FileOutputStream out = null;
+                    try {
+                        out = new FileOutputStream(cameraFile);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (out != null) {
+                                out.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mImageButton.setImageBitmap(bitmap);
+                    mImageFile = mFile.toString();
+
+                    break;
+                }
+
+                default:
+                    super.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+    }
+
+
+    public Bitmap scaleToFill(Bitmap b, int width, int height) {
+        float factorH = height / (float) b.getWidth();
+        float factorW = width / (float) b.getWidth();
+        float factorToUse = (factorH > factorW) ? factorW : factorH;
+        return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factorToUse), (int) (b.getHeight() * factorToUse), false);
     }
 
 

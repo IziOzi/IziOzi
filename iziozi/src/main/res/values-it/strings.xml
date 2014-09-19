@@ -28,7 +28,7 @@
     <string name="error">Errore</string>
     <string name="continue_string">Continua</string>
     <string name="c_title">Titolo:</string>
-    <string name="c_text">Testo:</string>
+    <string name="c_text">Testo da pronunciare:</string>
     <string name="s_search">Cerca</string>
 
     <!-- App specific strings -->
@@ -37,6 +37,11 @@
     <string name="rows">Righe:</string>
     <string name="cols">Colonne:</string>
     <string name="preview">Anteprima</string>
+    <string name="set_image">Imposta immagine</string>
+    <string name="img_search">Cerca sul database</string>
+    <string name="img_camera">Scatta da fotocamera</string>
+    <string name="img_gallery">Scegli dalla galleria</string>
+    <string name="choose">Scegli...</string>
     <string name="tap_for_image">Clicca qui per inserire un\'immagine!</string>
 
     <!-- TTS strings -->
