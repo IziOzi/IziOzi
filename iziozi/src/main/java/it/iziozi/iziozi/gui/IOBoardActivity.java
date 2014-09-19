@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -79,6 +80,7 @@ public class IOBoardActivity extends Activity {
     private Integer mUnlockTimeout = 5;
     private AlertDialog mUnlockAlert = null;
     private CountDownTimer mUnlockCountDown = null;
+    private Boolean mUILocked = false;
 
 
     /*
@@ -109,7 +111,7 @@ public class IOBoardActivity extends Activity {
 
         this.mDecorView = getWindow().getDecorView();
 
-        hideSystemUI();
+        lockUI();
 
         this.mDecorView.setOnSystemUiVisibilityChangeListener
                 (new View.OnSystemUiVisibilityChangeListener() {
@@ -121,57 +123,7 @@ public class IOBoardActivity extends Activity {
                         if (visibility == View.VISIBLE && IOBoardActivity.this.mUnlockAlert == null) {
                             // TODO: The system bars are visible.
 
-                            IOBoardActivity.this.mUnlockAlert = new AlertDialog.Builder(IOBoardActivity.this)
-                                    .setTitle(getResources().getString(R.string.unlock))
-                                    .setMessage(getResources().getQuantityString(R.plurals.unlock_question, IOBoardActivity.this.mUnlockTimeout.intValue(), IOBoardActivity.this.mUnlockTimeout.intValue()))
-                                    .setPositiveButton(getResources().getString(R.string.unlock), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    })
-                                    .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            hideSystemUI();
-                                        }
-                                    })
-                                    .setCancelable(false)
-                                    .create();
-
-                            IOBoardActivity.this.mUnlockAlert.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                @Override
-                                public void onDismiss(DialogInterface dialog) {
-                                    IOBoardActivity.this.mUnlockCountDown.cancel();
-                                    IOBoardActivity.this.mUnlockCountDown = null;
-                                    IOBoardActivity.this.mUnlockAlert = null;
-                                }
-                            });
-
-                            IOBoardActivity.this.mUnlockAlert.setOnShowListener(new DialogInterface.OnShowListener() {
-                                @Override
-                                public void onShow(DialogInterface dialog) {
-                                    IOBoardActivity.this.mUnlockCountDown = new CountDownTimer(1000 * IOBoardActivity.this.mUnlockTimeout, 100) {
-                                        @Override
-                                        public void onTick(long millisUntilFinished) {
-
-                                            int sVal = ((int) Math.ceil(millisUntilFinished / 1000.f));
-
-                                            IOBoardActivity.this.mUnlockAlert.setMessage(getResources().getQuantityString(R.plurals.unlock_question, sVal, sVal));
-                                        }
-
-                                        @Override
-                                        public void onFinish() {
-                                            IOBoardActivity.this.mUnlockAlert.dismiss();
-                                            hideSystemUI();
-                                        }
-                                    };
-
-                                    IOBoardActivity.this.mUnlockCountDown.start();
-                                }
-                            });
-
-                            IOBoardActivity.this.mUnlockAlert.show();
+                            showUnlockAlert();
 
 
                         } else {
@@ -278,10 +230,10 @@ public class IOBoardActivity extends Activity {
                         if (isExternalStorageReadable()) {
 
                             File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
-                            Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/")+1);
+                            Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/") + 1);
                             File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
 
-                            if ( isExternalStorageWritable() ) {
+                            if (isExternalStorageWritable()) {
 
                                 pictoFolder.mkdirs();
 
@@ -310,8 +262,7 @@ public class IOBoardActivity extends Activity {
 
                                 Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                             }
-                        }else
-                        {
+                        } else {
                             Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                         }
 
@@ -338,7 +289,9 @@ public class IOBoardActivity extends Activity {
             }
         }
 
+/*
         this.mConfig.setButtons(mButtons);
+*/
 
         return mainLayout;
     }
@@ -379,6 +332,9 @@ public class IOBoardActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+        Log.d("menu_debug", "inflating!");
+
         return true;
     }
 
@@ -386,7 +342,22 @@ public class IOBoardActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         menu.findItem(R.id.editMode).setChecked(this.mIsEditing);
-        return super.onPrepareOptionsMenu(menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+
+
+        if(mUILocked) {
+            closeOptionsMenu();
+            showUnlockAlert();
+        }
+
+
+        return super.onMenuOpened(featureId, menu);
+
     }
 
     @Override
@@ -522,7 +493,7 @@ public class IOBoardActivity extends Activity {
 
                 IOBoardActivity.this.mIsEditing = false;
 
-                hideSystemUI();
+                lockUI();
                 break;
             }
 
@@ -584,6 +555,9 @@ public class IOBoardActivity extends Activity {
                 String imageFile = extras.getString(BUTTON_IMAGE_FILE);
                 String imageUrl = extras.getString(BUTTON_URL);
 
+                while (mConfig.getButtons().size() < index)
+                    mConfig.getButtons().add(new IOSpeakableImageButton(this));
+
                 IOSpeakableImageButton button = mConfig.getButtons().get(index);
 
                 if (text != null)
@@ -597,7 +571,7 @@ public class IOBoardActivity extends Activity {
                     button.setmImageFile(imageFile);
                 }
 
-                if(imageUrl != null)
+                if (imageUrl != null)
                     button.setmUrl(imageUrl);
             }
         } else
@@ -623,6 +597,77 @@ public class IOBoardActivity extends Activity {
         return false;
     }
 
+    private void lockUI()
+    {
+        if(canGoImmersive())
+            hideSystemUI();
 
+        mUILocked = true;
+    }
+
+
+
+    private void showUnlockAlert()
+    {
+        this.mUnlockAlert = new AlertDialog.Builder(IOBoardActivity.this)
+                .setTitle(getResources().getString(R.string.unlock))
+                .setMessage(getResources().getQuantityString(R.plurals.unlock_question, IOBoardActivity.this.mUnlockTimeout.intValue(), IOBoardActivity.this.mUnlockTimeout.intValue()))
+                .setPositiveButton(getResources().getString(R.string.unlock), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mUILocked = false;
+                        if(canGoImmersive() == false)
+                            openOptionsMenu();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        lockUI();
+                    }
+                })
+                .setCancelable(false)
+                .create();
+
+        this.mUnlockAlert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                IOBoardActivity.this.mUnlockCountDown.cancel();
+                IOBoardActivity.this.mUnlockCountDown = null;
+                IOBoardActivity.this.mUnlockAlert = null;
+            }
+        });
+
+        this.mUnlockAlert.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                IOBoardActivity.this.mUnlockCountDown = new CountDownTimer(1000 * IOBoardActivity.this.mUnlockTimeout, 100) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                        int sVal = ((int) Math.ceil(millisUntilFinished / 1000.f));
+
+                        IOBoardActivity.this.mUnlockAlert.setMessage(getResources().getQuantityString(R.plurals.unlock_question, sVal, sVal));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        IOBoardActivity.this.mUnlockAlert.dismiss();
+                        lockUI();
+                    }
+                };
+
+                IOBoardActivity.this.mUnlockCountDown.start();
+            }
+        });
+
+        this.mUnlockAlert.show();
+    }
+
+    private Boolean canGoImmersive() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            return true;
+        return false;
+    }
 
 }
