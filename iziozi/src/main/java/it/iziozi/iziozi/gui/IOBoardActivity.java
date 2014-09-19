@@ -251,7 +251,7 @@ public class IOBoardActivity extends Activity {
 
                 imgButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
-                imgButton.setScaleType(ImageView.ScaleType.CENTER);
+                imgButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 imgButton.setBackgroundColor(Color.TRANSPARENT);
 
                 if (imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0) {
