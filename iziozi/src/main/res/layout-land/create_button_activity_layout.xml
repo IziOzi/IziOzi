@@ -55,7 +55,8 @@
             android:layout_below="@+id/create_preview_label"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:padding="2dp">
+            android:padding="2dp"
+            android:clickable="true">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -72,14 +73,14 @@
                 android:id="@+id/CreateButtonImageBtn"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:background="@null"
                 android:onClick="doTapOnImage"
                 android:scaleType="centerInside"
                 android:layout_below="@+id/CreateButtonTapLabel"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="0dp"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="0dp" />
+                android:layout_marginTop="0dp"
+                android:background="@null" />
 
         </RelativeLayout>
 
@@ -90,79 +91,71 @@
             android:id="@+id/button"
             android:onClick="doSave"
             android:layout_alignBottom="@+id/linearLayout"
-            android:layout_alignRight="@+id/button2"
-            android:layout_alignEnd="@+id/button2"
-            android:layout_alignLeft="@+id/button2"
-            android:layout_alignStart="@+id/button2" />
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/set_image"
-            android:id="@+id/button2"
+            android:id="@+id/CreateButtonSetImageButton"
             android:onClick="doTapOnImage"
-            android:layout_toEndOf="@+id/linearLayout"
-            android:layout_above="@+id/button"
-            android:layout_toRightOf="@+id/linearLayout"
-            android:layout_alignParentRight="true" />
+            android:layout_toStartOf="@+id/button"
+            android:layout_alignTop="@+id/button"
+            android:layout_toLeftOf="@+id/button" />
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:layout_below="@+id/relativeLayout"
-        android:layout_alignLeft="@+id/relativeLayout"
-        android:layout_alignStart="@+id/relativeLayout"
-        android:id="@+id/relativeLayout2">
-
-        <TextView
-            android:id="@+id/CreateButtonTitleLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/c_title"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <EditText
-            android:id="@+id/CreateButtonTitleText"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:layout_toEndOf="@+id/CreateButtonTitleLabel"
-            android:layout_below="@+id/CreateButtonTitleLabel"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:padding="20dp"
+            android:id="@+id/relativeLayout2"
+            android:layout_toEndOf="@+id/linearLayout"
+            android:layout_alignTop="@+id/linearLayout"
+            android:layout_toRightOf="@+id/linearLayout">
 
-        <TextView
-            android:id="@+id/CreateButtonTextLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/c_text"
-            android:layout_below="@+id/CreateButtonTitleText"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp" />
+            <EditText
+                android:id="@+id/CreateButtonTitleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_toEndOf="@+id/CreateButtonTitleLabel"
+                android:layout_below="@+id/CreateButtonTitleLabel"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-        <EditText
-            android:id="@+id/CreateButtonTextText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:layout_below="@+id/CreateButtonTextLabel"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true">
+            <TextView
+                android:id="@+id/CreateButtonTitleLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/c_title"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
+            <TextView
+                android:id="@+id/CreateButtonTextLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/c_text"
+                android:layout_below="@+id/CreateButtonTitleText"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp" />
 
-        </EditText>
-
+            <EditText
+                android:id="@+id/CreateButtonTextText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:layout_below="@+id/CreateButtonTextLabel"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
 
     </RelativeLayout>
 

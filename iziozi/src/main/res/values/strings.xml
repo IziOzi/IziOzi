@@ -27,7 +27,7 @@
     <string name="error">Error</string>
     <string name="continue_string">Continue</string>
     <string name="c_title">Title:</string>
-    <string name="c_text">Text:</string>
+    <string name="c_text">Text to be spoken:</string>
     <string name="s_search">Search</string>
 
     <!-- App specific strings -->
@@ -36,7 +36,18 @@
     <string name="rows">Rows:</string>
     <string name="cols">Cols:</string>
     <string name="preview">Preview</string>
+    <string name="set_image">Set image</string>
+    <string name="img_search">Search on database</string>
+    <string name="img_camera">Pick from camera</string>
+    <string name="choose">Choose...</string>
+    <string name="img_gallery">Pick from gallery</string>
+
     <string name="tap_for_image">Tap here to insert an image!</string>
+
+    <!-- Hint Alert-->
+    <string name="welcome">Welcome</string>
+    <string name="welcome_text">Welcome in IziOzi! To setup a new button, i\'m gonna enable the edit mode! Tap on any button to begin the configuration. When you have finished, disable the edit mode, lock the user interface in the menu and you\'re ready! To get more info, please refer to www.iziozi.org!</string>
+
 
     <!-- TTS strings -->
     <string name="tts_ready">I\'m ready to speak on your behalf!</string>

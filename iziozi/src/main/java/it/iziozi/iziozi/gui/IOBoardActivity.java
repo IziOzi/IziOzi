@@ -25,9 +25,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -80,6 +80,7 @@ public class IOBoardActivity extends Activity {
     private Integer mUnlockTimeout = 5;
     private AlertDialog mUnlockAlert = null;
     private CountDownTimer mUnlockCountDown = null;
+    private Boolean mUILocked = false;
 
 
     /*
@@ -110,84 +111,17 @@ public class IOBoardActivity extends Activity {
 
         this.mDecorView = getWindow().getDecorView();
 
-        hideSystemUI();
-
-        this.mDecorView.setOnSystemUiVisibilityChangeListener
-                (new View.OnSystemUiVisibilityChangeListener() {
-
-                    @Override
-                    public void onSystemUiVisibilityChange(int visibility) {
-                        // Note that system bars will only be "visible" if none of the
-                        // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
-                        if (visibility == View.VISIBLE && IOBoardActivity.this.mUnlockAlert == null) {
-                            // TODO: The system bars are visible.
-
-                            IOBoardActivity.this.mUnlockAlert = new AlertDialog.Builder(IOBoardActivity.this)
-                                    .setTitle(getResources().getString(R.string.unlock))
-                                    .setMessage(getResources().getQuantityString(R.plurals.unlock_question, IOBoardActivity.this.mUnlockTimeout.intValue(), IOBoardActivity.this.mUnlockTimeout.intValue()))
-                                    .setPositiveButton(getResources().getString(R.string.unlock), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    })
-                                    .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            hideSystemUI();
-                                        }
-                                    })
-                                    .setCancelable(false)
-                                    .create();
-
-                            IOBoardActivity.this.mUnlockAlert.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                @Override
-                                public void onDismiss(DialogInterface dialog) {
-                                    IOBoardActivity.this.mUnlockCountDown.cancel();
-                                    IOBoardActivity.this.mUnlockCountDown = null;
-                                    IOBoardActivity.this.mUnlockAlert = null;
-                                }
-                            });
-
-                            IOBoardActivity.this.mUnlockAlert.setOnShowListener(new DialogInterface.OnShowListener() {
-                                @Override
-                                public void onShow(DialogInterface dialog) {
-                                    IOBoardActivity.this.mUnlockCountDown = new CountDownTimer(1000 * IOBoardActivity.this.mUnlockTimeout, 100) {
-                                        @Override
-                                        public void onTick(long millisUntilFinished) {
-
-                                            int sVal = ((int) Math.ceil(millisUntilFinished / 1000.f));
-
-                                            IOBoardActivity.this.mUnlockAlert.setMessage(getResources().getQuantityString(R.plurals.unlock_question, sVal, sVal));
-                                        }
-
-                                        @Override
-                                        public void onFinish() {
-                                            IOBoardActivity.this.mUnlockAlert.dismiss();
-                                            hideSystemUI();
-                                        }
-                                    };
-
-                                    IOBoardActivity.this.mUnlockCountDown.start();
-                                }
-                            });
-
-                            IOBoardActivity.this.mUnlockAlert.show();
-
-
-                        } else {
-                            // TODO: The system bars are NOT visible.
-                        }
-                    }
-                });
-
 
         this.mConfig = IOConfiguration.getSavedConfiguration();
 
-        if (this.mConfig == null)
+        if (this.mConfig == null) {
             this.mConfig = new IOConfiguration(this);
-        else
+            showHintAlert();
+        } else {
+
+            lockUI();
             this.mConfig.setContext(this);
+        }
 
         createView();
 
@@ -203,6 +137,26 @@ public class IOBoardActivity extends Activity {
                 mCanSpeak = true;
             }
         });
+
+        this.mDecorView.setOnSystemUiVisibilityChangeListener
+                (new View.OnSystemUiVisibilityChangeListener() {
+
+                    @Override
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        // Note that system bars will only be "visible" if none of the
+                        // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+                        if (visibility == View.VISIBLE && IOBoardActivity.this.mUnlockAlert == null) {
+                            // TODO: The system bars are visible.
+                            if(mUILocked && !mIsEditing && canGoImmersive())
+                                showUnlockAlert();
+
+
+                        } else {
+                            // TODO: The system bars are NOT visible.
+                        }
+                    }
+                });
+
 
     }
 
@@ -242,9 +196,16 @@ public class IOBoardActivity extends Activity {
                 LayoutParams btnContainerParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.f);
                 btnContainer.setLayoutParams(btnContainerParams);
                 btnContainer.setOrientation(LinearLayout.VERTICAL);
-                /*Random color = new Random();
-                btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));*/
+/*
+                btnContainer.setPadding(2,2,2,2);
+*/
+                btnContainer.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_bg));
+/*
+                Random color = new Random();
+                btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));
+*/
                 homeRow.addView(btnContainer);
+
 
                 final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(this);
                 imgButton.setmContext(this);
@@ -272,10 +233,10 @@ public class IOBoardActivity extends Activity {
                         if (isExternalStorageReadable()) {
 
                             File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
-                            Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/")+1);
+                            Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/") + 1);
                             File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
 
-                            if ( isExternalStorageWritable() ) {
+                            if (isExternalStorageWritable()) {
 
                                 pictoFolder.mkdirs();
 
@@ -304,8 +265,7 @@ public class IOBoardActivity extends Activity {
 
                                 Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                             }
-                        }else
-                        {
+                        } else {
                             Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                         }
 
@@ -332,7 +292,13 @@ public class IOBoardActivity extends Activity {
             }
         }
 
-        this.mConfig.setButtons(mButtons);
+        this.mConfig.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);
+       /* while (this.mConfig.getButtons().size() < (mConfig.getCols() * mConfig.getRows()))
+        {
+            List<IOSpeakableImageButton> btns = mConfig.getButtons();
+            btns.add(new IOSpeakableImageButton(this));
+            mConfig.setButtons(btns);
+        }*/
 
         return mainLayout;
     }
@@ -364,13 +330,18 @@ public class IOBoardActivity extends Activity {
 
     @Override
     protected void onResume() {
+/*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+*/
         super.onResume();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+        Log.d("menu_debug", "inflating!");
+
         return true;
     }
 
@@ -378,7 +349,22 @@ public class IOBoardActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         menu.findItem(R.id.editMode).setChecked(this.mIsEditing);
-        return super.onPrepareOptionsMenu(menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+
+
+        if (mUILocked) {
+            closeOptionsMenu();
+            showUnlockAlert();
+        }
+
+
+        return super.onMenuOpened(featureId, menu);
+
     }
 
     @Override
@@ -514,7 +500,7 @@ public class IOBoardActivity extends Activity {
 
                 IOBoardActivity.this.mIsEditing = false;
 
-                hideSystemUI();
+                lockUI();
                 break;
             }
 
@@ -589,7 +575,7 @@ public class IOBoardActivity extends Activity {
                     button.setmImageFile(imageFile);
                 }
 
-                if(imageUrl != null)
+                if (imageUrl != null)
                     button.setmUrl(imageUrl);
             }
         } else
@@ -615,6 +601,91 @@ public class IOBoardActivity extends Activity {
         return false;
     }
 
+    private void lockUI() {
+        if (canGoImmersive())
+            hideSystemUI();
 
+        mUILocked = true;
+    }
+
+
+    private void showUnlockAlert() {
+        this.mUnlockAlert = new AlertDialog.Builder(IOBoardActivity.this)
+                .setTitle(getResources().getString(R.string.unlock))
+                .setMessage(getResources().getQuantityString(R.plurals.unlock_question, IOBoardActivity.this.mUnlockTimeout.intValue(), IOBoardActivity.this.mUnlockTimeout.intValue()))
+                .setPositiveButton(getResources().getString(R.string.unlock), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mUILocked = false;
+                        if (canGoImmersive() == false)
+                            openOptionsMenu();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        lockUI();
+                    }
+                })
+                .setCancelable(false)
+                .create();
+
+        this.mUnlockAlert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                IOBoardActivity.this.mUnlockCountDown.cancel();
+                IOBoardActivity.this.mUnlockCountDown = null;
+                IOBoardActivity.this.mUnlockAlert = null;
+            }
+        });
+
+        this.mUnlockAlert.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                IOBoardActivity.this.mUnlockCountDown = new CountDownTimer(1000 * IOBoardActivity.this.mUnlockTimeout, 100) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                        int sVal = ((int) Math.ceil(millisUntilFinished / 1000.f));
+
+                        IOBoardActivity.this.mUnlockAlert.setMessage(getResources().getQuantityString(R.plurals.unlock_question, sVal, sVal));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        IOBoardActivity.this.mUnlockAlert.dismiss();
+                        lockUI();
+                    }
+                };
+
+                IOBoardActivity.this.mUnlockCountDown.start();
+            }
+        });
+
+        this.mUnlockAlert.show();
+    }
+
+    private Boolean canGoImmersive() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            return true;
+        return false;
+    }
+
+    private void showHintAlert() {
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.welcome))
+                .setMessage(getString(R.string.welcome_text))
+                .setPositiveButton(getResources().getString(R.string.continue_string), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mUILocked = false;
+                        mIsEditing = true;
+                        openOptionsMenu();
+                    }
+                })
+                .setCancelable(false)
+                .create()
+                .show();
+    }
 
 }
