@@ -23,6 +23,7 @@ package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -32,6 +33,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +52,8 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
+import com.neurosky.thinkgear.TGDevice;
+import com.neurosky.thinkgear.TGEegPower;
 
 import org.apache.http.Header;
 
@@ -105,6 +109,14 @@ public class IOBoardActivity extends Activity {
     private Runnable scanModeRunnable = null;
     private long mScanModeDelay = 3000;
 
+    /*
+    * Neurosky Mindwave support for blink detection
+    * */
+    private TGDevice tgDevice;
+    private BluetoothAdapter btAdapter;
+
+
+
     public static final int CREATE_BUTTON_CODE = 8001;
 
     public static final String BUTTON_IMAGE_FILE = "button_image_file";
@@ -135,6 +147,16 @@ public class IOBoardActivity extends Activity {
         }
 
         createView();
+
+        /*
+        * Neurosky Mindwave support
+        * */
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (btAdapter != null) {
+            tgDevice = new TGDevice(btAdapter, handler);
+        }
+
+
 
         this.tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -719,6 +741,13 @@ public class IOBoardActivity extends Activity {
             return;
 
         lockUI();
+        mIsEditing = false;
+
+        /*
+        * Neurosky Mindwave support
+        * */
+        tgDevice.connect(true);
+
 
         scanModeHandler = new Handler();
 
@@ -771,9 +800,67 @@ public class IOBoardActivity extends Activity {
         scanModeHandler.removeCallbacks(scanModeRunnable);
         scanModeHandler = null;
         scanModeRunnable = null;
+        tgDevice.close();
         createView();
     }
 
+/*
+* Neurosky Mindwave support
+* */
 
 
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case TGDevice.MSG_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case TGDevice.STATE_IDLE:
+                            break;
+
+
+                        case TGDevice.STATE_CONNECTING:
+                            break;
+                        case TGDevice.STATE_CONNECTED:
+                            tgDevice.start();
+                            break;
+                        case TGDevice.STATE_DISCONNECTED:
+                            break;
+                        case TGDevice.STATE_NOT_FOUND:
+                        case TGDevice.STATE_NOT_PAIRED:
+                        default:
+                            break;
+                    }
+                    break;
+                case TGDevice.MSG_POOR_SIGNAL:
+/*
+                    Log.v("HelloEEG", "PoorSignal: " + msg.arg1);
+*/
+                    break;
+                case TGDevice.MSG_ATTENTION:
+/*
+                    Log.v("HelloEEG", "Attention: " + msg.arg1);
+*/
+                    break;
+                case TGDevice.MSG_RAW_DATA:
+                    int rawValue = msg.arg1;
+                    break;
+                case TGDevice.MSG_EEG_POWER:
+                    TGEegPower ep = (TGEegPower) msg.obj;
+/*
+                    Log.v("HelloEEG", "Delta: " + ep.delta);
+*/
+                    break;
+                case TGDevice.MSG_BLINK:
+                    Toast.makeText(getApplicationContext(),"blink!",Toast.LENGTH_SHORT).show();
+                    Log.v("HelloEEG", "blink!: " + msg.arg1);
+                    IOSpeakableImageButton actualButton = mConfig.getButtons().get(mActualScanIndex);
+                    actualButton.callOnClick();
+
+
+                default:
+                    break;
+            }
+        }
+    };
 }
