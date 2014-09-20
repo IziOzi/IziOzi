@@ -31,6 +31,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -93,6 +95,15 @@ public class IOBoardActivity extends Activity {
     * Interface widgets
     * */
     private AlertDialog mAlertDialog;
+
+    /*
+    * Scan Mode vars
+    * */
+    private Boolean isScanMode = false;
+    private int mActualScanIndex = 0;
+    private Handler scanModeHandler = null;
+    private Runnable scanModeRunnable = null;
+    private long mScanModeDelay = 3000;
 
     public static final int CREATE_BUTTON_CODE = 8001;
 
@@ -349,6 +360,7 @@ public class IOBoardActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         menu.findItem(R.id.editMode).setChecked(this.mIsEditing);
+        menu.findItem(R.id.scanMode).setChecked(isScanMode);
 
         return true;
     }
@@ -473,6 +485,19 @@ public class IOBoardActivity extends Activity {
 
                 if (!IOBoardActivity.this.mIsEditing)
                     IOBoardActivity.this.mConfig.save();
+
+                break;
+            }
+
+            case R.id.scanMode: {
+                Log.d("options menu", "scan mode selected");
+                item.setChecked(!item.isChecked());
+                isScanMode = item.isChecked();
+
+                if (isScanMode)
+                    startScanMode();
+                else
+                    stopScanMode();
 
                 break;
             }
@@ -687,5 +712,68 @@ public class IOBoardActivity extends Activity {
                 .create()
                 .show();
     }
+
+    private void startScanMode()
+    {
+        if(scanModeHandler != null)
+            return;
+
+        lockUI();
+
+        scanModeHandler = new Handler();
+
+        mActualScanIndex = 0;
+        highlightButtonAtIndex(mActualScanIndex);
+        scanModeRunnable = new Runnable() {
+            @Override
+            public void run() {
+
+                highlightButtonAtIndex(mActualScanIndex + 1);
+
+                scanModeHandler.postDelayed(this, mScanModeDelay);
+
+            }
+        };
+
+        scanModeHandler.postDelayed(scanModeRunnable, mScanModeDelay);
+    }
+
+    private void highlightButtonAtIndex(int index)
+    {
+
+        int scanModeMaxIndex = mConfig.getCols() * mConfig.getRows();
+        index = mod(index,scanModeMaxIndex);
+        int scanModePrevIndex = mod(index - 1, scanModeMaxIndex);
+
+        IOSpeakableImageButton button = mConfig.getButtons().get(index);
+        ViewParent parentView = button.getParent();
+        ViewGroup pView = (ViewGroup) parentView;
+        pView.setBackgroundDrawable(getResources().getDrawable(R.drawable.scanmode_border_bg));
+
+        IOSpeakableImageButton prevbutton = mConfig.getButtons().get(scanModePrevIndex);
+        parentView = prevbutton.getParent();
+        pView = (ViewGroup) parentView;
+        pView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_bg));
+
+        mActualScanIndex = index;
+
+    }
+
+    private int mod(int x, int y)
+    {
+        int result = x % y;
+        return result < 0? result + y : result;
+    }
+
+    private void stopScanMode()
+    {
+        isScanMode = false;
+        scanModeHandler.removeCallbacks(scanModeRunnable);
+        scanModeHandler = null;
+        scanModeRunnable = null;
+        createView();
+    }
+
+
 
 }

@@ -57,6 +57,7 @@
     <!-- Actions strings -->
     <string name="settings">Impostazioni</string>
     <string name="edit_mode">Modalità di modifica</string>
+    <string name="scan_mode">Modalità a scansione</string>
     <string name="save">Salva</string>
     <string name="about">Informazioni</string>
     <string name="exit">Esci</string>
