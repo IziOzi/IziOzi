@@ -58,6 +58,9 @@ public class IOConfiguration {
     @Attribute
     private Integer cols = 3;
 
+    @Attribute
+    private Boolean showBorders = true;
+
     @ElementList(inline = true, required = false)
     private List<IOSpeakableImageButton> mButtons;
 
@@ -92,6 +95,14 @@ public class IOConfiguration {
 
     public void setCols(Integer mCols) {
         this.cols = mCols;
+    }
+
+    public Boolean getShowBorders() {
+        return showBorders;
+    }
+
+    public void setShowBorders(Boolean showBorders) {
+        this.showBorders = showBorders;
     }
 
     public void setContext(Context context) {

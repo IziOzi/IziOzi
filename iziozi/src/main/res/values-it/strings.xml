@@ -24,18 +24,24 @@
 
     <!-- Generic strings -->
     <string name="apply">Applica</string>
-    <string name="cancel">Cancella</string>
+    <string name="cancel">Annulla</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="confirm">Conferma</string>
     <string name="error">Errore</string>
     <string name="continue_string">Continua</string>
     <string name="c_title">Titolo:</string>
     <string name="c_text">Testo da pronunciare:</string>
     <string name="s_search">Cerca</string>
+    <string name="manage_medias">Gestisci files</string>
+
 
     <!-- App specific strings -->
     <string name="app_name">IziOzi</string>
     <string name="btn_inserttext">Inserire il testo da pronunciare:</string>
     <string name="rows">Righe:</string>
     <string name="cols">Colonne:</string>
+    <string name="show_borders">Mostra margini</string>
     <string name="preview">Anteprima</string>
     <string name="set_image">Imposta immagine</string>
     <string name="img_search">Cerca sul database</string>
@@ -101,5 +107,12 @@
     <string name="unexpected_response">Oggetto non riconosciuto, contattare gli sviluppatori se possibile!</string>
     <string name="request_error">Errore sulla richiesta, contattare gli sviluppatori se possibile!</string>
     <string name="image_download_title">Download dell\'immagine ...</string>
+    <string name="file_delete_warning">Sei sicuro di voler cancellare il file %s?</string>
+    <string name="insert_new_name">Inserisci il nuovo nome:</string>
+    <string name="now_recording">Stiamo registrando!</string>
+    <string name="tap_to_stop_recording">Tocca lo schermo per terminare!</string>
+    <string name="audio_file">File Audio: </string>
+    <string name="no_audio_file">Nessun file audio associato</string>
+
 
 </resources>

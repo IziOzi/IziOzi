@@ -22,7 +22,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/textView1"
@@ -84,5 +85,25 @@
         android:layout_alignParentRight="true"
         android:text="Row"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bordersCheckbox"
+        android:checked="false"
+        android:layout_alignTop="@+id/recordingTextView"
+        android:layout_alignRight="@+id/numColsLbl"
+        android:layout_alignEnd="@+id/numColsLbl" />
+
+    <TextView
+        android:id="@+id/recordingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_borders"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/TextView01"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="25dp" />
 
 </RelativeLayout>

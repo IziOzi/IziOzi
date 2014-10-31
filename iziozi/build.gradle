@@ -26,13 +26,13 @@ android {
         IziOzi {
         }
     }
-    compileSdkVersion 19
+    compileSdkVersion 21
     buildToolsVersion '20.0.0'
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 20140919
-        versionName "1.1"
+        versionName '1.1'
         signingConfig signingConfigs.IziOzi
     }
     buildTypes {
@@ -53,9 +53,10 @@ dependencies {
     //chromecast support
     //compile 'com.google.android.gms:play-services:4.3.23'
     //compile 'com.android.support:support-v7-mediarouter:19.0.0'
-    compile 'com.android.support:support-v4:19.0.0'
-    compile 'com.android.support:appcompat-v7:19.+'
+    compile 'com.android.support:support-v4:21.0.0'
+    compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile files('libs/ThinkGear.jar')
+    compile 'com.joanzapata.android:android-iconify:1.0.6'
 }

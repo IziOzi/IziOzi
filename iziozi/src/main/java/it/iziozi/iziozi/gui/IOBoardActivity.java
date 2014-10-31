@@ -28,6 +28,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -43,6 +44,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -58,6 +60,7 @@ import com.neurosky.thinkgear.TGEegPower;
 import org.apache.http.Header;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -116,7 +119,6 @@ public class IOBoardActivity extends Activity {
     private BluetoothAdapter btAdapter;
 
 
-
     public static final int CREATE_BUTTON_CODE = 8001;
 
     public static final String BUTTON_IMAGE_FILE = "button_image_file";
@@ -124,6 +126,7 @@ public class IOBoardActivity extends Activity {
     public static final String BUTTON_TEXT = "button_text";
     public static final String BUTTON_INDEX = "button_index";
     public static final String BUTTON_URL = "button_url";
+    public static final String BUTTON_AUDIO_FILE = "button_audio_file";
 
     int newRows, newCols;
 
@@ -232,7 +235,9 @@ public class IOBoardActivity extends Activity {
 /*
                 btnContainer.setPadding(2,2,2,2);
 */
+/*
                 btnContainer.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_bg));
+*/
 /*
                 Random color = new Random();
                 btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));
@@ -242,11 +247,12 @@ public class IOBoardActivity extends Activity {
 
                 final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(this);
                 imgButton.setmContext(this);
-
+                imgButton.setShowBorder(mConfig.getShowBorders());
                 imgButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
                 imgButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 imgButton.setBackgroundColor(Color.TRANSPARENT);
+
 
                 if (imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0) {
 
@@ -345,11 +351,36 @@ public class IOBoardActivity extends Activity {
             cIntent.putExtra(BUTTON_TEXT, spkBtn.getSentence());
             cIntent.putExtra(BUTTON_TITLE, spkBtn.getmTitle());
             cIntent.putExtra(BUTTON_IMAGE_FILE, spkBtn.getmImageFile());
+            cIntent.putExtra(BUTTON_AUDIO_FILE, spkBtn.getAudioFile());
 
             startActivityForResult(cIntent, CREATE_BUTTON_CODE);
 
         } else {
-            if (mCanSpeak) {
+
+            if(spkBtn.getAudioFile() != null && spkBtn.getAudioFile().length() > 0)
+            {
+
+                final MediaPlayer mPlayer = new MediaPlayer();
+                try {
+                    mPlayer.setDataSource(spkBtn.getAudioFile());
+                    mPlayer.prepare();
+
+                    mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mPlayer.release();
+
+                        }
+                    });
+
+                    mPlayer.start();
+
+
+                } catch (IOException e) {
+                    Log.e("playback_debug", "prepare() failed");
+                }
+            }
+            else if (mCanSpeak) {
                 Log.d("speakable_debug", "should say: " + spkBtn.getSentence());
                 if (spkBtn.getSentence() == "")
                     tts.speak(getResources().getString(R.string.tts_nosentence), TextToSpeech.QUEUE_FLUSH, null);
@@ -414,6 +445,10 @@ public class IOBoardActivity extends Activity {
                 Integer rows = this.mConfig.getRows();
                 Integer columns = this.mConfig.getCols();
 
+                final CheckBox bordersCheckbox = (CheckBox) layoutView.findViewById(R.id.bordersCheckbox);
+
+                bordersCheckbox.setChecked(mConfig.getShowBorders());
+
                 builder.setTitle(getResources().getString(R.string.settings))
                         .setView(layoutView)
                         .setPositiveButton(getResources().getString(R.string.apply), new DialogInterface.OnClickListener() {
@@ -428,6 +463,8 @@ public class IOBoardActivity extends Activity {
                                 IOBoardActivity.this.mConfig.setCols(newCols);
                                 IOBoardActivity.this.mConfig.setRows(newRows);
 
+                                IOBoardActivity.this.mConfig.setShowBorders(bordersCheckbox.isChecked());
+
                                 createView();
                             }
                         })
@@ -440,6 +477,7 @@ public class IOBoardActivity extends Activity {
 
                 SeekBar sRows = (SeekBar) layoutView.findViewById(R.id.seekRows);
                 SeekBar sCols = (SeekBar) layoutView.findViewById(R.id.seekCols);
+
 
                 final TextView rowsLbl = (TextView) layoutView.findViewById(R.id.numRowsLbl);
                 final TextView colsLbl = (TextView) layoutView.findViewById(R.id.numColsLbl);
@@ -608,6 +646,7 @@ public class IOBoardActivity extends Activity {
                 String text = extras.getString(BUTTON_TEXT);
                 String imageFile = extras.getString(BUTTON_IMAGE_FILE);
                 String imageUrl = extras.getString(BUTTON_URL);
+                String audioFile = extras.getString(BUTTON_AUDIO_FILE);
 
                 IOSpeakableImageButton button = mConfig.getButtons().get(index);
 
@@ -624,6 +663,8 @@ public class IOBoardActivity extends Activity {
 
                 if (imageUrl != null)
                     button.setmUrl(imageUrl);
+
+                button.setAudioFile(audioFile);
             }
         } else
             super.onActivityResult(requestCode, resultCode, data);
@@ -803,6 +844,8 @@ public class IOBoardActivity extends Activity {
         tgDevice.close();
         createView();
     }
+
+
 
 /*
 * Neurosky Mindwave support
