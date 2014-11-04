@@ -24,6 +24,7 @@ package it.iziozi.iziozi.core;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
@@ -51,6 +52,8 @@ import it.iziozi.iziozi.R;
 
 @Root(name = "IOBoard")
 public class IOBoard {
+
+    public static final String IO_LAST_BOARD_USED = "last_board_used";
 
     Context context;
 
@@ -153,6 +156,10 @@ public class IOBoard {
 
         try {
             serializer.write(this, file);
+
+            SharedPreferences.Editor preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE).edit();
+            preferences.putString(IO_LAST_BOARD_USED, fileName+".xml");
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("XmlConfig", "Error writing xml");
@@ -179,7 +186,11 @@ public class IOBoard {
         if (!dirFile.exists())
             dirFile.mkdirs();
 
-        File file = new File(dirFile.toString(),"config.xml");
+        SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
+
+        String lastBoard = preferences.getString(IO_LAST_BOARD_USED, "config.xml");
+
+        File file = new File(dirFile.toString(),lastBoard);
 
         IOBoard config = null;
 
@@ -209,6 +220,11 @@ public class IOBoard {
 
         try {
             config = serializer.read(IOBoard.class, file);
+
+            SharedPreferences.Editor preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE).edit();
+            preferences.putString(IO_LAST_BOARD_USED, fileName);
+
+
         } catch (Exception e) {
             Log.w("XmlSeializer", "Unable to read config.xml");
             Log.d("XmlSerializer", ""+ IOApplication.CONTEXT.getFilesDir());

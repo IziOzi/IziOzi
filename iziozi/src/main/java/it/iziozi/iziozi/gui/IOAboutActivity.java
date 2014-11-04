@@ -23,7 +23,6 @@ package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -44,7 +43,9 @@ public class IOAboutActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+/*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+*/
 
     }
 
