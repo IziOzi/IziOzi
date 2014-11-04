@@ -27,5 +27,7 @@ package it.iziozi.iziozi.core;
 public class IOGlobalConfiguration {
 
     public static Boolean isEditing = false;
+    public static Boolean isScanMode = false;
+
 
 }

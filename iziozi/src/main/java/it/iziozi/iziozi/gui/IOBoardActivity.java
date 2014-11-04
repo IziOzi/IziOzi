@@ -42,8 +42,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -100,7 +98,6 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
     /*
     * Scan Mode vars
     * */
-    private Boolean isScanMode = false;
     private int mActualScanIndex = 0;
     private Handler scanModeHandler = null;
     private Runnable scanModeRunnable = null;
@@ -268,39 +265,45 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
 
         } else {
 
-            if (spkBtn.getAudioFile() != null && spkBtn.getAudioFile().length() > 0) {
-
-                final MediaPlayer mPlayer = new MediaPlayer();
-                try {
-                    mPlayer.setDataSource(spkBtn.getAudioFile());
-                    mPlayer.prepare();
-
-                    mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            mPlayer.release();
-
-                        }
-                    });
-
-                    mPlayer.start();
-
-
-                } catch (IOException e) {
-                    Log.e("playback_debug", "prepare() failed");
-                }
-            } else if (mCanSpeak) {
-                Log.d("speakable_debug", "should say: " + spkBtn.getSentence());
-                if (spkBtn.getSentence() == "")
-                    tts.speak(getResources().getString(R.string.tts_nosentence), TextToSpeech.QUEUE_FLUSH, null);
-                else
-                    tts.speak(spkBtn.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
+            if (IOGlobalConfiguration.isScanMode) {
+                IOSpeakableImageButton actualButton = mActiveConfig.getButtons().get(mActualScanIndex);
+                actualButton.callOnClick();
             } else {
-                Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
-            }
 
-            if (spkBtn.getIsMatrioska() && null != spkBtn.getInnerBoard()) {
-                pushBoard(spkBtn.getInnerBoard(), level + 1);
+                if (spkBtn.getAudioFile() != null && spkBtn.getAudioFile().length() > 0) {
+
+                    final MediaPlayer mPlayer = new MediaPlayer();
+                    try {
+                        mPlayer.setDataSource(spkBtn.getAudioFile());
+                        mPlayer.prepare();
+
+                        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                mPlayer.release();
+
+                            }
+                        });
+
+                        mPlayer.start();
+
+
+                    } catch (IOException e) {
+                        Log.e("playback_debug", "prepare() failed");
+                    }
+                } else if (mCanSpeak) {
+                    Log.d("speakable_debug", "should say: " + spkBtn.getSentence());
+                    if (spkBtn.getSentence() == "")
+                        tts.speak(getResources().getString(R.string.tts_nosentence), TextToSpeech.QUEUE_FLUSH, null);
+                    else
+                        tts.speak(spkBtn.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
+                }
+
+                if (spkBtn.getIsMatrioska() && null != spkBtn.getInnerBoard()) {
+                    pushBoard(spkBtn.getInnerBoard(), level + 1);
+                }
             }
         }
     }
@@ -331,7 +334,7 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         menu.findItem(R.id.editMode).setChecked(IOGlobalConfiguration.isEditing);
-        menu.findItem(R.id.scanMode).setChecked(isScanMode);
+        menu.findItem(R.id.scanMode).setChecked(IOGlobalConfiguration.isScanMode);
 
         return true;
     }
@@ -462,9 +465,8 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                 item.setChecked(!item.isChecked());
                 IOGlobalConfiguration.isEditing = item.isChecked();
 
-                if (!IOGlobalConfiguration.isEditing)
-                {
-                    if(null == mActualConfigName)
+                if (!IOGlobalConfiguration.isEditing) {
+                    if (null == mActualConfigName)
                         IOBoardActivity.this.mActiveConfig.save();
                     else
                         IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
@@ -478,9 +480,9 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
             case R.id.scanMode: {
                 Log.d("options menu", "scan mode selected");
                 item.setChecked(!item.isChecked());
-                isScanMode = item.isChecked();
+                IOGlobalConfiguration.isScanMode = item.isChecked();
 
-                if (isScanMode)
+                if (IOGlobalConfiguration.isScanMode)
                     startScanMode();
                 else
                     stopScanMode();
@@ -654,7 +656,6 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                 .attach(fragment)
                 .commit();
     }
-
 
     // This snippet hides the system bars.
     private void hideSystemUI() {
@@ -858,14 +859,12 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
         int scanModePrevIndex = mod(index - 1, scanModeMaxIndex);
 
         IOSpeakableImageButton button = mActiveConfig.getButtons().get(index);
-        ViewParent parentView = button.getParent();
-        ViewGroup pView = (ViewGroup) parentView;
-        pView.setBackgroundDrawable(getResources().getDrawable(R.drawable.scanmode_border_bg));
+        button.setIsHiglighted(true);
+        button.invalidate();
 
         IOSpeakableImageButton prevbutton = mActiveConfig.getButtons().get(scanModePrevIndex);
-        parentView = prevbutton.getParent();
-        pView = (ViewGroup) parentView;
-        pView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_bg));
+        prevbutton.setIsHiglighted(false);
+        prevbutton.invalidate();
 
         mActualScanIndex = index;
 
@@ -877,7 +876,14 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
     }
 
     private void stopScanMode() {
-        isScanMode = false;
+        IOGlobalConfiguration.isScanMode = false;
+        int scanModeMaxIndex = mActiveConfig.getCols() * mActiveConfig.getRows();
+        int index = mod(mActualScanIndex, scanModeMaxIndex);
+
+        IOSpeakableImageButton button = mActiveConfig.getButtons().get(index);
+        button.setIsHiglighted(false);
+        button.invalidate();
+
         scanModeHandler.removeCallbacks(scanModeRunnable);
         scanModeHandler = null;
         scanModeRunnable = null;

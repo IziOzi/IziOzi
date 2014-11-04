@@ -62,6 +62,7 @@ public class IOSpeakableImageButton extends ImageButton {
     @Element(required = false)
     private IOBoard mInnerBoard = null;
 
+    private Boolean mIsHiglighted = false;
 
     private Context mContext;
 
@@ -168,6 +169,14 @@ public class IOSpeakableImageButton extends ImageButton {
         this.mInnerBoard = mInnerBoard;
     }
 
+    public Boolean getIsHiglighted() {
+        return mIsHiglighted;
+    }
+
+    public void setIsHiglighted(Boolean mIsHiglighted) {
+        this.mIsHiglighted = mIsHiglighted;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -187,11 +196,11 @@ public class IOSpeakableImageButton extends ImageButton {
             final int actW = Math.round(origW * scaleX);
             final int actH = Math.round(origH * scaleY);
 
-            int borderWidth = 4;
+            int borderWidth = mIsHiglighted ? 6 : 4;
 
             Paint paint = new Paint();
-            paint.setColor(Color.BLACK);
-            paint.setStrokeWidth(2 * borderWidth);
+            paint.setColor(mIsHiglighted ? Color.RED : Color.BLACK);
+            paint.setStrokeWidth((mIsHiglighted ? 3:2) * borderWidth);
             paint.setStyle(Paint.Style.STROKE);
 
 
