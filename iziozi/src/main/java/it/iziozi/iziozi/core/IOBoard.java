@@ -24,6 +24,7 @@ package it.iziozi.iziozi.core;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Environment;
 import android.util.Log;
 
 import org.simpleframework.xml.Attribute;
@@ -48,8 +49,8 @@ import it.iziozi.iziozi.R;
  *
  */
 
-@Root(name = "SMIziOziConfiguration")
-public class IOConfiguration {
+@Root(name = "IOBoard")
+public class IOBoard {
 
     Context context;
 
@@ -64,11 +65,11 @@ public class IOConfiguration {
     @ElementList(inline = true, required = false)
     private List<IOSpeakableImageButton> mButtons;
 
-    public IOConfiguration(){
+    public IOBoard(){
 
     }
 
-    public IOConfiguration(Context ctx){
+    public IOBoard(Context ctx){
         this.mButtons = new ArrayList<IOSpeakableImageButton>();
         this.context = ctx;
     }
@@ -113,7 +114,12 @@ public class IOConfiguration {
 
         Serializer serializer = new Persister();
 
-        File file = new File(this.context.getFilesDir(),"config.xml");
+        File dirFile = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
+        if (!dirFile.exists())
+            dirFile.mkdirs();
+
+        File file = new File(dirFile.toString(),"config.xml");
 
         try {
             serializer.write(this, file);
@@ -134,15 +140,51 @@ public class IOConfiguration {
 
     }
 
+    public void saveAs(String fileName){
 
-    public static IOConfiguration getSavedConfiguration(){
         Serializer serializer = new Persister();
-        File file = new File(IOApplication.CONTEXT.getFilesDir(),"config.xml");
 
-        IOConfiguration config = null;
+        File dirFile = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
+        if (!dirFile.exists())
+            dirFile.mkdirs();
+
+        File file = new File(dirFile.toString(),fileName + ".xml");
 
         try {
-            config = serializer.read(IOConfiguration.class, file);
+            serializer.write(this, file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("XmlConfig", "Error writing xml");
+            new AlertDialog.Builder(context)
+                    .setTitle(this.context.getResources().getString(R.string.error))
+                    .setMessage(this.context.getResources().getString(R.string.xml_save_fail))
+                    .setNegativeButton(this.context.getResources().getString(R.string.continue_string), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        }
+
+    }
+
+
+    public static IOBoard getSavedConfiguration(){
+        Serializer serializer = new Persister();
+
+        File dirFile = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
+        if (!dirFile.exists())
+            dirFile.mkdirs();
+
+        File file = new File(dirFile.toString(),"config.xml");
+
+        IOBoard config = null;
+
+        try {
+            config = serializer.read(IOBoard.class, file);
         } catch (Exception e) {
             Log.w("XmlSeializer", "Unable to read config.xml");
             Log.d("XmlSerializer", ""+ IOApplication.CONTEXT.getFilesDir());
@@ -152,6 +194,31 @@ public class IOConfiguration {
         return config;
 
     }
+
+    public static IOBoard getSavedConfiguration(String fileName){
+        Serializer serializer = new Persister();
+
+        File dirFile = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
+        if (!dirFile.exists())
+            dirFile.mkdirs();
+
+        File file = new File(dirFile.toString(), fileName);
+
+        IOBoard config = null;
+
+        try {
+            config = serializer.read(IOBoard.class, file);
+        } catch (Exception e) {
+            Log.w("XmlSeializer", "Unable to read config.xml");
+            Log.d("XmlSerializer", ""+ IOApplication.CONTEXT.getFilesDir());
+            e.printStackTrace();
+        }
+
+        return config;
+
+    }
+
 
 
 }

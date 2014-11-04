@@ -119,8 +119,8 @@
             android:id="@+id/imageView"
             android:src="@drawable/logo_512"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/button"
-            android:layout_toStartOf="@+id/button"
+            android:layout_toLeftOf="@+id/editModeAlertActionPicture"
+            android:layout_toStartOf="@+id/editModeAlertActionPicture"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp" />
 
@@ -148,7 +148,7 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:text="www.iziozi.org"
-            android:id="@+id/button"
+            android:id="@+id/editModeAlertActionPicture"
             android:background="@null"
             android:onClick="openWebsite"
             android:textSize="12dp"
@@ -167,8 +167,8 @@
             android:textSize="12dp"
             android:textStyle="bold"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/button"
-            android:layout_toEndOf="@+id/button"
+            android:layout_toRightOf="@+id/editModeAlertActionPicture"
+            android:layout_toEndOf="@+id/editModeAlertActionPicture"
             android:layout_marginLeft="8dp" />
     </LinearLayout>
 

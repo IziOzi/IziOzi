@@ -23,11 +23,12 @@ package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,47 +42,44 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.neurosky.thinkgear.TGDevice;
 import com.neurosky.thinkgear.TGEegPower;
 
-import org.apache.http.Header;
-
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.core.IOApplication;
-import it.iziozi.iziozi.core.IOConfiguration;
+import it.iziozi.iziozi.core.IOBoard;
+import it.iziozi.iziozi.core.IOGlobalConfiguration;
 import it.iziozi.iziozi.core.IOSpeakableImageButton;
 
 
-public class IOBoardActivity extends Activity {
+public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoardFragmentInteractionListener {
 
 
     /*
     * Layout and configuration
     * */
-    private IOConfiguration mConfig;
-    private Boolean mIsEditing = false, mCanSpeak = false;
-    private List<LinearLayout> homeRows = new ArrayList<LinearLayout>();
-
+    private IOBoard mActiveConfig;
+    private Boolean mCanSpeak = false;
+    private FrameLayout mFragmentContainer = null;
+    private String mActualConfigName = null;
 
     /*
     * Interface Lock vars
@@ -98,10 +96,6 @@ public class IOBoardActivity extends Activity {
     private View mDecorView;
     private TextToSpeech tts;
 
-    /*
-    * Interface widgets
-    * */
-    private AlertDialog mAlertDialog;
 
     /*
     * Scan Mode vars
@@ -135,21 +129,27 @@ public class IOBoardActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_board);
+
         this.mDecorView = getWindow().getDecorView();
 
+        mFragmentContainer = (FrameLayout) findViewById(R.id.boardActivityFragmentContainer);
 
-        this.mConfig = IOConfiguration.getSavedConfiguration();
+        this.mActiveConfig = IOBoard.getSavedConfiguration();
 
-        if (this.mConfig == null) {
-            this.mConfig = new IOConfiguration(this);
+        if (this.mActiveConfig == null) {
+            this.mActiveConfig = new IOBoard(this);
             showHintAlert();
         } else {
 
             lockUI();
-            this.mConfig.setContext(this);
+            this.mActiveConfig.setContext(this);
         }
 
-        createView();
+        IOBoardFragment mainFragment = IOBoardFragment.newInstance(mActiveConfig, 0);
+        getFragmentManager().beginTransaction()
+                .add(mFragmentContainer.getId(), mainFragment)
+                .commit();
 
         /*
         * Neurosky Mindwave support
@@ -158,7 +158,6 @@ public class IOBoardActivity extends Activity {
         if (btAdapter != null) {
             tgDevice = new TGDevice(btAdapter, handler);
         }
-
 
 
         this.tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -183,7 +182,7 @@ public class IOBoardActivity extends Activity {
                         // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
                         if (visibility == View.VISIBLE && IOBoardActivity.this.mUnlockAlert == null) {
                             // TODO: The system bars are visible.
-                            if(mUILocked && !mIsEditing && canGoImmersive())
+                            if (mUILocked && !IOGlobalConfiguration.isEditing && canGoImmersive())
                                 showUnlockAlert();
 
 
@@ -196,169 +195,80 @@ public class IOBoardActivity extends Activity {
 
     }
 
+    /*
+    * OnBoardFragmentInteractionListener
+    * */
 
-    private void createView() {
-        setContentView(buildView());
-    }
+    public void tapOnSpeakableButton(final IOSpeakableImageButton spkBtn, final Integer level) {
+        if (IOGlobalConfiguration.isEditing) {
 
-    private View buildView() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
 
-        this.homeRows.clear();
-        final List<IOSpeakableImageButton> mButtons = new ArrayList<IOSpeakableImageButton>();
-        List<IOSpeakableImageButton> configButtons = this.mConfig.getButtons();
+            View layoutView = inflater.inflate(R.layout.editmode_alertview, null);
 
-        LinearLayout mainLayout = new LinearLayout(this);
-        LayoutParams mainParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        mainLayout.setLayoutParams(mainParams);
-        mainLayout.setOrientation(LinearLayout.VERTICAL);
+            builder.setTitle(getString(R.string.choose));
 
-        for (int i = 0; i < this.mConfig.getRows(); i++) {
+            builder.setView(layoutView);
 
-            LinearLayout rowLayout = new LinearLayout(this);
-            LayoutParams rowParams = new LayoutParams(LayoutParams.MATCH_PARENT, 0, 1.f);
-            rowLayout.setLayoutParams(rowParams);
-            rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-            Random color = new Random();
-            rowLayout.setBackgroundColor(Color.WHITE);
-            mainLayout.addView(rowLayout);
-            this.homeRows.add(rowLayout);
-        }
+            final AlertDialog dialog = builder.create();
 
-        for (int j = 0; j < this.homeRows.size(); j++) {
-            LinearLayout homeRow = this.homeRows.get(j);
+            Switch matrioskaSwitch = (Switch) layoutView.findViewById(R.id.editModeAlertToggleBoard);
+            Button editPictoButton = (Button) layoutView.findViewById(R.id.editModeAlertActionPicture);
+            final Button editBoardButton = (Button) layoutView.findViewById(R.id.editModeAlertActionBoard);
 
-            for (int i = 0; i < this.mConfig.getCols(); i++) {
-                LinearLayout btnContainer = new LinearLayout(this);
-                LayoutParams btnContainerParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.f);
-                btnContainer.setLayoutParams(btnContainerParams);
-                btnContainer.setOrientation(LinearLayout.VERTICAL);
-/*
-                btnContainer.setPadding(2,2,2,2);
-*/
-/*
-                btnContainer.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_bg));
-*/
-/*
-                Random color = new Random();
-                btnContainer.setBackgroundColor(Color.argb(255, color.nextInt(255), color.nextInt(255), color.nextInt(255)));
-*/
-                homeRow.addView(btnContainer);
+            matrioskaSwitch.setChecked(spkBtn.getIsMatrioska());
+            editBoardButton.setEnabled(spkBtn.getIsMatrioska());
 
-
-                final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(this);
-                imgButton.setmContext(this);
-                imgButton.setShowBorder(mConfig.getShowBorders());
-                imgButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
-                imgButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imgButton.setBackgroundColor(Color.TRANSPARENT);
-
-
-                if (imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0) {
-
-                    if (!new File(imgButton.getmImageFile()).exists()) {
-                        if (mAlertDialog == null || !mAlertDialog.isShowing()) {
-                            mAlertDialog = new AlertDialog.Builder(this)
-                                    .setCancelable(true)
-                                    .setTitle(getString(R.string.image_missing))
-                                    .setMessage(getString(R.string.image_missing_text))
-                                    .setNegativeButton(getString(R.string.continue_string), null)
-                                    .create();
-                            mAlertDialog.show();
-                        }
-
-                        //download image
-
-                        if (isExternalStorageReadable()) {
-
-                            File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
-                            Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/") + 1);
-                            File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
-
-                            if (isExternalStorageWritable()) {
-
-                                pictoFolder.mkdirs();
-
-                                //download it
-
-                                AsyncHttpClient client = new AsyncHttpClient();
-                                client.get(imgButton.getmUrl(), new FileAsyncHttpResponseHandler(new File(imgButton.getmImageFile())) {
-                                    @Override
-                                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-                                        Toast.makeText(getApplicationContext(), getString(R.string.download_error) + file.toString(), Toast.LENGTH_LONG).show();
-                                    }
-
-
-                                    @Override
-                                    public void onSuccess(int statusCode, Header[] headers, File downloadedFile) {
-
-
-                                        if (new File(imgButton.getmImageFile()).exists()) {
-                                            imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            } else {
-
-                                Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else
-                        imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
+            matrioskaSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    spkBtn.setIsMatrioska(isChecked);
+                    editBoardButton.setEnabled(isChecked);
                 }
+            });
 
-                ViewGroup parent = (ViewGroup) imgButton.getParent();
+            editPictoButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //spkBtn.showInsertDialog();
+                    Intent cIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
+                    cIntent.putExtra(BUTTON_INDEX, mActiveConfig.getButtons().indexOf(spkBtn));
 
-                if (parent != null)
-                    parent.removeAllViews();
+                    cIntent.putExtra(BUTTON_TEXT, spkBtn.getSentence());
+                    cIntent.putExtra(BUTTON_TITLE, spkBtn.getmTitle());
+                    cIntent.putExtra(BUTTON_IMAGE_FILE, spkBtn.getmImageFile());
+                    cIntent.putExtra(BUTTON_AUDIO_FILE, spkBtn.getAudioFile());
 
-                btnContainer.addView(imgButton);
-                mButtons.add(imgButton);
+                    startActivityForResult(cIntent, CREATE_BUTTON_CODE);
 
-                imgButton.setOnClickListener(new OnClickListener() {
+                    dialog.dismiss();
+                }
+            });
 
-                    @Override
-                    public void onClick(View v) {
-                        int index = mButtons.indexOf(v);
-                        tapOnSpeakableButton(mButtons.get(index));
+            editBoardButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    IOBoard nestedBoard = spkBtn.getInnerBoard();
+
+                    if (null == nestedBoard) {
+                        nestedBoard = new IOBoard(IOBoardActivity.this);
+                        spkBtn.setInnerBoard(nestedBoard);
                     }
-                });
-            }
-        }
 
-        this.mConfig.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);
-       /* while (this.mConfig.getButtons().size() < (mConfig.getCols() * mConfig.getRows()))
-        {
-            List<IOSpeakableImageButton> btns = mConfig.getButtons();
-            btns.add(new IOSpeakableImageButton(this));
-            mConfig.setButtons(btns);
-        }*/
+                    pushBoard(nestedBoard, level + 1);
 
-        return mainLayout;
-    }
+                    dialog.dismiss();
+                }
+            });
 
-    private void tapOnSpeakableButton(IOSpeakableImageButton spkBtn) {
-        if (mIsEditing) {
-            //spkBtn.showInsertDialog();
-            Intent cIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
-            cIntent.putExtra(BUTTON_INDEX, mConfig.getButtons().indexOf(spkBtn));
+            dialog.show();
 
-            cIntent.putExtra(BUTTON_TEXT, spkBtn.getSentence());
-            cIntent.putExtra(BUTTON_TITLE, spkBtn.getmTitle());
-            cIntent.putExtra(BUTTON_IMAGE_FILE, spkBtn.getmImageFile());
-            cIntent.putExtra(BUTTON_AUDIO_FILE, spkBtn.getAudioFile());
-
-            startActivityForResult(cIntent, CREATE_BUTTON_CODE);
 
         } else {
 
-            if(spkBtn.getAudioFile() != null && spkBtn.getAudioFile().length() > 0)
-            {
+            if (spkBtn.getAudioFile() != null && spkBtn.getAudioFile().length() > 0) {
 
                 final MediaPlayer mPlayer = new MediaPlayer();
                 try {
@@ -379,8 +289,7 @@ public class IOBoardActivity extends Activity {
                 } catch (IOException e) {
                     Log.e("playback_debug", "prepare() failed");
                 }
-            }
-            else if (mCanSpeak) {
+            } else if (mCanSpeak) {
                 Log.d("speakable_debug", "should say: " + spkBtn.getSentence());
                 if (spkBtn.getSentence() == "")
                     tts.speak(getResources().getString(R.string.tts_nosentence), TextToSpeech.QUEUE_FLUSH, null);
@@ -389,7 +298,16 @@ public class IOBoardActivity extends Activity {
             } else {
                 Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
             }
+
+            if (spkBtn.getIsMatrioska() && null != spkBtn.getInnerBoard()) {
+                pushBoard(spkBtn.getInnerBoard(), level + 1);
+            }
         }
+    }
+
+    @Override
+    public void onRegisterBoardConfig(IOBoard config) {
+        mActiveConfig = config;
     }
 
     @Override
@@ -412,7 +330,7 @@ public class IOBoardActivity extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        menu.findItem(R.id.editMode).setChecked(this.mIsEditing);
+        menu.findItem(R.id.editMode).setChecked(IOGlobalConfiguration.isEditing);
         menu.findItem(R.id.scanMode).setChecked(isScanMode);
 
         return true;
@@ -442,12 +360,12 @@ public class IOBoardActivity extends Activity {
 
                 View layoutView = inflater.inflate(R.layout.settings_layout, null);
 
-                Integer rows = this.mConfig.getRows();
-                Integer columns = this.mConfig.getCols();
+                Integer rows = this.mActiveConfig.getRows();
+                Integer columns = this.mActiveConfig.getCols();
 
                 final CheckBox bordersCheckbox = (CheckBox) layoutView.findViewById(R.id.bordersCheckbox);
 
-                bordersCheckbox.setChecked(mConfig.getShowBorders());
+                bordersCheckbox.setChecked(mActiveConfig.getShowBorders());
 
                 builder.setTitle(getResources().getString(R.string.settings))
                         .setView(layoutView)
@@ -460,12 +378,13 @@ public class IOBoardActivity extends Activity {
                                 if (newRows == 0)
                                     newRows++;
 
-                                IOBoardActivity.this.mConfig.setCols(newCols);
-                                IOBoardActivity.this.mConfig.setRows(newRows);
+                                IOBoardActivity.this.mActiveConfig.setCols(newCols);
+                                IOBoardActivity.this.mActiveConfig.setRows(newRows);
 
-                                IOBoardActivity.this.mConfig.setShowBorders(bordersCheckbox.isChecked());
+                                IOBoardActivity.this.mActiveConfig.setShowBorders(bordersCheckbox.isChecked());
 
-                                createView();
+                                //TODO:createView();
+                                refreshView();
                             }
                         })
                         .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -541,10 +460,17 @@ public class IOBoardActivity extends Activity {
             case R.id.editMode: {
                 Log.d("options menu", "edit mode selected");
                 item.setChecked(!item.isChecked());
-                mIsEditing = item.isChecked();
+                IOGlobalConfiguration.isEditing = item.isChecked();
 
-                if (!IOBoardActivity.this.mIsEditing)
-                    IOBoardActivity.this.mConfig.save();
+                if (!IOGlobalConfiguration.isEditing)
+                {
+                    if(null == mActualConfigName)
+                        IOBoardActivity.this.mActiveConfig.save();
+                    else
+                        IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
+
+                }
+
 
                 break;
             }
@@ -563,7 +489,112 @@ public class IOBoardActivity extends Activity {
             }
 
             case R.id.action_save: {
-                IOBoardActivity.this.mConfig.save();
+                if (null == mActualConfigName)
+                    IOBoardActivity.this.mActiveConfig.save();
+                else
+                    IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
+                break;
+            }
+
+            case R.id.action_save_as: {
+
+                final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+                View contentView = getLayoutInflater().inflate(R.layout.rename_alert_layout, null);
+
+                final EditText inputText = (EditText) contentView.findViewById(R.id.newNameEditText);
+
+                alert.setView(contentView);
+                alert.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        String value = inputText.getText().toString().trim();
+
+                        if (value.indexOf(".xml") != -1)
+                            value = value.replace(".xml", "");
+
+                        File dirFile = new File(Environment.getExternalStorageDirectory()
+                                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
+                        File file = new File(dirFile.toString(), value + ".xml");
+
+                        if (file.exists()) {
+                            dialog.cancel();
+
+                            new AlertDialog.Builder(IOBoardActivity.this)
+                                    .setTitle(getString(R.string.warning))
+                                    .setMessage(getString(R.string.file_already_exists))
+                                    .setPositiveButton(getString(R.string.continue_string), null)
+                                    .create()
+                                    .show();
+
+                        } else {
+                            IOBoardActivity.this.mActiveConfig.saveAs(value);
+                            mActualConfigName = value;
+                        }
+                    }
+                });
+
+                alert.setNegativeButton(getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.cancel();
+                            }
+                        });
+                alert.show();
+
+                break;
+            }
+
+            case R.id.action_load: {
+
+                File dirFile = new File(Environment.getExternalStorageDirectory()
+                        .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
+                if (!dirFile.exists())
+                    dirFile.mkdirs();
+
+                final String[] configFiles = dirFile.list(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File dir, String filename) {
+
+                        if (filename.indexOf(".xml") != -1)
+                            return true;
+
+                        return false;
+                    }
+                });
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item);
+
+                adapter.addAll(configFiles);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(getResources().getString(R.string.choose))
+                        .setAdapter(adapter, new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.d("media_debug", "click on item " + which);
+
+                                String fileName = configFiles[which];
+                                Log.d("board_debug", fileName);
+
+                                FragmentManager fm = getFragmentManager();
+                                while (fm.getBackStackEntryCount() > 0)
+                                    fm.popBackStackImmediate();
+
+
+                                mActiveConfig = IOBoard.getSavedConfiguration(fileName);
+
+                                IOBoardFragment mainFragment = IOBoardFragment.newInstance(mActiveConfig, 0);
+                                getFragmentManager().beginTransaction()
+                                        .replace(mFragmentContainer.getId(), mainFragment)
+                                        .commit();
+
+                            }
+                        }).setNegativeButton(getResources().getString(R.string.cancel), null)
+                        .create().show();
+
+
                 break;
             }
 
@@ -580,10 +611,14 @@ public class IOBoardActivity extends Activity {
 
             case R.id.action_lock: {
 
-                if (IOBoardActivity.this.mIsEditing)
-                    IOBoardActivity.this.mConfig.save();
+                if (IOGlobalConfiguration.isEditing) {
+                    if (null == mActualConfigName)
+                        IOBoardActivity.this.mActiveConfig.save();
+                    else
+                        IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
+                }
 
-                IOBoardActivity.this.mIsEditing = false;
+                IOGlobalConfiguration.isEditing = false;
 
                 lockUI();
                 break;
@@ -596,6 +631,30 @@ public class IOBoardActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void pushBoard(IOBoard board, Integer level) {
+        FragmentManager fm = getFragmentManager();
+
+        IOBoardFragment innerBoardFragment = IOBoardFragment.newInstance(board, level);
+
+        fm.beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
+                .replace(mFragmentContainer.getId(), innerBoardFragment)
+                .addToBackStack(innerBoardFragment.toString())
+                .commit();
+
+    }
+
+    private void refreshView() {
+        FragmentManager fm = getFragmentManager();
+        Fragment fragment = fm.findFragmentById(mFragmentContainer.getId());
+
+        fm.beginTransaction()
+                .detach(fragment)
+                .attach(fragment)
+                .commit();
+    }
+
 
     // This snippet hides the system bars.
     private void hideSystemUI() {
@@ -648,7 +707,7 @@ public class IOBoardActivity extends Activity {
                 String imageUrl = extras.getString(BUTTON_URL);
                 String audioFile = extras.getString(BUTTON_AUDIO_FILE);
 
-                IOSpeakableImageButton button = mConfig.getButtons().get(index);
+                IOSpeakableImageButton button = mActiveConfig.getButtons().get(index);
 
                 if (text != null)
                     button.setSentence(text);
@@ -670,24 +729,6 @@ public class IOBoardActivity extends Activity {
             super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /* Checks if external storage is available for read and write */
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-    /* Checks if external storage is available to at least read */
-    public boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
-        }
-        return false;
-    }
 
     private void lockUI() {
         if (canGoImmersive())
@@ -767,7 +808,9 @@ public class IOBoardActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mUILocked = false;
-                        mIsEditing = true;
+                        IOGlobalConfiguration.isEditing = true;
+                        //TODO:createView();
+                        refreshView();
                         openOptionsMenu();
                     }
                 })
@@ -776,13 +819,13 @@ public class IOBoardActivity extends Activity {
                 .show();
     }
 
-    private void startScanMode()
-    {
-        if(scanModeHandler != null)
+
+    private void startScanMode() {
+        if (scanModeHandler != null)
             return;
 
         lockUI();
-        mIsEditing = false;
+        IOGlobalConfiguration.isEditing = false;
 
         /*
         * Neurosky Mindwave support
@@ -808,19 +851,18 @@ public class IOBoardActivity extends Activity {
         scanModeHandler.postDelayed(scanModeRunnable, mScanModeDelay);
     }
 
-    private void highlightButtonAtIndex(int index)
-    {
+    private void highlightButtonAtIndex(int index) {
 
-        int scanModeMaxIndex = mConfig.getCols() * mConfig.getRows();
-        index = mod(index,scanModeMaxIndex);
+        int scanModeMaxIndex = mActiveConfig.getCols() * mActiveConfig.getRows();
+        index = mod(index, scanModeMaxIndex);
         int scanModePrevIndex = mod(index - 1, scanModeMaxIndex);
 
-        IOSpeakableImageButton button = mConfig.getButtons().get(index);
+        IOSpeakableImageButton button = mActiveConfig.getButtons().get(index);
         ViewParent parentView = button.getParent();
         ViewGroup pView = (ViewGroup) parentView;
         pView.setBackgroundDrawable(getResources().getDrawable(R.drawable.scanmode_border_bg));
 
-        IOSpeakableImageButton prevbutton = mConfig.getButtons().get(scanModePrevIndex);
+        IOSpeakableImageButton prevbutton = mActiveConfig.getButtons().get(scanModePrevIndex);
         parentView = prevbutton.getParent();
         pView = (ViewGroup) parentView;
         pView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_bg));
@@ -829,20 +871,19 @@ public class IOBoardActivity extends Activity {
 
     }
 
-    private int mod(int x, int y)
-    {
+    private int mod(int x, int y) {
         int result = x % y;
-        return result < 0? result + y : result;
+        return result < 0 ? result + y : result;
     }
 
-    private void stopScanMode()
-    {
+    private void stopScanMode() {
         isScanMode = false;
         scanModeHandler.removeCallbacks(scanModeRunnable);
         scanModeHandler = null;
         scanModeRunnable = null;
         tgDevice.close();
-        createView();
+        //TODO:createView();
+        refreshView();
     }
 
 
@@ -895,9 +936,9 @@ public class IOBoardActivity extends Activity {
 */
                     break;
                 case TGDevice.MSG_BLINK:
-                    Toast.makeText(getApplicationContext(),"blink!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "blink!", Toast.LENGTH_SHORT).show();
                     Log.v("HelloEEG", "blink!: " + msg.arg1);
-                    IOSpeakableImageButton actualButton = mConfig.getButtons().get(mActualScanIndex);
+                    IOSpeakableImageButton actualButton = mActiveConfig.getButtons().get(mActualScanIndex);
                     actualButton.callOnClick();
 
 

@@ -50,6 +50,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -117,7 +118,6 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
-
 
 
     @Override
@@ -263,6 +263,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     protected void onResume() {
         super.onResume();
 
+        hideKeyboard();
 /*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 */
@@ -317,11 +318,10 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
         hideRecordingOverlay();
 
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.manageMedias:
 
-                if(mOverlayView.getVisibility() == View.INVISIBLE) {
+                if (mOverlayView.getVisibility() == View.INVISIBLE) {
 
                     getFragmentManager().beginTransaction()
                             .add(mFragmentContainer.getId(), new IOMediaManagerFragment())
@@ -332,7 +332,6 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
                     mOverlayView.setVisibility(View.VISIBLE);
                     mOverlayView.startAnimation(a);
-
 
 
                     return true;
@@ -350,21 +349,28 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     @Override
     public void onBackPressed() {
 
-        if(View.VISIBLE == mOverlayView.getVisibility())
-        {
+        if (View.VISIBLE == mOverlayView.getVisibility()) {
             hideOverlayView();
-        }else if(null != mRecordingOverlay)
+        } else if (null != mRecordingOverlay)
             hideRecordingOverlay();
         else
             super.onBackPressed();
     }
 
-    private void updateAudioTextLabel()
-    {
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    private void updateAudioTextLabel() {
         TextView audioTextView = (TextView) findViewById(R.id.audioFileStatusTextView);
 
-        if(null != mAudioFile && mAudioFile.length() > 0)
-        {
+        if (null != mAudioFile && mAudioFile.length() > 0) {
             final SharedPreferences preferences = getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
 
             File aFile = new File(mAudioFile);
@@ -373,17 +379,15 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
             if (labeledName.length() == 0)
                 labeledName = aFile.getName();
             audioTextView.setText(labeledName);
-        }else
-        {
+        } else {
             audioTextView.setText(getString(R.string.no_audio_file));
         }
     }
 
-    private void hideOverlayView()
-    {
+    private void hideOverlayView() {
 
 
-        if(mOverlayView.getVisibility() == View.VISIBLE) {
+        if (mOverlayView.getVisibility() == View.VISIBLE) {
 
             AlphaAnimation a = new AlphaAnimation(1.0f, 0.f);
             a.setDuration(500);
@@ -431,7 +435,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         if (mImageUrl != null && mImageUrl.length() > 0)
             resultIntent.putExtra(IOBoardActivity.BUTTON_URL, mImageUrl);
 
-        if(mAudioFile != null && mAudioFile.length() > 0)
+        if (mAudioFile != null && mAudioFile.length() > 0)
             resultIntent.putExtra(IOBoardActivity.BUTTON_AUDIO_FILE, mAudioFile);
 
         resultIntent.putExtra(IOBoardActivity.BUTTON_INDEX, mButtonIndex);
@@ -442,6 +446,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
     public void doTapOnImage(View v) {
 
+        hideKeyboard();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item);
         adapter.add(getResources().getString(R.string.img_search));
@@ -613,18 +618,19 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
 
     public void recordAudio(View v) {
+        hideKeyboard();
         onRecord(true);
     }
 
     public void clearAudio(View v) {
-        Log.d("audio_debug", "audio file:"+mAudioFile);
+        Log.d("audio_debug", "audio file:" + mAudioFile);
         mAudioFile = null;
         updateAudioTextLabel();
     }
 
     public void playAudio(View v) {
 
-        if(mAudioFile == null || (mPlayer != null && mPlayer.isPlaying())) {
+        if (mAudioFile == null || (mPlayer != null && mPlayer.isPlaying())) {
             onPlay(false);
             return;
         }
@@ -662,7 +668,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
             a.setDuration(500);
             mRecordingOverlay.startAnimation(a);
 
-            AnimationSet animationSet = (AnimationSet)AnimationUtils.loadAnimation(this, R.anim.pulse_animation);
+            AnimationSet animationSet = (AnimationSet) AnimationUtils.loadAnimation(this, R.anim.pulse_animation);
             mRecordingOverlay.findViewById(R.id.recordingTextView).startAnimation(animationSet);
 
             startRecording();
@@ -681,9 +687,9 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         }
     }
 
-    private void hideRecordingOverlay(){
+    private void hideRecordingOverlay() {
 
-        if(null == mRecordingOverlay)
+        if (null == mRecordingOverlay)
             return;
 
 
@@ -758,7 +764,6 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
 
-
         try {
             mRecorder.prepare();
         } catch (IOException e) {
@@ -775,7 +780,6 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         mRecorder = null;
         updateAudioTextLabel();
     }
-
 
 
 }

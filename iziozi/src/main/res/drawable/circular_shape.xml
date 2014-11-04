@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright (c) 2014 Martino Lessio -
   ~ www.martinolessio.com
@@ -18,18 +20,29 @@
   ~ You should have received a copy of the GNU General Public License along with IziOzi.
   ~ If not, see http://www.gnu.org/licenses/.
   -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="oval">
 
-<resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="image_search_width">150dp</dimen>
-    <dimen name="image_search_height">150dp</dimen>
-    <dimen name="cell_search_width">150dp</dimen>
-    <dimen name="cell_search_height">200dp</dimen>
-    <dimen name="navigation_bar_height">80dp</dimen>
-    <dimen name="navigation_bar_button_size">60dp</dimen>
+            <solid
+                android:color="#0277BD"/>
 
+        </shape>
 
 
-</resources>
+
+        </item>
+    <item>
+        <shape
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="oval">
+
+            <solid
+                android:color="#03A9F4"/>
+
+        </shape>
+
+    </item>
+</selector>

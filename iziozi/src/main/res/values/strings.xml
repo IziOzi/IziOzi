@@ -64,6 +64,9 @@
     <string name="save">Save</string>
     <string name="about">About</string>
     <string name="exit">Exit</string>
+    <string name="save_as">Save as</string>
+    <string name="load">Load</string>
+
 
     <!-- Debugging strings -->
     <string name="should_say">I should say:</string>
@@ -108,5 +111,14 @@
     <string name="audio_file">Audio File: </string>
     <string name="no_audio_file">No audio file set.</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="image">PIC</string>
+    <string name="board">BRD</string>
+    <string name="board_enabled">Tree board</string>
+    <string name="edit_picto">Setup pictogram</string>
+    <string name="edit_board">Setup board</string>
+    <string name="file_already_exists">A file with this name already exists! Please choose another one.</string>
+
+
 
 </resources>

@@ -21,28 +21,21 @@
 
 package it.iziozi.iziozi.core;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
-import it.iziozi.iziozi.R;
-
-@Root(name = "SMSpeakableImageButton")
+@Root(name = "IOSpeakableImageButton")
 public class IOSpeakableImageButton extends ImageButton {
 
     @Element(required = false)
@@ -59,6 +52,16 @@ public class IOSpeakableImageButton extends ImageButton {
 
     @Element(required = false)
     private String mUrl = "";
+
+    /*
+    * Nested boards
+    * */
+    @Attribute
+    private Boolean mIsMatrioska = false;
+
+    @Element(required = false)
+    private IOBoard mInnerBoard = null;
+
 
     private Context mContext;
 
@@ -149,35 +152,20 @@ public class IOSpeakableImageButton extends ImageButton {
         this.mAudioFile = mAudioFile;
     }
 
-    public void showInsertDialog() {
-        Log.d("home debug", "options selected");
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public Boolean getIsMatrioska() {
+        return mIsMatrioska;
+    }
 
-        View layoutView = inflater.inflate(R.layout.spkbtn_input_layout, null);
+    public void setIsMatrioska(Boolean mIsMatrioska) {
+        this.mIsMatrioska = mIsMatrioska;
+    }
 
-        final EditText txt = (EditText) layoutView.findViewById(R.id.textField);
-        txt.setText(this.mSentence);
+    public IOBoard getInnerBoard() {
+        return mInnerBoard;
+    }
 
-        builder.setTitle("Text to speech")
-                .setView(layoutView)
-                .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d("dialog", "should dismiss and apply ");
-
-                        setSentence(txt.getText().toString());
-                    }
-                })
-                .setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d("dialog", "should dismiss and discard");
-                    }
-                });
-
-
-        builder.create().show();
+    public void setInnerBoard(IOBoard mInnerBoard) {
+        this.mInnerBoard = mInnerBoard;
     }
 
     @Override
