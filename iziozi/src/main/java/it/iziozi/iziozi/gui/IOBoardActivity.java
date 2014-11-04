@@ -266,9 +266,42 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
         } else {
 
             if (IOGlobalConfiguration.isScanMode) {
-                IOSpeakableImageButton actualButton = mActiveConfig.getButtons().get(mActualScanIndex);
-                actualButton.callOnClick();
-            } else {
+                IOSpeakableImageButton scannedButton = mActiveConfig.getButtons().get(mActualScanIndex);
+                if (scannedButton.getAudioFile() != null && scannedButton.getAudioFile().length() > 0) {
+
+                    final MediaPlayer mPlayer = new MediaPlayer();
+                    try {
+                        mPlayer.setDataSource(scannedButton.getAudioFile());
+                        mPlayer.prepare();
+
+                        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                mPlayer.release();
+
+                            }
+                        });
+
+                        mPlayer.start();
+
+
+                    } catch (IOException e) {
+                        Log.e("playback_debug", "prepare() failed");
+                    }
+                } else if (mCanSpeak) {
+                    Log.d("speakable_debug", "should say: " + scannedButton.getSentence());
+                    if (scannedButton.getSentence() == "")
+                        tts.speak(getResources().getString(R.string.tts_nosentence), TextToSpeech.QUEUE_FLUSH, null);
+                    else
+                        tts.speak(scannedButton.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
+                }
+
+                if (scannedButton.getIsMatrioska() && null != scannedButton.getInnerBoard()) {
+                    pushBoard(scannedButton.getInnerBoard(), level + 1);
+                }
+            } else{
 
                 if (spkBtn.getAudioFile() != null && spkBtn.getAudioFile().length() > 0) {
 
@@ -833,6 +866,14 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
         * */
         tgDevice.connect(true);
 
+        mFragmentContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IOSpeakableImageButton actualButton = mActiveConfig.getButtons().get(mActualScanIndex);
+                actualButton.callOnClick();
+
+            }
+        });
 
         scanModeHandler = new Handler();
 
@@ -883,6 +924,8 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
         IOSpeakableImageButton button = mActiveConfig.getButtons().get(index);
         button.setIsHiglighted(false);
         button.invalidate();
+
+        mFragmentContainer.setOnClickListener(null);
 
         scanModeHandler.removeCallbacks(scanModeRunnable);
         scanModeHandler = null;
