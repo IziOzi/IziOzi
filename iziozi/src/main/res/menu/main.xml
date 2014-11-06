@@ -32,30 +32,34 @@
         android:orderInCategory="21"
         android:showAsAction="never"
         android:title="@string/settings" />
+    <item android:title="@string/manage_boards">
+        <menu>
 
-    <item
-        android:id="@+id/action_new"
-        android:orderInCategory="30"
-        android:showAsAction="never"
-        android:title="@string/new_board" />
+            <item
+                android:id="@+id/action_new"
+                android:orderInCategory="30"
+                android:showAsAction="never"
+                android:title="@string/new_board" />
 
-    <item
-        android:id="@+id/action_save"
-        android:orderInCategory="30"
-        android:showAsAction="never"
-        android:title="@string/save" />
+            <item
+                android:id="@+id/action_save"
+                android:orderInCategory="30"
+                android:showAsAction="never"
+                android:title="@string/save" />
 
-    <item
-        android:id="@+id/action_save_as"
-        android:orderInCategory="31"
-        android:showAsAction="never"
-        android:title="@string/save_as" />
+            <item
+                android:id="@+id/action_save_as"
+                android:orderInCategory="31"
+                android:showAsAction="never"
+                android:title="@string/save_as" />
 
-    <item
-        android:id="@+id/action_load"
-        android:orderInCategory="32"
-        android:showAsAction="never"
-        android:title="@string/load" />
+            <item
+                android:id="@+id/action_load"
+                android:orderInCategory="32"
+                android:showAsAction="never"
+                android:title="@string/load" />
+        </menu>
+    </item>
 
     <item
         android:id="@+id/scanMode"

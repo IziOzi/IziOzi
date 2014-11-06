@@ -197,6 +197,10 @@ public class IOSpeakableImageButton extends ImageButton {
             final float scaleY = f[Matrix.MSCALE_Y];
 
             final Drawable d = getDrawable();
+
+            if(null == d)
+                return;
+
             final int origW = d.getIntrinsicWidth();
             final int origH = d.getIntrinsicHeight();
 

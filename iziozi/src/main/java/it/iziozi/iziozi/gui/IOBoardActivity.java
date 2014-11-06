@@ -877,7 +877,12 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             Iconify.setIcon(mRightNavigationButton, Iconify.IconValue.fa_plus);
             mCenterTrashNavigationButton.setVisibility(View.VISIBLE);
 
+            mLeftNavigationButton.setVisibility(View.INVISIBLE);
+            mRightNavigationButton.setVisibility(View.INVISIBLE);
+
         }
+
+        refreshView();
     }
 
     private void paginateLeft() {

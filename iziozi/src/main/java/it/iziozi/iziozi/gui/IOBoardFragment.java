@@ -211,7 +211,10 @@ public class IOBoardFragment extends Fragment {
                 final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(getActivity());
                 imgButton.setmContext(getActivity());
                 imgButton.setShowBorder(IOConfiguration.getShowBorders());
-                imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
+                if(IOGlobalConfiguration.isEditing)
+                    imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
+                else
+                    imgButton.setImageDrawable(null);
                 imgButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 imgButton.setBackgroundColor(Color.TRANSPARENT);
 
