@@ -123,6 +123,7 @@
     <string name="edit_picto">Configura immagine</string>
     <string name="edit_board">Configura Tavola</string>
     <string name="file_already_exists">Un file con questo nome esiste già! Scegline un altro.</string>
+    <string name="delete_page_alert">Sei sicuro di voler eliminare questa pagina? L\'operazione sarà definitiva!</string>
 
 
 

@@ -21,9 +21,8 @@
 
 package it.iziozi.iziozi.core;
 
-import android.content.Context;
+import android.util.Log;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
@@ -31,51 +30,57 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by martinolessio on 07/04/14.
- *
- * Main Mappings: (Key) -> (Value Type)
- *
- *      (ROWS_NUM) -> (Integer)
- *      (COLS_NUM) -> (Integer)
- *
+ * Created by martinolessio on 05/11/14.
  */
 
-@Root(name = "IOBoard")
-public class IOBoard {
+@Root(name = "IOLevel")
+public class IOLevel {
 
-    @Attribute
-    private Integer rows = 2;
-    @Attribute
-    private Integer cols = 3;
+    private static final String LOG_TAG = "IOLevel_DEBUG";
 
     @ElementList(inline = true, required = false)
-    private List<IOSpeakableImageButton> mButtons = new ArrayList<IOSpeakableImageButton>();;
+    private List<IOBoard> mLevel = new ArrayList<IOBoard>();
 
-    public IOBoard() {
+    public IOLevel() {
     }
 
-    public List<IOSpeakableImageButton> getButtons() {
-        return mButtons;
+    public IOBoard getBoardAtIndex(int index) {
+        if (index < mLevel.size())
+            return mLevel.get(index);
+        return null;
     }
 
-    public void setButtons(List<IOSpeakableImageButton> mButtons) {
-        this.mButtons = mButtons;
+    public int getLevelSize() {
+        return mLevel.size();
     }
 
-    public Integer getRows() {
-        return rows;
+    public List<IOBoard> getInnerBoards() {
+        return mLevel;
     }
 
-    public void setRows(Integer mRows) {
-        this.rows = mRows;
+    public IOBoard getInnerBoardAtIndex(int index)
+    {
+        if(index < mLevel.size())
+            return mLevel.get(index);
+        return null;
     }
 
-    public Integer getCols() {
-        return cols;
+    public void addInnerBoard(IOBoard board)
+    {
+        mLevel.add(board);
     }
 
-    public void setCols(Integer mCols) {
-        this.cols = mCols;
+    public void addInnerBoardAtIndex(IOBoard board, int index)
+    {
+        Log.d(LOG_TAG, "addinnerboard at " + index);
+        mLevel.add(index, board);
+
     }
+
+    public void removeBoardAtIndex(int index)
+    {
+        mLevel.remove(index);
+    }
+
 
 }

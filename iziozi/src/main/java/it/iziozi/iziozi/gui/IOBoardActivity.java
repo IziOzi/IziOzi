@@ -21,14 +21,12 @@
 
 package it.iziozi.iziozi.gui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,7 +35,12 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,12 +50,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.IconTextView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joanzapata.android.iconify.Iconify;
 import com.neurosky.thinkgear.TGDevice;
 import com.neurosky.thinkgear.TGEegPower;
 
@@ -64,19 +69,22 @@ import java.util.Locale;
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.core.IOApplication;
 import it.iziozi.iziozi.core.IOBoard;
+import it.iziozi.iziozi.core.IOConfiguration;
 import it.iziozi.iziozi.core.IOGlobalConfiguration;
+import it.iziozi.iziozi.core.IOLevel;
 import it.iziozi.iziozi.core.IOSpeakableImageButton;
+import it.iziozi.iziozi.gui.components.IOPaginatorAdapter;
 
 
-public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoardFragmentInteractionListener {
+public class IOBoardActivity extends FragmentActivity implements IOBoardFragment.OnBoardFragmentInteractionListener {
 
 
     /*
     * Layout and configuration
     * */
-    private IOBoard mActiveConfig;
+    private IOConfiguration mActiveConfig;
+    private IOLevel mActualLevel;
     private Boolean mCanSpeak = false;
-    private FrameLayout mFragmentContainer = null;
     private String mActualConfigName = null;
 
     /*
@@ -109,6 +117,15 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
     private TGDevice tgDevice;
     private BluetoothAdapter btAdapter;
 
+    /*
+    * Pagination vars
+    * */
+    private int mActualIndex = 0;
+    private ViewPager mViewPager = null;
+    private IconTextView mLeftNavigationButton;
+    private IconTextView mRightNavigationButton;
+    private IconTextView mCenterTrashNavigationButton;
+
 
     public static final int CREATE_BUTTON_CODE = 8001;
 
@@ -130,23 +147,25 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
 
         this.mDecorView = getWindow().getDecorView();
 
-        mFragmentContainer = (FrameLayout) findViewById(R.id.boardActivityFragmentContainer);
+        mViewPager = (ViewPager) findViewById(R.id.mainViewPager);
 
-        this.mActiveConfig = IOBoard.getSavedConfiguration();
+        this.mActiveConfig = IOConfiguration.getSavedConfiguration();
 
         if (this.mActiveConfig == null) {
-            this.mActiveConfig = new IOBoard(this);
+            this.mActiveConfig = new IOConfiguration();
             showHintAlert();
         } else {
 
+/*
             lockUI();
-            this.mActiveConfig.setContext(this);
+*/
         }
 
-        IOBoardFragment mainFragment = IOBoardFragment.newInstance(mActiveConfig, 0);
-        getFragmentManager().beginTransaction()
-                .add(mFragmentContainer.getId(), mainFragment)
-                .commit();
+        mActualLevel = mActiveConfig.getLevel();
+
+        setupPager();
+
+        setupNavButtons();
 
         /*
         * Neurosky Mindwave support
@@ -188,7 +207,155 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                         }
                     }
                 });
+    }
 
+    private void setupPager() {
+
+
+        mViewPager.setAdapter(new IOPaginatorAdapter(getSupportFragmentManager(), mActiveConfig.getLevel()));
+        mViewPager.getAdapter().notifyDataSetChanged();
+
+
+    }
+
+    private void setupNavButtons() {
+
+        LinearLayout centerNavigationLayout = (LinearLayout) findViewById(R.id.centerLayoutNavigationContainer);
+        LinearLayout leftNavigationLayout = (LinearLayout) findViewById(R.id.leftLayoutNavigationContainer);
+        LinearLayout rightNavigationLayout = (LinearLayout) findViewById(R.id.rightLayoutNavigationContainer);
+
+        IconTextView backButton = new IconTextView(this);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.navigation_bar_button_size), (int) getResources().getDimension(R.dimen.navigation_bar_button_size));
+        backButton.setLayoutParams(params);
+        backButton.setGravity(Gravity.CENTER);
+        backButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
+        backButton.setTextColor(Color.WHITE);
+
+        backButton.setTextSize(32);
+        Iconify.setIcon(backButton, Iconify.IconValue.fa_arrow_left);
+
+        centerNavigationLayout.addView(backButton);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
+        final IconTextView homeButton = new IconTextView(this);
+
+        params.setMargins((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()), 0, 0, 0);
+        homeButton.setLayoutParams(params);
+        homeButton.setGravity(Gravity.CENTER);
+        homeButton.setTextSize(32);
+        homeButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
+        homeButton.setTextColor(Color.WHITE);
+
+        Iconify.setIcon(homeButton, Iconify.IconValue.fa_home);
+
+        centerNavigationLayout.addView(homeButton);
+
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = getSupportFragmentManager();
+                while (fm.getBackStackEntryCount() > 0)
+                    fm.popBackStackImmediate();
+
+            }
+        });
+
+        mLeftNavigationButton = new IconTextView(this);
+
+        mLeftNavigationButton.setLayoutParams(params);
+        mLeftNavigationButton.setGravity(Gravity.CENTER);
+        mLeftNavigationButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
+        mLeftNavigationButton.setTextColor(Color.WHITE);
+
+        mLeftNavigationButton.setTextSize(32);
+        Iconify.setIcon(mLeftNavigationButton, Iconify.IconValue.fa_arrow_left);
+
+        leftNavigationLayout.addView(mLeftNavigationButton);
+
+        mLeftNavigationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (IOGlobalConfiguration.isEditing) {
+                    mActualLevel.addInnerBoardAtIndex(new IOBoard(), mViewPager.getCurrentItem());
+                    refreshView();
+                } else
+                    paginateLeft();
+            }
+        });
+
+        mRightNavigationButton = new IconTextView(this);
+
+        mRightNavigationButton.setLayoutParams(params);
+        mRightNavigationButton.setGravity(Gravity.CENTER);
+        mRightNavigationButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
+        mRightNavigationButton.setTextColor(Color.WHITE);
+
+        mRightNavigationButton.setTextSize(32);
+        Iconify.setIcon(mRightNavigationButton, Iconify.IconValue.fa_arrow_right);
+
+        rightNavigationLayout.addView(mRightNavigationButton);
+
+        mRightNavigationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (IOGlobalConfiguration.isEditing) {
+                    mActualLevel.addInnerBoardAtIndex(new IOBoard(), mViewPager.getCurrentItem() + 1);
+
+                    refreshView();
+                } else {
+                    paginateRight();
+                }
+            }
+        });
+
+        mCenterTrashNavigationButton = new IconTextView(this);
+
+        mCenterTrashNavigationButton.setLayoutParams(params);
+        mCenterTrashNavigationButton.setGravity(Gravity.CENTER);
+        mCenterTrashNavigationButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
+        mCenterTrashNavigationButton.setTextColor(Color.WHITE);
+
+        mCenterTrashNavigationButton.setTextSize(32);
+        Iconify.setIcon(mCenterTrashNavigationButton, Iconify.IconValue.fa_trash_o);
+
+        centerNavigationLayout.addView(mCenterTrashNavigationButton);
+
+        mCenterTrashNavigationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new AlertDialog.Builder(IOBoardActivity.this)
+                        .setTitle(getResources().getString(R.string.warning))
+                        .setMessage(getString(R.string.delete_page_alert))
+                        .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                mActualLevel.removeBoardAtIndex(mViewPager.getCurrentItem());
+
+                                refreshView();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.no), null)
+                        .setCancelable(false)
+                        .create()
+                        .show();
+
+
+            }
+        });
+
+        mCenterTrashNavigationButton.setVisibility(View.GONE);
 
     }
 
@@ -230,7 +397,7 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                 public void onClick(View v) {
                     //spkBtn.showInsertDialog();
                     Intent cIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
-                    cIntent.putExtra(BUTTON_INDEX, mActiveConfig.getButtons().indexOf(spkBtn));
+                    cIntent.putExtra(BUTTON_INDEX, mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getButtons().indexOf(spkBtn));
 
                     cIntent.putExtra(BUTTON_TEXT, spkBtn.getSentence());
                     cIntent.putExtra(BUTTON_TITLE, spkBtn.getmTitle());
@@ -247,11 +414,11 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                 @Override
                 public void onClick(View v) {
 
-                    IOBoard nestedBoard = spkBtn.getInnerBoard();
+                    IOBoard nestedBoard = spkBtn.getLevel().getInnerBoardAtIndex(0);
 
                     if (null == nestedBoard) {
-                        nestedBoard = new IOBoard(IOBoardActivity.this);
-                        spkBtn.setInnerBoard(nestedBoard);
+                        nestedBoard = new IOBoard();
+                        spkBtn.getLevel().addInnerBoard(nestedBoard);
                     }
 
                     pushBoard(nestedBoard, level + 1);
@@ -266,7 +433,7 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
         } else {
 
             if (IOGlobalConfiguration.isScanMode) {
-                IOSpeakableImageButton scannedButton = mActiveConfig.getButtons().get(mActualScanIndex);
+                IOSpeakableImageButton scannedButton = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getButtons().get(mActualScanIndex);
                 if (scannedButton.getAudioFile() != null && scannedButton.getAudioFile().length() > 0) {
 
                     final MediaPlayer mPlayer = new MediaPlayer();
@@ -298,10 +465,10 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                     Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
                 }
 
-                if (scannedButton.getIsMatrioska() && null != scannedButton.getInnerBoard()) {
-                    pushBoard(scannedButton.getInnerBoard(), level + 1);
+                if (scannedButton.getIsMatrioska() && null != scannedButton.getLevel().getInnerBoardAtIndex(0)) {
+                    pushBoard(scannedButton.getLevel().getInnerBoardAtIndex(0), level + 1);
                 }
-            } else{
+            } else {
 
                 if (spkBtn.getAudioFile() != null && spkBtn.getAudioFile().length() > 0) {
 
@@ -334,16 +501,17 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                     Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
                 }
 
-                if (spkBtn.getIsMatrioska() && null != spkBtn.getInnerBoard()) {
-                    pushBoard(spkBtn.getInnerBoard(), level + 1);
+                if (spkBtn.getIsMatrioska() && null != spkBtn.getLevel().getInnerBoardAtIndex(0)) {
+                    pushBoard(spkBtn.getLevel().getInnerBoardAtIndex(0), level + 1);
                 }
             }
         }
     }
 
+
     @Override
-    public void onRegisterBoardConfig(IOBoard config) {
-        mActiveConfig = config;
+    public void onLevelConfigurationChanged() {
+        refreshView();
     }
 
     @Override
@@ -396,8 +564,8 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
 
                 View layoutView = inflater.inflate(R.layout.settings_layout, null);
 
-                Integer rows = this.mActiveConfig.getRows();
-                Integer columns = this.mActiveConfig.getCols();
+                Integer rows = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getRows();
+                Integer columns = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getCols();
 
                 final CheckBox bordersCheckbox = (CheckBox) layoutView.findViewById(R.id.bordersCheckbox);
 
@@ -414,8 +582,8 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                                 if (newRows == 0)
                                     newRows++;
 
-                                IOBoardActivity.this.mActiveConfig.setCols(newCols);
-                                IOBoardActivity.this.mActiveConfig.setRows(newRows);
+                                mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).setCols(newCols);
+                                mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).setRows(newRows);
 
                                 IOBoardActivity.this.mActiveConfig.setShowBorders(bordersCheckbox.isChecked());
 
@@ -496,16 +664,7 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
             case R.id.editMode: {
                 Log.d("options menu", "edit mode selected");
                 item.setChecked(!item.isChecked());
-                IOGlobalConfiguration.isEditing = item.isChecked();
-
-                if (!IOGlobalConfiguration.isEditing) {
-                    if (null == mActualConfigName)
-                        IOBoardActivity.this.mActiveConfig.save();
-                    else
-                        IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
-
-                }
-
+                toggleEditing();
 
                 break;
             }
@@ -613,17 +772,14 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                                 String fileName = configFiles[which];
                                 Log.d("board_debug", fileName);
 
-                                FragmentManager fm = getFragmentManager();
+                                FragmentManager fm = getSupportFragmentManager();
                                 while (fm.getBackStackEntryCount() > 0)
                                     fm.popBackStackImmediate();
 
 
-                                mActiveConfig = IOBoard.getSavedConfiguration(fileName);
+                                mActiveConfig = IOConfiguration.getSavedConfiguration(fileName);
 
-                                IOBoardFragment mainFragment = IOBoardFragment.newInstance(mActiveConfig, 0);
-                                getFragmentManager().beginTransaction()
-                                        .replace(mFragmentContainer.getId(), mainFragment)
-                                        .commit();
+                                mViewPager.setAdapter(new IOPaginatorAdapter(getSupportFragmentManager(), mActiveConfig.getLevel()));
 
                             }
                         }).setNegativeButton(getResources().getString(R.string.cancel), null)
@@ -645,16 +801,8 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
             }
 
             case R.id.action_lock: {
-
-                if (IOGlobalConfiguration.isEditing) {
-                    if (null == mActualConfigName)
-                        IOBoardActivity.this.mActiveConfig.save();
-                    else
-                        IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
-                }
-
-                IOGlobalConfiguration.isEditing = false;
-
+                if (IOGlobalConfiguration.isEditing)
+                    toggleEditing();
                 lockUI();
                 break;
             }
@@ -667,28 +815,51 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
         return super.onOptionsItemSelected(item);
     }
 
-    private void pushBoard(IOBoard board, Integer level) {
-        FragmentManager fm = getFragmentManager();
+    private void toggleEditing() {
+        IOGlobalConfiguration.isEditing = !IOGlobalConfiguration.isEditing;
 
-        IOBoardFragment innerBoardFragment = IOBoardFragment.newInstance(board, level);
 
-        fm.beginTransaction()
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
-                .replace(mFragmentContainer.getId(), innerBoardFragment)
-                .addToBackStack(innerBoardFragment.toString())
-                .commit();
+        if (!IOGlobalConfiguration.isEditing) {
+            if (null == mActualConfigName)
+                IOBoardActivity.this.mActiveConfig.save();
+            else
+                IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
 
+            Iconify.setIcon(mLeftNavigationButton, Iconify.IconValue.fa_arrow_left);
+            Iconify.setIcon(mRightNavigationButton, Iconify.IconValue.fa_arrow_right);
+
+            mCenterTrashNavigationButton.setVisibility(View.GONE);
+        } else {
+            Iconify.setIcon(mLeftNavigationButton, Iconify.IconValue.fa_plus);
+            Iconify.setIcon(mRightNavigationButton, Iconify.IconValue.fa_plus);
+            mCenterTrashNavigationButton.setVisibility(View.VISIBLE);
+
+        }
     }
+
+    private void paginateLeft() {
+        if (mViewPager.getCurrentItem() > 0)
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+    }
+
+    private void paginateRight() {
+        if (mViewPager.getCurrentItem() < mViewPager.getAdapter().getCount() - 1)
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+    }
+
 
     private void refreshView() {
-        FragmentManager fm = getFragmentManager();
-        Fragment fragment = fm.findFragmentById(mFragmentContainer.getId());
 
-        fm.beginTransaction()
-                .detach(fragment)
-                .attach(fragment)
-                .commit();
+        mViewPager.getAdapter().notifyDataSetChanged();
+
     }
+
+    private void pushLevel()
+    {
+
+    }
+
+    
 
     // This snippet hides the system bars.
     private void hideSystemUI() {
@@ -722,11 +893,10 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
     * except for the ones that make the content appear under the system bars.
     * */
     private void showSystemUI() {
-        mDecorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        );
+
+        findViewById(R.id.rootContainer).invalidate();
+
+        mDecorView.setSystemUiVisibility(0);
     }
 
     @Override
@@ -741,7 +911,7 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                 String imageUrl = extras.getString(BUTTON_URL);
                 String audioFile = extras.getString(BUTTON_AUDIO_FILE);
 
-                IOSpeakableImageButton button = mActiveConfig.getButtons().get(index);
+                IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getButtons().get(index);
 
                 if (text != null)
                     button.setSentence(text);
@@ -780,6 +950,8 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mUILocked = false;
+                        showSystemUI();
+                        mDecorView.invalidate();
                         if (canGoImmersive() == false)
                             openOptionsMenu();
                     }
@@ -842,9 +1014,7 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mUILocked = false;
-                        IOGlobalConfiguration.isEditing = true;
-                        //TODO:createView();
-                        refreshView();
+                        toggleEditing();
                         openOptionsMenu();
                     }
                 })
@@ -859,17 +1029,19 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
             return;
 
         lockUI();
-        IOGlobalConfiguration.isEditing = false;
+
+        if (IOGlobalConfiguration.isEditing)
+            toggleEditing();
 
         /*
         * Neurosky Mindwave support
         * */
         tgDevice.connect(true);
 
-        mFragmentContainer.setOnClickListener(new View.OnClickListener() {
+        mViewPager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IOSpeakableImageButton actualButton = mActiveConfig.getButtons().get(mActualScanIndex);
+                IOSpeakableImageButton actualButton = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getButtons().get(mActualScanIndex);
                 actualButton.callOnClick();
 
             }
@@ -895,15 +1067,15 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
 
     private void highlightButtonAtIndex(int index) {
 
-        int scanModeMaxIndex = mActiveConfig.getCols() * mActiveConfig.getRows();
+        int scanModeMaxIndex = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getCols() * mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getRows();
         index = mod(index, scanModeMaxIndex);
         int scanModePrevIndex = mod(index - 1, scanModeMaxIndex);
 
-        IOSpeakableImageButton button = mActiveConfig.getButtons().get(index);
+        IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getButtons().get(index);
         button.setIsHiglighted(true);
         button.invalidate();
 
-        IOSpeakableImageButton prevbutton = mActiveConfig.getButtons().get(scanModePrevIndex);
+        IOSpeakableImageButton prevbutton = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getButtons().get(scanModePrevIndex);
         prevbutton.setIsHiglighted(false);
         prevbutton.invalidate();
 
@@ -918,14 +1090,14 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
 
     private void stopScanMode() {
         IOGlobalConfiguration.isScanMode = false;
-        int scanModeMaxIndex = mActiveConfig.getCols() * mActiveConfig.getRows();
+        int scanModeMaxIndex = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getCols() * mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getRows();
         int index = mod(mActualScanIndex, scanModeMaxIndex);
 
-        IOSpeakableImageButton button = mActiveConfig.getButtons().get(index);
+        IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getButtons().get(index);
         button.setIsHiglighted(false);
         button.invalidate();
 
-        mFragmentContainer.setOnClickListener(null);
+        mViewPager.setOnClickListener(null);
 
         scanModeHandler.removeCallbacks(scanModeRunnable);
         scanModeHandler = null;
@@ -987,7 +1159,7 @@ public class IOBoardActivity extends Activity implements IOBoardFragment.OnBoard
                 case TGDevice.MSG_BLINK:
                     Toast.makeText(getApplicationContext(), "blink!", Toast.LENGTH_SHORT).show();
                     Log.v("HelloEEG", "blink!: " + msg.arg1);
-                    IOSpeakableImageButton actualButton = mActiveConfig.getButtons().get(mActualScanIndex);
+                    IOSpeakableImageButton actualButton = mActualLevel.getBoardAtIndex(mViewPager.getCurrentItem()).getButtons().get(mActualScanIndex);
                     actualButton.callOnClick();
 
 

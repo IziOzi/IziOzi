@@ -23,24 +23,20 @@ package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.IconTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.joanzapata.android.iconify.Iconify;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
@@ -54,17 +50,12 @@ import java.util.Random;
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.core.IOApplication;
 import it.iziozi.iziozi.core.IOBoard;
+import it.iziozi.iziozi.core.IOConfiguration;
 import it.iziozi.iziozi.core.IOGlobalConfiguration;
+import it.iziozi.iziozi.core.IOLevel;
 import it.iziozi.iziozi.core.IOSpeakableImageButton;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link IOBoardFragment.OnBoardFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link IOBoardFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class IOBoardFragment extends Fragment {
 
     /**
@@ -81,15 +72,18 @@ public class IOBoardFragment extends Fragment {
 
         public void tapOnSpeakableButton(IOSpeakableImageButton button, Integer level);
 
-        public void onRegisterBoardConfig(IOBoard config);
+        public void onLevelConfigurationChanged();
+
     }
 
     private final static String LOG_TAG = "IOBoardFragment";
     private OnBoardFragmentInteractionListener mListener;
 
+    private IOLevel mLevel = null;
     private IOBoard mBoard = null;
 
     private Integer mBoardLevel = 0;
+    private int mBoardIndex = 0;
 
     /*
     * Interface widgets
@@ -98,10 +92,13 @@ public class IOBoardFragment extends Fragment {
     private List<LinearLayout> homeRows = new ArrayList<LinearLayout>();
 
 
-    public static IOBoardFragment newInstance(IOBoard boardConfiguration, Integer level) {
+    public static IOBoardFragment newInstance(IOBoard board, IOLevel level, Integer levelIndex, int index) {
         IOBoardFragment fragment = new IOBoardFragment();
-        fragment.setBoard(boardConfiguration);
-        fragment.setBoardLevel(level);
+        fragment.setBoard(board);
+        fragment.setLevel(level);
+        fragment.setBoardLevel(levelIndex);
+        fragment.setBoardIndex(index);
+
         return fragment;
     }
 
@@ -140,9 +137,6 @@ public class IOBoardFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (null != mListener)
-            mListener.onRegisterBoardConfig(mBoard);
-
     }
 
     @Override
@@ -159,12 +153,20 @@ public class IOBoardFragment extends Fragment {
         this.mBoard = mBoard;
     }
 
+    public void setLevel(IOLevel level) {
+        this.mLevel = level;
+    }
+
     public Integer getBoardLevel() {
         return mBoardLevel;
     }
 
     public void setBoardLevel(Integer mBoardLevel) {
         this.mBoardLevel = mBoardLevel;
+    }
+
+    public void setBoardIndex(int mBoardIndex) {
+        this.mBoardIndex = mBoardIndex;
     }
 
     private View buildView(boolean editMode) {
@@ -175,15 +177,11 @@ public class IOBoardFragment extends Fragment {
 
         ViewGroup mainView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.table_main_layout, null);
 
-        ViewGroup tableLayout = (ViewGroup) mainView.findViewById(R.id.mainLayoutTableContainer);
-        LinearLayout navigationLayout = (LinearLayout) mainView.findViewById(R.id.mainLayoutNavigationContainer);
 
         LinearLayout tableContainer = new LinearLayout(getActivity());
         LinearLayout.LayoutParams mainParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         tableContainer.setLayoutParams(mainParams);
         tableContainer.setOrientation(LinearLayout.VERTICAL);
-
-        tableLayout.addView(tableContainer);
 
         for (int i = 0; i < this.mBoard.getRows(); i++) {
 
@@ -212,10 +210,7 @@ public class IOBoardFragment extends Fragment {
 
                 final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(getActivity());
                 imgButton.setmContext(getActivity());
-                imgButton.setShowBorder(mBoard.getShowBorders());
-/*
-                imgButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-*/
+                imgButton.setShowBorder(IOConfiguration.getShowBorders());
                 imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
                 imgButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 imgButton.setBackgroundColor(Color.TRANSPARENT);
@@ -302,61 +297,7 @@ public class IOBoardFragment extends Fragment {
 
         this.mBoard.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);
 
-        if (mBoardLevel > 0) {
-            IconTextView backButton = new IconTextView(getActivity());
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.navigation_bar_button_size), (int) getResources().getDimension(R.dimen.navigation_bar_button_size));
-            backButton.setLayoutParams(params);
-            backButton.setGravity(Gravity.CENTER);
-            backButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
-            backButton.setTextColor(Color.WHITE);
-
-            backButton.setTextSize(32);
-            Iconify.setIcon(backButton, Iconify.IconValue.fa_arrow_left);
-
-            navigationLayout.addView(backButton);
-
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getActivity().onBackPressed();
-                }
-            });
-
-
-            final IconTextView homeButton = new IconTextView(getActivity());
-
-            params.setMargins((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getActivity().getResources().getDisplayMetrics()), 0, 0, 0);
-            homeButton.setLayoutParams(params);
-            homeButton.setGravity(Gravity.CENTER);
-            homeButton.setTextSize(32);
-            homeButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
-            homeButton.setTextColor(Color.WHITE);
-
-            Iconify.setIcon(homeButton, Iconify.IconValue.fa_home);
-
-            navigationLayout.addView(homeButton);
-
-            homeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FragmentManager fm = getFragmentManager();
-                    while (fm.getBackStackEntryCount() > 0)
-                        fm.popBackStackImmediate();
-
-                }
-            });
-
-
-
-        } else {
-            ViewGroup.LayoutParams layoutParams = navigationLayout.getLayoutParams();
-            layoutParams.height = 0;
-
-            navigationLayout.setLayoutParams(layoutParams);
-        }
-
-        return mainView;
+        return tableContainer;
     }
 
     /* Checks if external storage is available for read and write */

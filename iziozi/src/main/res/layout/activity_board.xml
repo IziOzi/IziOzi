@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright (c) 2014 Martino Lessio -
   ~ www.martinolessio.com
@@ -19,13 +21,70 @@
   ~ If not, see http://www.gnu.org/licenses/.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:id="@+id/boardActivityFragmentContainer"
-    tools:context="it.iziozi.iziozi.gui.IOBoardActivity">
+    android:id="@+id/rootContainer"
+    android:background="#ffffffff">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/mainLayoutNavigationContainer"
+        android:background="#ff53ff8e"
+        android:id="@+id/mainLayoutTableContainer">
 
-</FrameLayout>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/mainViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v4.view.ViewPager>
+
+        </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_bar_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/mainLayoutNavigationContainer">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/leftLayoutNavigationContainer"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"></LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/rightLayoutNavigationContainer"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/centerLayoutNavigationContainer"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/leftLayoutNavigationContainer"
+            android:layout_toEndOf="@+id/leftLayoutNavigationContainer"
+            android:layout_toLeftOf="@+id/rightLayoutNavigationContainer"
+            android:layout_toStartOf="@+id/rightLayoutNavigationContainer"
+            android:gravity="center" />
+    </RelativeLayout>
+</RelativeLayout>
+

@@ -22,19 +22,9 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_bar_height"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/mainLayoutNavigationContainer"
-        android:gravity="center">
-
-    </LinearLayout>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffffff">
 
     <LinearLayout
         android:orientation="vertical"
@@ -44,5 +34,46 @@
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/mainLayoutNavigationContainer"
         android:background="#ff53ff8e"
-        android:id="@+id/mainLayoutTableContainer"></LinearLayout>
+        android:id="@+id/mainLayoutTableContainer">
+
+
+        </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_bar_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/mainLayoutNavigationContainer">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/leftLayoutNavigationContainer"
+            android:layout_marginLeft="20dp"></LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/rightLayoutNavigationContainer"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/centerLayoutNavigationContainer"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/leftLayoutNavigationContainer"
+            android:layout_toEndOf="@+id/leftLayoutNavigationContainer"
+            android:layout_toLeftOf="@+id/rightLayoutNavigationContainer"
+            android:layout_toStartOf="@+id/rightLayoutNavigationContainer" />
+    </RelativeLayout>
 </RelativeLayout>

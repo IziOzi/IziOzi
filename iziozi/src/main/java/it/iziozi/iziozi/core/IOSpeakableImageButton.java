@@ -60,7 +60,7 @@ public class IOSpeakableImageButton extends ImageButton {
     private Boolean mIsMatrioska = false;
 
     @Element(required = false)
-    private IOBoard mInnerBoard = null;
+    private IOLevel mLevel;
 
     private Boolean mIsHiglighted = false;
 
@@ -161,13 +161,15 @@ public class IOSpeakableImageButton extends ImageButton {
         this.mIsMatrioska = mIsMatrioska;
     }
 
-    public IOBoard getInnerBoard() {
-        return mInnerBoard;
+    public IOLevel getLevel() {
+
+        if(null == mLevel)
+            mLevel = new IOLevel();
+
+        return mLevel;
     }
 
-    public void setInnerBoard(IOBoard mInnerBoard) {
-        this.mInnerBoard = mInnerBoard;
-    }
+
 
     public Boolean getIsHiglighted() {
         return mIsHiglighted;
