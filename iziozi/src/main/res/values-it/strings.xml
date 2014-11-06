@@ -69,6 +69,7 @@
     <string name="exit">Esci</string>
     <string name="save_as">Salva con nome</string>
     <string name="load">Apri</string>
+    <string name="new_board">Nuova</string>
 
 
     <!-- Debugging strings -->

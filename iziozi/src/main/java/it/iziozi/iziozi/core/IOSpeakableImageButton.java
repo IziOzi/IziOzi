@@ -166,6 +166,11 @@ public class IOSpeakableImageButton extends ImageButton {
         if(null == mLevel)
             mLevel = new IOLevel();
 
+        if(mLevel.getBoardAtIndex(0) == null)
+        {
+            mLevel.addInnerBoard(new IOBoard());
+        }
+
         return mLevel;
     }
 

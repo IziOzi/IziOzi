@@ -66,6 +66,8 @@
     <string name="exit">Exit</string>
     <string name="save_as">Save as</string>
     <string name="load">Load</string>
+    <string name="new_board">Nuova</string>
+
 
 
     <!-- Debugging strings -->

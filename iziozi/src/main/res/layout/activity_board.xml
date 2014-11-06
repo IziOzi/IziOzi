@@ -28,8 +28,7 @@
     android:id="@+id/rootContainer"
     android:background="#ffffffff">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true"
@@ -38,13 +37,8 @@
         android:background="#ff53ff8e"
         android:id="@+id/mainLayoutTableContainer">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/mainViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v4.view.ViewPager>
 
-        </LinearLayout>
+        </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

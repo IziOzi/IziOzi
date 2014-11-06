@@ -42,15 +42,19 @@ public class IOLevel {
     private List<IOBoard> mLevel = new ArrayList<IOBoard>();
 
     public IOLevel() {
+
     }
 
     public IOBoard getBoardAtIndex(int index) {
         if (index < mLevel.size())
             return mLevel.get(index);
+
         return null;
     }
 
     public int getLevelSize() {
+        if(mLevel.size() == 0)
+            mLevel.add(new IOBoard());
         return mLevel.size();
     }
 

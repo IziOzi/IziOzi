@@ -69,6 +69,8 @@ public class IOConfiguration {
     }
 
     public IOLevel getLevel() {
+        if(mLevel == null)
+            mLevel = new IOLevel();
         return mLevel;
     }
 
