@@ -126,6 +126,9 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     private IconTextView mCenterTrashNavigationButton;
     private FrameLayout mFrameLayout;
 
+    private IconTextView mCenterBackButton;
+    private IconTextView mCenterHomeButton;
+
 
     public static final int CREATE_BUTTON_CODE = 8001;
 
@@ -216,20 +219,20 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         LinearLayout leftNavigationLayout = (LinearLayout) findViewById(R.id.leftLayoutNavigationContainer);
         LinearLayout rightNavigationLayout = (LinearLayout) findViewById(R.id.rightLayoutNavigationContainer);
 
-        IconTextView backButton = new IconTextView(this);
+        mCenterBackButton = new IconTextView(this);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.navigation_bar_button_size), (int) getResources().getDimension(R.dimen.navigation_bar_button_size));
-        backButton.setLayoutParams(params);
-        backButton.setGravity(Gravity.CENTER);
-        backButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
-        backButton.setTextColor(Color.WHITE);
+        mCenterBackButton.setLayoutParams(params);
+        mCenterBackButton.setGravity(Gravity.CENTER);
+        mCenterBackButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
+        mCenterBackButton.setTextColor(Color.WHITE);
 
-        backButton.setTextSize(32);
-        Iconify.setIcon(backButton, Iconify.IconValue.fa_arrow_left);
+        mCenterBackButton.setTextSize(32);
+        Iconify.setIcon(mCenterBackButton, Iconify.IconValue.fa_arrow_left);
 
-        centerNavigationLayout.addView(backButton);
+        centerNavigationLayout.addView(mCenterBackButton);
 
-        backButton.setOnClickListener(new View.OnClickListener() {
+        mCenterBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("test", "back stack size " + getSupportFragmentManager().getBackStackEntryCount());
@@ -240,25 +243,27 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         });
 
 
-        final IconTextView homeButton = new IconTextView(this);
+        mCenterHomeButton = new IconTextView(this);
 
         params.setMargins((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()), 0, 0, 0);
-        homeButton.setLayoutParams(params);
-        homeButton.setGravity(Gravity.CENTER);
-        homeButton.setTextSize(32);
-        homeButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
-        homeButton.setTextColor(Color.WHITE);
+        mCenterHomeButton.setLayoutParams(params);
+        mCenterHomeButton.setGravity(Gravity.CENTER);
+        mCenterHomeButton.setTextSize(32);
+        mCenterHomeButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
+        mCenterHomeButton.setTextColor(Color.WHITE);
 
-        Iconify.setIcon(homeButton, Iconify.IconValue.fa_home);
+        Iconify.setIcon(mCenterHomeButton, Iconify.IconValue.fa_home);
 
-        centerNavigationLayout.addView(homeButton);
+        centerNavigationLayout.addView(mCenterHomeButton);
 
-        homeButton.setOnClickListener(new View.OnClickListener() {
+        mCenterHomeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getSupportFragmentManager();
                 while (fm.getBackStackEntryCount() > 0)
                     fm.popBackStackImmediate();
+
+                refreshView();
 
             }
         });
@@ -306,7 +311,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                 if (IOGlobalConfiguration.isEditing) {
                     mActualLevel.addInnerBoardAtIndex(new IOBoard(), mActualIndex + 1);
 
-                    refreshView();
+                    refreshView(mActualLevel.getActiveIndex() + 1);
                 } else {
                     paginateRight();
                 }
@@ -351,6 +356,9 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         });
 
         mCenterTrashNavigationButton.setVisibility(View.GONE);
+        mCenterHomeButton.setVisibility(View.GONE);
+        mCenterBackButton.setVisibility(View.GONE);
+
 
     }
 
@@ -374,11 +382,23 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     public void onRegisterActiveLevel(IOLevel level) {
         mActualLevel = level;
         Log.d("test", "registered level:" + level.toString());
+
+        if (mActualLevel.getLevelSize() > 1 || IOGlobalConfiguration.isEditing) {
+            mLeftNavigationButton.setVisibility(View.VISIBLE);
+            mRightNavigationButton.setVisibility(View.VISIBLE);
+        } else {
+            mLeftNavigationButton.setVisibility(View.GONE);
+            mRightNavigationButton.setVisibility(View.GONE);
+
+        }
+
+
     }
 
     @Override
     public void onPageScrolled(int newIndex) {
         mActualIndex = newIndex;
+        mActualLevel.setActiveIndex(newIndex);
     }
 
     public void tapOnSpeakableButton(final IOSpeakableImageButton spkBtn, final Integer level) {
@@ -701,14 +721,31 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
             case R.id.action_new: {
 
-                FragmentManager fm = getSupportFragmentManager();
-                while (fm.getBackStackEntryCount() > 0)
-                    fm.popBackStackImmediate();
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.warning))
+                        .setMessage(getString(R.string.new_board_alert))
+                        .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FragmentManager fm = getSupportFragmentManager();
+                                while (fm.getBackStackEntryCount() > 0)
+                                    fm.popBackStackImmediate();
 
-                mActiveConfig = new IOConfiguration();
-                fm.beginTransaction()
-                        .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActiveConfig.getLevel()))
-                        .commit();
+                                mActiveConfig = new IOConfiguration();
+                                fm.beginTransaction()
+                                        .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActiveConfig.getLevel()))
+                                        .commit();
+
+                                if (!IOGlobalConfiguration.isEditing)
+                                    toggleEditing();
+
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.cancel), null)
+                        .setCancelable(false)
+                        .create()
+                        .show();
+
 
                 break;
             }
@@ -877,8 +914,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             Iconify.setIcon(mRightNavigationButton, Iconify.IconValue.fa_plus);
             mCenterTrashNavigationButton.setVisibility(View.VISIBLE);
 
-            mLeftNavigationButton.setVisibility(View.INVISIBLE);
-            mRightNavigationButton.setVisibility(View.INVISIBLE);
+            mLeftNavigationButton.setVisibility(View.VISIBLE);
+            mRightNavigationButton.setVisibility(View.VISIBLE);
 
         }
 
@@ -910,15 +947,33 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
         mActualIndex = 0;
 
+        mCenterBackButton.setVisibility(View.VISIBLE);
+        mCenterHomeButton.setVisibility(View.VISIBLE);
+
+
     }
 
     private void refreshView() {
+        refreshView(mActualLevel.getActiveIndex());
+    }
+
+    private void refreshView(int index) {
 
         FragmentManager fm = getSupportFragmentManager();
 
         IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) fm.findFragmentById(mFrameLayout.getId());
 
-        fragment.refreshView();
+        fragment.refreshView(index);
+
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            mCenterBackButton.setVisibility(View.VISIBLE);
+            mCenterHomeButton.setVisibility(View.VISIBLE);
+        } else {
+            mCenterBackButton.setVisibility(View.GONE);
+            mCenterHomeButton.setVisibility(View.GONE);
+
+        }
+
 
     }
 

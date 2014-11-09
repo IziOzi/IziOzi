@@ -99,6 +99,8 @@ public class IOPaginatedBoardFragment extends Fragment {
         if (mListener != null) {
             mListener.onRegisterActiveLevel(mLevel);
         }
+
+        mViewPager.setCurrentItem(mLevel.getActiveIndex(), false);
     }
 
     @Override
@@ -136,10 +138,16 @@ public class IOPaginatedBoardFragment extends Fragment {
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
     }
 
-    public void refreshView()
+    public void refreshView(int newIndex)
     {
         Log.d("trst", "adapter views " + mViewPager.getCurrentItem() + " " + mViewPager.getChildCount());
         mViewPager.setAdapter(new IOPaginatorAdapter(getFragmentManager(), mLevel));
+
+        mViewPager.setCurrentItem(Math.min(mViewPager.getAdapter().getCount() - 1, newIndex));
+
+        if (mListener != null) {
+            mListener.onPageScrolled(mViewPager.getCurrentItem());
+        }
 
     }
 }

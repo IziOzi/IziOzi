@@ -41,6 +41,8 @@ public class IOLevel {
     @ElementList(inline = true, required = false)
     private List<IOBoard> mLevel = new ArrayList<IOBoard>();
 
+    private int activeIndex = 0;
+
     public IOLevel() {
 
     }
@@ -86,5 +88,11 @@ public class IOLevel {
         mLevel.remove(index);
     }
 
+    public int getActiveIndex() {
+        return activeIndex;
+    }
 
+    public void setActiveIndex(int activeIndex) {
+        this.activeIndex = activeIndex;
+    }
 }
