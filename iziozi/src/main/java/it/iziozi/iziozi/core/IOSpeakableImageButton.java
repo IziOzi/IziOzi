@@ -21,27 +21,31 @@
 
 package it.iziozi.iziozi.core;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.widget.ImageButton;
 
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
-import it.iziozi.iziozi.R;
-@Root(name = "SMSpeakableImageButton")
+@Root(name = "IOSpeakableImageButton")
 public class IOSpeakableImageButton extends ImageButton {
 
     @Element(required = false)
-	private String mSentence = "";
+    private String mSentence = "";
 
     @Element(required = false)
     private String mImageFile = "";
+
+    @Element(required = false)
+    private String mAudioFile = "";
 
     @Element(required = false)
     private String mTitle = "";
@@ -49,20 +53,44 @@ public class IOSpeakableImageButton extends ImageButton {
     @Element(required = false)
     private String mUrl = "";
 
-	private Context mContext;
-	
-	public IOSpeakableImageButton(Context ctx) {
-		super(ctx);
-		mContext = ctx;
-	}
+    /*
+    * Nested boards
+    * */
+    @Attribute
+    private Boolean mIsMatrioska = false;
 
-    public IOSpeakableImageButton(@Element(name = "mSentence") String sentence){
-        super(IOApplication.CONTEXT);
-        this.mSentence = sentence;
+    @Element(required = false)
+    private IOLevel mLevel;
+
+    private Boolean mIsHiglighted = false;
+
+    private Context mContext;
+
+    private Boolean mShowBorder;
+
+    private int mPaddingWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+    ;
+
+
+    public IOSpeakableImageButton(Context ctx) {
+        super(ctx);
+        mContext = ctx;
+
+        setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
+
     }
 
-    public IOSpeakableImageButton(){
+    public IOSpeakableImageButton(@Element(name = "mSentence") String sentence) {
         super(IOApplication.CONTEXT);
+        this.mSentence = sentence;
+
+        setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
+    }
+
+    public IOSpeakableImageButton() {
+        super(IOApplication.CONTEXT);
+
+        setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
     }
 
     public String getmSentence() {
@@ -82,12 +110,12 @@ public class IOSpeakableImageButton extends ImageButton {
     }
 
     public void setSentence(String sentence) {
-		mSentence = sentence;
-	}
-	
-	public String getSentence() {
-		return mSentence;
-	}
+        mSentence = sentence;
+    }
+
+    public String getSentence() {
+        return mSentence;
+    }
 
     public String getmImageFile() {
         return mImageFile;
@@ -113,35 +141,89 @@ public class IOSpeakableImageButton extends ImageButton {
         this.mTitle = mTitle;
     }
 
-    public void showInsertDialog() {
-		Log.d("home debug",	"options selected");
-		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
-		View layoutView = inflater.inflate(R.layout.spkbtn_input_layout, null);
-		
-		final EditText txt = (EditText) layoutView.findViewById(R.id.textField);
-        txt.setText(this.mSentence);
-		
-		builder.setTitle("Text to speech")
-		.setView(layoutView)
-		.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Log.d("dialog", "should dismiss and apply ");
-				
-				setSentence(txt.getText().toString());
-			}
-		})
-		.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Log.d("dialog", "should dismiss and discard");
-			}
-		});
-		
-		
-		builder.create().show();
-	}
-	
+    public void setShowBorder(Boolean show) {
+        mShowBorder = show;
+    }
+
+    public String getAudioFile() {
+        return mAudioFile;
+    }
+
+    public void setAudioFile(String mAudioFile) {
+        this.mAudioFile = mAudioFile;
+    }
+
+    public Boolean getIsMatrioska() {
+        return mIsMatrioska;
+    }
+
+    public void setIsMatrioska(Boolean mIsMatrioska) {
+        this.mIsMatrioska = mIsMatrioska;
+    }
+
+    public IOLevel getLevel() {
+
+        if(null == mLevel)
+            mLevel = new IOLevel();
+
+        if(mLevel.getBoardAtIndex(0) == null)
+        {
+            mLevel.addInnerBoard(new IOBoard());
+        }
+
+        return mLevel;
+    }
+
+
+
+    public Boolean getIsHiglighted() {
+        return mIsHiglighted;
+    }
+
+    public void setIsHiglighted(Boolean mIsHiglighted) {
+        this.mIsHiglighted = mIsHiglighted;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if (mShowBorder) {
+
+            float[] f = new float[9];
+            getImageMatrix().getValues(f);
+
+            final float scaleX = f[Matrix.MSCALE_X];
+            final float scaleY = f[Matrix.MSCALE_Y];
+
+            final Drawable d = getDrawable();
+
+            if(null == d)
+                return;
+
+            final int origW = d.getIntrinsicWidth();
+            final int origH = d.getIntrinsicHeight();
+
+            final int actW = Math.round(origW * scaleX);
+            final int actH = Math.round(origH * scaleY);
+
+            int borderWidth = mIsHiglighted ? 6 : 4;
+
+            Paint paint = new Paint();
+            paint.setColor(mIsHiglighted ? Color.RED : Color.BLACK);
+            paint.setStrokeWidth((mIsHiglighted ? 3:2) * borderWidth);
+            paint.setStyle(Paint.Style.STROKE);
+
+
+            Rect r = new Rect();
+
+            r.top = Math.max(mPaddingWidth / 2, getHeight() / 2 - actH / 2 - mPaddingWidth);
+            r.left = Math.max(mPaddingWidth / 2, getWidth() / 2 - actW / 2 - mPaddingWidth);
+            r.right = Math.min(getWidth() - mPaddingWidth / 2, getWidth() / 2 + actW / 2 + mPaddingWidth);
+            r.bottom = Math.min(getHeight() - mPaddingWidth / 2, getHeight() / 2 + actH / 2 + mPaddingWidth);
+
+            canvas.drawRect(r, paint);
+        }
+
+    }
 }

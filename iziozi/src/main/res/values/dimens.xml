@@ -27,5 +27,9 @@
     <dimen name="image_search_height">150dp</dimen>
     <dimen name="cell_search_width">150dp</dimen>
     <dimen name="cell_search_height">200dp</dimen>
+    <dimen name="navigation_bar_height">80dp</dimen>
+    <dimen name="navigation_bar_button_size">60dp</dimen>
+
+
 
 </resources>

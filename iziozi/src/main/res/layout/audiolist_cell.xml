@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) 2014 Martino Lessio -
+  ~ www.martinolessio.com
+  ~ martino [at] iziozi [dot] org
+  ~
+  ~
+  ~ This file is part of the IziOzi project.
+  ~
+  ~ IziOzi is free software:
+  ~ you can redistribute it and/or modify it under the terms of the GNU General Public
+  ~ License as published by the Free Software Foundation, either version 3 of the License,
+  ~ or (at your option) any later version.
+  ~
+  ~ IziOzi is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  ~ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along with IziOzi.
+  ~ If not, see http://www.gnu.org/licenses/.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="80dp"
+    android:background="@android:color/white"
+    >
+    <IconTextView
+        android:text="{fa-microphone}"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        android:textSize="18sp"
+        android:id="@+id/imageView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/audiolistFileNameTextView"
+        android:layout_toEndOf="@+id/imageView"
+        android:layout_toStartOf="@+id/mainLayoutNavigationContainer"
+        android:text="Title"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/audioListCreationTextView"
+        android:layout_alignEnd="@+id/audioListCreationTextView"
+        android:layout_marginTop="10dp"
+        android:layout_alignLeft="@+id/audioListCreationTextView"
+        android:layout_alignStart="@+id/audioListCreationTextView"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Date of creation"
+        android:id="@+id/audioListCreationTextView"
+        android:layout_toEndOf="@+id/imageView"
+        android:layout_toStartOf="@+id/mainLayoutNavigationContainer"
+        android:layout_below="@+id/audiolistFileNameTextView"
+        android:layout_toRightOf="@+id/imageView"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:id="@+id/mainLayoutNavigationContainer">
+
+
+        <IconButton
+            android:text="{fa-play}"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/audiolistPlayButton"
+            android:background="@null" />
+
+        <IconButton
+            android:text="{fa-pencil}"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/audiolistEditButton"
+            android:background="@null" />
+
+        <IconButton
+            android:text="{fa-trash-o}"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/audiolistRecordButton"
+            android:background="@null" />
+
+    </LinearLayout>
+</RelativeLayout>

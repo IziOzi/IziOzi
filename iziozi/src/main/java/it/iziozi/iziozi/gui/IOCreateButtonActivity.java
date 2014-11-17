@@ -27,9 +27,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -39,14 +43,23 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.joanzapata.android.iconify.Iconify;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,15 +87,38 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     private EditText mTitleText, mTextText;
     private TextView mTapHereTextView;
 
-    private String mImageFile;
-    private String mImageTitle;
-    private String mImageText;
-    private String mImageUrl;
+    private String mImageFile = null;
+    private String mImageTitle = null;
+    private String mImageText = null;
+    private String mImageUrl = null;
+    private String mAudioFile = null;
+
+    private TextView mPlayIcon;
+    private TextView mRecordIcon;
+    private TextView mDeleteIcon;
+
+    private ViewGroup mMainView;
+    private View mRecordingOverlay;
+
+    /*
+    * Multimedia fragment manager
+    * */
+    private ViewGroup mOverlayView;
+    private FrameLayout mFragmentContainer;
 
     private File mFileDir, mDestinationFile, mFile;
     private String cameraFile = null;
 
     private int mButtonIndex;
+
+    /*
+    * Audio capture and playback
+    * */
+    private static final String LOG_TAG = "AudioRecordTest";
+
+    private MediaRecorder mRecorder = null;
+    private MediaPlayer mPlayer = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +132,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
             mImageFile = extras.getString(IOBoardActivity.BUTTON_IMAGE_FILE);
             mImageText = extras.getString(IOBoardActivity.BUTTON_TEXT);
             mImageUrl = extras.getString(IOBoardActivity.BUTTON_URL);
+            mAudioFile = extras.getString(IOBoardActivity.BUTTON_AUDIO_FILE);
 
         }
 
@@ -103,10 +140,15 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
         setContentView(R.layout.create_button_activity_layout);
 
+        mMainView = (ViewGroup) findViewById(R.id.mainLayout);
+
         mImageButton = (ImageButton) findViewById(R.id.CreateButtonImageBtn);
         mTitleText = (EditText) findViewById(R.id.CreateButtonTitleText);
         mTextText = (EditText) findViewById(R.id.CreateButtonTextText);
         mTapHereTextView = (TextView) findViewById(R.id.CreateButtonTapLabel);
+
+        mOverlayView = (ViewGroup) findViewById(R.id.createButtonOverlayView);
+        mFragmentContainer = (FrameLayout) findViewById(R.id.createButtonFragmentContainer);
 
         if (mImageTitle != null)
             mTitleText.setText(mImageTitle);
@@ -119,6 +161,63 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
             mTapHereTextView.setVisibility(View.INVISIBLE);
         }
 
+
+        mPlayIcon = (TextView) findViewById(R.id.createButtonPlayIcon);
+        mRecordIcon = (TextView) findViewById(R.id.createButtonRecordIcon);
+        mDeleteIcon = (TextView) findViewById(R.id.createButtonDeleteIcon);
+
+        TextView imageIcon = (TextView) findViewById(R.id.createButtonImageIcon);
+        TextView saveIcon = (TextView) findViewById(R.id.createButtonSaveIcon);
+
+        mPlayIcon.setText(null);
+        mRecordIcon.setText(null);
+        mDeleteIcon.setText(null);
+
+        imageIcon.setText(null);
+        saveIcon.setText(null);
+
+        Iconify.setIcon(mPlayIcon, Iconify.IconValue.fa_play);
+        Iconify.setIcon(mRecordIcon, Iconify.IconValue.fa_circle);
+        Iconify.setIcon(mDeleteIcon, Iconify.IconValue.fa_trash_o);
+        Iconify.setIcon(imageIcon, Iconify.IconValue.fa_picture_o);
+        Iconify.setIcon(saveIcon, Iconify.IconValue.fa_save);
+
+        mPlayIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playAudio(null);
+            }
+        });
+
+        mRecordIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recordAudio(null);
+            }
+        });
+
+        mDeleteIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearAudio(null);
+            }
+        });
+
+        imageIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doTapOnImage(null);
+            }
+        });
+
+        saveIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSave(null);
+            }
+        });
+
+        updateAudioTextLabel();
 
         ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -164,10 +263,26 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     protected void onResume() {
         super.onResume();
 
+        hideKeyboard();
 /*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 */
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mRecorder != null) {
+            mRecorder.release();
+            mRecorder = null;
+        }
+
+        if (mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
+        }
     }
 
     @Override
@@ -188,12 +303,118 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus)
                     mSearchView.setIconified(true);
+                else
+                    hideRecordingOverlay();
             }
         });
 
         mSearchView = searchView;
 
         return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+
+        hideRecordingOverlay();
+
+        switch (item.getItemId()) {
+            case R.id.manageMedias:
+
+                if (mOverlayView.getVisibility() == View.INVISIBLE) {
+
+                    getFragmentManager().beginTransaction()
+                            .add(mFragmentContainer.getId(), new IOMediaManagerFragment())
+                            .commit();
+
+                    AlphaAnimation a = new AlphaAnimation(0.f, 1.f);
+                    a.setDuration(500);
+
+                    mOverlayView.setVisibility(View.VISIBLE);
+                    mOverlayView.startAnimation(a);
+
+
+                    return true;
+                }
+
+            default:
+
+                hideOverlayView();
+                break;
+        }
+
+        return super.onMenuItemSelected(featureId, item);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (View.VISIBLE == mOverlayView.getVisibility()) {
+            hideOverlayView();
+        } else if (null != mRecordingOverlay)
+            hideRecordingOverlay();
+        else
+            super.onBackPressed();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    private void updateAudioTextLabel() {
+        TextView audioTextView = (TextView) findViewById(R.id.audioFileStatusTextView);
+
+        if (null != mAudioFile && mAudioFile.length() > 0) {
+            final SharedPreferences preferences = getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
+
+            File aFile = new File(mAudioFile);
+
+            String labeledName = preferences.getString(aFile.getName(), "");
+            if (labeledName.length() == 0)
+                labeledName = aFile.getName();
+            audioTextView.setText(labeledName);
+        } else {
+            audioTextView.setText(getString(R.string.no_audio_file));
+        }
+    }
+
+    private void hideOverlayView() {
+
+
+        if (mOverlayView.getVisibility() == View.VISIBLE) {
+
+            AlphaAnimation a = new AlphaAnimation(1.0f, 0.f);
+            a.setDuration(500);
+
+            a.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mOverlayView.setVisibility(View.INVISIBLE);
+
+                    getFragmentManager().beginTransaction()
+                            .remove(getFragmentManager().findFragmentById(mFragmentContainer.getId()))
+                            .commit();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            mOverlayView.startAnimation(a);
+        }
     }
 
     public void doSave(View v) {
@@ -214,6 +435,9 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         if (mImageUrl != null && mImageUrl.length() > 0)
             resultIntent.putExtra(IOBoardActivity.BUTTON_URL, mImageUrl);
 
+        if (mAudioFile != null && mAudioFile.length() > 0)
+            resultIntent.putExtra(IOBoardActivity.BUTTON_AUDIO_FILE, mAudioFile);
+
         resultIntent.putExtra(IOBoardActivity.BUTTON_INDEX, mButtonIndex);
 
         setResult(RESULT_OK, resultIntent);
@@ -222,6 +446,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
     public void doTapOnImage(View v) {
 
+        hideKeyboard();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item);
         adapter.add(getResources().getString(R.string.img_search));
@@ -240,7 +465,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
                             searchImage();
                         else if (which == 1)
                             pickFromGallery();
-                        else if(which == 2)
+                        else if (which == 2)
                             pickFromCamera();
 
                     }
@@ -250,8 +475,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
     }
 
-    private void searchImage()
-    {
+    private void searchImage() {
         mSearchView.setIconified(false);
         mSearchView.requestFocus();
 
@@ -266,16 +490,16 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
         mDestinationFile = new File(mFileDir, new Date().getTime() + ".jpg");
         cameraFile = mDestinationFile.getAbsolutePath();
-        try{
-            if(!mDestinationFile.createNewFile())
+        try {
+            if (!mDestinationFile.createNewFile())
                 Log.e("check", "unable to create empty file");
 
             mFile = new File(mDestinationFile.getAbsolutePath());
             Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mDestinationFile));
-            startActivityForResult(i,IMAGE_CAMERA_PICK_INTENT);
+            startActivityForResult(i, IMAGE_CAMERA_PICK_INTENT);
 
-        }catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
 
@@ -292,13 +516,11 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
-        Log.d("img_picker_debug", "enter with code "+resultCode +"req:"+requestCode);
+        Log.d("img_picker_debug", "enter with code " + resultCode + "req:" + requestCode);
 
-        if(resultCode == Activity.RESULT_OK)
-        {
+        if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case IMAGE_GALLERY_PICK_INTENT:
-                {
+                case IMAGE_GALLERY_PICK_INTENT: {
 
                     Uri selectedImage = data.getData();
                     Log.d("image_debug", selectedImage.toString());
@@ -306,8 +528,8 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
                     try {
                         imageStream = getContentResolver().openInputStream(selectedImage);
                         Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
-                        Log.d("image_debug", "onActivityResult:"+bitmap.getWidth()+" " + bitmap.getHeight());
-                        if(bitmap.getHeight()>=2048||bitmap.getWidth()>=2048){
+                        Log.d("image_debug", "onActivityResult:" + bitmap.getWidth() + " " + bitmap.getHeight());
+                        if (bitmap.getHeight() >= 2048 || bitmap.getWidth() >= 2048) {
                             bitmap = scaleToFill(bitmap, 1024, 1024);
                         }
 
@@ -345,17 +567,16 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
                     break;
                 }
 
-                case IMAGE_CAMERA_PICK_INTENT:
-                {
-                    if(mFile ==null){
-                        if(cameraFile!=null)
+                case IMAGE_CAMERA_PICK_INTENT: {
+                    if (mFile == null) {
+                        if (cameraFile != null)
                             mFile = new File(cameraFile);
                         else
                             Log.e("check", "camera file object null");
-                    }else
+                    } else
                         Log.e("check", mFile.getAbsolutePath());
                     Bitmap bitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
-                    if(bitmap.getHeight()>=2048||bitmap.getWidth()>=2048){
+                    if (bitmap.getHeight() >= 2048 || bitmap.getWidth() >= 2048) {
                         bitmap = scaleToFill(bitmap, 1024, 1024);
                     }
 
@@ -393,6 +614,171 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         float factorW = width / (float) b.getWidth();
         float factorToUse = (factorH > factorW) ? factorW : factorH;
         return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factorToUse), (int) (b.getHeight() * factorToUse), false);
+    }
+
+
+    public void recordAudio(View v) {
+        hideKeyboard();
+        onRecord(true);
+    }
+
+    public void clearAudio(View v) {
+        Log.d("audio_debug", "audio file:" + mAudioFile);
+        mAudioFile = null;
+        updateAudioTextLabel();
+    }
+
+    public void playAudio(View v) {
+
+        if (mAudioFile == null || (mPlayer != null && mPlayer.isPlaying())) {
+            onPlay(false);
+            return;
+        }
+
+        onPlay(true);
+    }
+
+    public String getAudioFile() {
+        return mAudioFile;
+    }
+
+    public void setAudioFile(String mAudioFile) {
+        this.mAudioFile = mAudioFile;
+        updateAudioTextLabel();
+    }
+
+    /*
+    * Audio capture and playback methods
+    * */
+
+
+    private void onRecord(boolean start) {
+        if (null == mRecordingOverlay) {
+
+            mRecordingOverlay = getLayoutInflater().inflate(R.layout.recording_overlay_view, null);
+            mRecordingOverlay.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+
+            TextView iconTextView = (TextView) mRecordingOverlay.findViewById(R.id.recordingTextView);
+            iconTextView.setText(null);
+            Iconify.setIcon(iconTextView, Iconify.IconValue.fa_microphone);
+
+            mMainView.addView(mRecordingOverlay);
+            AlphaAnimation a = new AlphaAnimation(0.f, 1.f);
+            a.setDuration(500);
+            mRecordingOverlay.startAnimation(a);
+
+            AnimationSet animationSet = (AnimationSet) AnimationUtils.loadAnimation(this, R.anim.pulse_animation);
+            mRecordingOverlay.findViewById(R.id.recordingTextView).startAnimation(animationSet);
+
+            startRecording();
+        } else {
+
+            hideRecordingOverlay();
+
+        }
+    }
+
+    private void onPlay(boolean start) {
+        if (start) {
+            startPlaying();
+        } else {
+            stopPlaying();
+        }
+    }
+
+    private void hideRecordingOverlay() {
+
+        if (null == mRecordingOverlay)
+            return;
+
+
+        AlphaAnimation a = new AlphaAnimation(1.0f, 0.f);
+        a.setDuration(500);
+
+        a.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                stopRecording();
+                mMainView.removeView(mRecordingOverlay);
+                mRecordingOverlay = null;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        mRecordingOverlay.startAnimation(a);
+    }
+
+
+    private void startPlaying() {
+
+        mPlayer = new MediaPlayer();
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        try {
+            mPlayer.setDataSource(mAudioFile);
+            mPlayer.prepare();
+
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    stopPlaying();
+                }
+            });
+
+            mPlayer.start();
+
+
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+    }
+
+    private void stopPlaying() {
+        mPlayer.reset();
+        mPlayer.release();
+        mPlayer = null;
+    }
+
+    private void startRecording() {
+
+        mFileDir = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/recordings");
+        if (!mFileDir.isDirectory())
+            mFileDir.mkdirs();
+
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mAudioFile = mFileDir + "/" + new Date().getTime() + ".3gp";
+        mRecorder.setOutputFile(mAudioFile);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+
+        mRecorder.start();
+
+    }
+
+    private void stopRecording() {
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
+        updateAudioTextLabel();
     }
 
 

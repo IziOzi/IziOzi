@@ -51,7 +51,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:background="@drawable/border_bg"
-            android:id="@+id/linearLayout"
+            android:id="@+id/mainLayoutNavigationContainer"
             android:layout_below="@+id/create_preview_label"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -84,78 +84,134 @@
 
         </RelativeLayout>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/save"
-            android:id="@+id/button"
-            android:onClick="doSave"
-            android:layout_alignBottom="@+id/linearLayout"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/set_image"
-            android:id="@+id/CreateButtonSetImageButton"
-            android:onClick="doTapOnImage"
-            android:layout_toStartOf="@+id/button"
-            android:layout_alignTop="@+id/button"
-            android:layout_toLeftOf="@+id/button" />
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
+            android:orientation="vertical"
             android:id="@+id/relativeLayout2"
-            android:layout_toEndOf="@+id/linearLayout"
-            android:layout_alignTop="@+id/linearLayout"
-            android:layout_toRightOf="@+id/linearLayout">
+            android:layout_toEndOf="@+id/mainLayoutNavigationContainer"
+            android:layout_alignTop="@+id/mainLayoutNavigationContainer"
+            android:layout_toRightOf="@+id/mainLayoutNavigationContainer"
+            android:paddingLeft="20dp"
+            android:paddingRight="0dp"
+            android:layout_alignBottom="@+id/mainLayoutNavigationContainer">
 
             <EditText
                 android:id="@+id/CreateButtonTitleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:layout_toEndOf="@+id/CreateButtonTitleLabel"
-                android:layout_below="@+id/CreateButtonTitleLabel"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <TextView
-                android:id="@+id/CreateButtonTitleLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/c_title"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <TextView
-                android:id="@+id/CreateButtonTextLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/c_text"
-                android:layout_below="@+id/CreateButtonTitleText"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp" />
+                android:hint="@string/c_title" />
 
             <EditText
                 android:id="@+id/CreateButtonTextText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:ems="10"
-                android:layout_below="@+id/CreateButtonTextLabel"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-        </RelativeLayout>
+                android:layout_alignParentEnd="true"
+                android:hint="@string/c_text"
+                android:layout_below="@+id/CreateButtonTitleText"
+                android:layout_marginTop="10dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:id="@+id/linearLayout3"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/audio_file"
+                    android:id="@+id/textView2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_audio_file"
+                    android:id="@+id/audioFileStatusTextView"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_horizontal"
+            android:id="@+id/linearLayout2"
+            android:layout_alignBottom="@+id/mainLayoutNavigationContainer"
+            android:layout_marginRight="10dp"
+            android:layout_alignLeft="@+id/relativeLayout2"
+            android:layout_alignStart="@+id/relativeLayout2">
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/createButtonPlayIcon"
+                android:src="@android:drawable/ic_media_play"
+                android:onClick="playAudio"
+                android:text="P"
+                android:textSize="28sp"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:textColor="#ff6fff41" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/createButtonRecordIcon"
+                android:src="@android:drawable/ic_btn_speak_now"
+                android:onClick="recordAudio"
+                android:text="R"
+                android:textSize="28sp"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:textColor="#ffff2111" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/createButtonDeleteIcon"
+                android:src="@android:drawable/ic_menu_delete"
+                android:onClick="clearAudio"
+                android:text="D"
+                android:textSize="28sp"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:textColor="#ff363636" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/createButtonImageIcon"
+                android:src="@android:drawable/ic_menu_delete"
+                android:onClick="doTapOnImage"
+                android:text="I"
+                android:textSize="28sp"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:textColor="#ff363636"
+                android:phoneNumber="true" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/createButtonSaveIcon"
+                android:src="@android:drawable/ic_menu_delete"
+                android:onClick="doSave"
+                android:text="S"
+                android:textSize="28sp"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:textColor="#ff363636" />
+        </LinearLayout>
 
     </RelativeLayout>
 
