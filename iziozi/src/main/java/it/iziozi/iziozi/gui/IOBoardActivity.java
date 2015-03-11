@@ -23,8 +23,10 @@ package it.iziozi.iziozi.gui;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -44,6 +46,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -86,6 +89,11 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     private Boolean mCanSpeak = false;
     private String mActualConfigName = null;
 
+    /*
+    * MediaPlayer vars
+    * */
+
+    private final MediaPlayer mPlayer = new MediaPlayer();
 
     /*
     * Interface Lock vars
@@ -110,6 +118,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     private Handler scanModeHandler = null;
     private Runnable scanModeRunnable = null;
     private long mScanModeDelay = 3000;
+    private int mScanModeMaxIndex;
+
 
     /*
     * Neurosky Mindwave support for blink detection
@@ -123,12 +133,19 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     private int mActualIndex = 0;
     private IconTextView mLeftNavigationButton;
     private IconTextView mRightNavigationButton;
+    private IconTextView mLeftEditButton;
+    private IconTextView mRightEditButton;
     private IconTextView mCenterTrashNavigationButton;
     private FrameLayout mFrameLayout;
 
     private IconTextView mCenterBackButton;
     private IconTextView mCenterHomeButton;
 
+    /*
+    * side navigation vars
+    * */
+    private IOSpeakableImageButton mLeftSideArrowButton;
+    private IOSpeakableImageButton mRightSideArrowButton;
 
     public static final int CREATE_BUTTON_CODE = 8001;
 
@@ -152,6 +169,12 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
         this.mActiveConfig = IOConfiguration.getSavedConfiguration();
 
+        SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
+
+        this.mActualConfigName = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, null);
+        if(mActualConfigName != null)
+            mActualConfigName = mActualConfigName.replace(".xml", "");
+
         if (this.mActiveConfig == null) {
             this.mActiveConfig = new IOConfiguration();
             showHintAlert();
@@ -168,7 +191,10 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         fm.beginTransaction()
                 .add(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActualLevel))
                 .commit();
+
         setupNavButtons();
+
+        setupSideNavButtons();
 
         /*
         * Neurosky Mindwave support
@@ -182,12 +208,19 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         this.tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-                if (tts.isLanguageAvailable(Locale.getDefault()) >= 0)
+
+                Locale locale = Locale.getDefault();
+                if (null == locale)
+                    locale = Locale.ITALIAN;
+
+                if (tts.isLanguageAvailable(locale) >= 0)
                     tts.setLanguage(Locale.getDefault());
                 else
                     tts.setLanguage(Locale.ENGLISH);
 
+/*
                 tts.speak(getResources().getString(R.string.tts_ready), TextToSpeech.QUEUE_FLUSH, null);
+*/
                 mCanSpeak = true;
             }
         });
@@ -212,6 +245,64 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                 });
     }
 
+    private void showSideNavButtons()
+    {
+        mLeftSideArrowButton.setVisibility(View.VISIBLE);
+        mRightSideArrowButton.setVisibility(View.VISIBLE);
+    }
+
+    private void hideSideNavButtons()
+    {
+        mLeftSideArrowButton.setVisibility(View.GONE);
+        mRightSideArrowButton.setVisibility(View.GONE);
+    }
+
+
+    private void setupSideNavButtons(){
+        ViewGroup leftContainer = (ViewGroup) findViewById(R.id.leftnav_container);
+        ViewGroup rightContainer = (ViewGroup) findViewById(R.id.rightnav_container);
+
+        IOSpeakableImageButton leftArrow = new IOSpeakableImageButton(this);
+        IOSpeakableImageButton rightArrow = new IOSpeakableImageButton(this);
+
+        int size = (int)(getResources().getDimension(R.dimen.nav_buttons_size) * getResources().getDisplayMetrics().densityDpi / 160);
+
+        leftArrow.setLayoutParams(new ViewGroup.LayoutParams(size,size));
+        rightArrow.setLayoutParams(new ViewGroup.LayoutParams(size,size));
+
+        leftArrow.setImageDrawable(getResources().getDrawable(R.drawable.freccia_sx));
+        rightArrow.setImageDrawable(getResources().getDrawable(R.drawable.freccia_dx));
+
+        leftArrow.setShowBorder(IOConfiguration.getShowBorders());
+        rightArrow.setShowBorder(IOConfiguration.getShowBorders());
+
+        leftContainer.addView(leftArrow);
+
+        rightContainer.addView(rightArrow);
+
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                paginateLeft();
+            }
+        });
+
+        rightArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                paginateRight();
+            }
+        });
+
+        mRightSideArrowButton = rightArrow;
+        mLeftSideArrowButton = leftArrow;
+
+    }
+
+    private void checkScanModeButtons(){
+
+    }
+
 
     private void setupNavButtons() {
 
@@ -228,13 +319,14 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         mCenterBackButton.setTextColor(Color.WHITE);
 
         mCenterBackButton.setTextSize(32);
-        Iconify.setIcon(mCenterBackButton, Iconify.IconValue.fa_arrow_left);
+        Iconify.setIcon(mCenterBackButton, Iconify.IconValue.fa_arrow_up);
 
         centerNavigationLayout.addView(mCenterBackButton);
 
         mCenterBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                IOGlobalConfiguration.isInSwapMode = false;
                 Log.d("test", "back stack size " + getSupportFragmentManager().getBackStackEntryCount());
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0)
                     getSupportFragmentManager().popBackStackImmediate();
@@ -270,6 +362,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
         mLeftNavigationButton = new IconTextView(this);
 
+        params.setMargins(0, 0, 0, 0);
         mLeftNavigationButton.setLayoutParams(params);
         mLeftNavigationButton.setGravity(Gravity.CENTER);
         mLeftNavigationButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
@@ -284,13 +377,62 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             @Override
             public void onClick(View v) {
 
-                if (IOGlobalConfiguration.isEditing) {
-                    mActualLevel.addInnerBoardAtIndex(new IOBoard(), mActualIndex);
-                    refreshView();
-                } else
                     paginateLeft();
             }
         });
+
+        mLeftNavigationButton.setVisibility(View.INVISIBLE);
+
+        mLeftEditButton = new IconTextView(this);
+
+        params.setMargins(20, 0, 0, 0);
+        mLeftEditButton.setLayoutParams(params);
+        mLeftEditButton.setGravity(Gravity.CENTER);
+        mLeftEditButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
+        mLeftEditButton.setTextColor(Color.WHITE);
+
+        mLeftEditButton.setTextSize(32);
+        Iconify.setIcon(mLeftEditButton, Iconify.IconValue.fa_plus);
+
+        leftNavigationLayout.addView(mLeftEditButton);
+
+        mLeftEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (IOGlobalConfiguration.isEditing) {
+                    mActualLevel.addInnerBoardAtIndex(new IOBoard(), mActualIndex);
+                    refreshView();
+                }
+            }
+        });
+
+        mRightEditButton = new IconTextView(this);
+
+        mRightEditButton.setLayoutParams(params);
+        mRightEditButton.setGravity(Gravity.CENTER);
+        mRightEditButton.setBackground(getResources().getDrawable(R.drawable.circular_shape));
+        mRightEditButton.setTextColor(Color.WHITE);
+
+        mRightEditButton.setTextSize(32);
+        Iconify.setIcon(mRightEditButton, Iconify.IconValue.fa_plus);
+
+        rightNavigationLayout.addView(mRightEditButton);
+
+        mRightEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (IOGlobalConfiguration.isEditing) {
+                    mActualLevel.addInnerBoardAtIndex(new IOBoard(), mActualIndex + 1);
+
+                    refreshView(mActualLevel.getActiveIndex() + 1);
+                }
+            }
+        });
+
+        mRightEditButton.setVisibility(View.GONE);
+        mLeftEditButton.setVisibility(View.GONE);
 
         mRightNavigationButton = new IconTextView(this);
 
@@ -308,15 +450,14 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             @Override
             public void onClick(View v) {
 
-                if (IOGlobalConfiguration.isEditing) {
-                    mActualLevel.addInnerBoardAtIndex(new IOBoard(), mActualIndex + 1);
-
-                    refreshView(mActualLevel.getActiveIndex() + 1);
-                } else {
                     paginateRight();
-                }
+
             }
         });
+
+        if(mActualLevel.getLevelSize() == 1)
+            mRightNavigationButton.setVisibility(View.INVISIBLE);
+
 
         mCenterTrashNavigationButton = new IconTextView(this);
 
@@ -365,6 +506,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     @Override
     public void onBackPressed() {
 
+        IOGlobalConfiguration.isInSwapMode = false;
+
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStackImmediate();
             refreshView();
@@ -381,90 +524,181 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     @Override
     public void onRegisterActiveLevel(IOLevel level) {
         mActualLevel = level;
+
         Log.d("test", "registered level:" + level.toString());
 
         if (mActualLevel.getLevelSize() > 1 || IOGlobalConfiguration.isEditing) {
-            mLeftNavigationButton.setVisibility(View.VISIBLE);
             mRightNavigationButton.setVisibility(View.VISIBLE);
         } else {
             mLeftNavigationButton.setVisibility(View.GONE);
             mRightNavigationButton.setVisibility(View.GONE);
-
         }
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
 
+        mPlayer.reset();
     }
 
     @Override
     public void onPageScrolled(int newIndex) {
         mActualIndex = newIndex;
         mActualLevel.setActiveIndex(newIndex);
+
+        mLeftNavigationButton.setVisibility(View.VISIBLE);
+        mRightNavigationButton.setVisibility(View.VISIBLE);
+
+        Log.d("TAG", "level size" + mActualLevel.getLevelSize());
+        Log.d("TAG", "level size" + mActiveConfig.getLevel().getLevelSize());
+
+        if (newIndex == 0)
+            mLeftNavigationButton.setVisibility(View.INVISIBLE);
+        else if (newIndex == mActiveConfig.getLevel().getLevelSize() - 1)
+            mRightNavigationButton.setVisibility(View.INVISIBLE);
     }
 
     public void tapOnSpeakableButton(final IOSpeakableImageButton spkBtn, final Integer level) {
         if (IOGlobalConfiguration.isEditing) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            LayoutInflater inflater = getLayoutInflater();
+            if(IOGlobalConfiguration.isInSwapMode)
+            {
 
-            View layoutView = inflater.inflate(R.layout.editmode_alertview, null);
+/*
+                IOSpeakableImageButton firstButton = IOGlobalConfiguration.swapStorage;
 
-            builder.setTitle(getString(R.string.choose));
 
-            builder.setView(layoutView);
+                int secondIndex = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().indexOf(spkBtn);
 
-            final AlertDialog dialog = builder.create();
+                List<IOSpeakableImageButton> secondList = mActiveConfig.getLevel().getBoardAtIndex(mActualIndex).getButtons();
 
-            final Switch matrioskaSwitch = (Switch) layoutView.findViewById(R.id.editModeAlertToggleBoard);
-            Button editPictoButton = (Button) layoutView.findViewById(R.id.editModeAlertActionPicture);
-            final Button editBoardButton = (Button) layoutView.findViewById(R.id.editModeAlertActionBoard);
+                IOGlobalConfiguration.firstList.remove(firstButton);
+                IOGlobalConfiguration.firstList.add(IOGlobalConfiguration.firstIndex, spkBtn);
 
-            matrioskaSwitch.setChecked(spkBtn.getIsMatrioska());
-            editBoardButton.setEnabled(spkBtn.getIsMatrioska());
+                secondList.remove(spkBtn);
+                secondList.add(secondIndex, firstButton);
 
-            matrioskaSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    spkBtn.setIsMatrioska(isChecked);
-                    editBoardButton.setEnabled(isChecked);
-                }
-            });
+                IOGlobalConfiguration.isInSwapMode = false;
+                IOGlobalConfiguration.swapStorage = null;
 
-            editPictoButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //spkBtn.showInsertDialog();
-                    Intent cIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
-                    cIntent.putExtra(BUTTON_INDEX, mActualLevel.getBoardAtIndex(mActualIndex).getButtons().indexOf(spkBtn));
+                refreshView();
+*/
 
-                    cIntent.putExtra(BUTTON_TEXT, spkBtn.getSentence());
-                    cIntent.putExtra(BUTTON_TITLE, spkBtn.getmTitle());
-                    cIntent.putExtra(BUTTON_IMAGE_FILE, spkBtn.getmImageFile());
-                    cIntent.putExtra(BUTTON_AUDIO_FILE, spkBtn.getAudioFile());
+            }else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                LayoutInflater inflater = getLayoutInflater();
 
-                    startActivityForResult(cIntent, CREATE_BUTTON_CODE);
+                View layoutView = inflater.inflate(R.layout.editmode_alertview, null);
 
-                    matrioskaSwitch.setOnCheckedChangeListener(null);
+                builder.setTitle(getString(R.string.choose));
 
-                    dialog.dismiss();
-                }
-            });
+                builder.setView(layoutView);
 
-            editBoardButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                final AlertDialog dialog = builder.create();
 
-                    IOLevel nestedBoard = spkBtn.getLevel();
+                final Switch matrioskaSwitch = (Switch) layoutView.findViewById(R.id.editModeAlertToggleBoard);
+                Button editPictoButton = (Button) layoutView.findViewById(R.id.editModeAlertActionPicture);
+                final Button editBoardButton = (Button) layoutView.findViewById(R.id.editModeAlertActionBoard);
+                final Button movePictoButton = (Button) layoutView.findViewById(R.id.editModeAlertActionMove);
+                final Button deletePictoButton = (Button) layoutView.findViewById(R.id.editModeAlertActionDelete);
 
-                    pushLevel(nestedBoard);
+                matrioskaSwitch.setChecked(spkBtn.getIsMatrioska());
+                editBoardButton.setEnabled(spkBtn.getIsMatrioska());
 
-                    matrioskaSwitch.setOnCheckedChangeListener(null);
+                matrioskaSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        spkBtn.setIsMatrioska(isChecked);
+                        editBoardButton.setEnabled(isChecked);
+                    }
+                });
 
-                    dialog.dismiss();
-                }
-            });
+                editPictoButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //spkBtn.showInsertDialog();
+                        Intent cIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
+                        cIntent.putExtra(BUTTON_INDEX, mActualLevel.getBoardAtIndex(mActualIndex).getButtons().indexOf(spkBtn));
 
-            dialog.show();
+                        cIntent.putExtra(BUTTON_TEXT, spkBtn.getSentence());
+                        cIntent.putExtra(BUTTON_TITLE, spkBtn.getmTitle());
+                        cIntent.putExtra(BUTTON_IMAGE_FILE, spkBtn.getmImageFile());
+                        cIntent.putExtra(BUTTON_AUDIO_FILE, spkBtn.getAudioFile());
+
+                        startActivityForResult(cIntent, CREATE_BUTTON_CODE);
+
+                        matrioskaSwitch.setOnCheckedChangeListener(null);
+
+                        dialog.dismiss();
+                    }
+                });
+
+                editBoardButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        IOLevel nestedBoard = spkBtn.getLevel();
+
+                        pushLevel(nestedBoard);
+
+                        matrioskaSwitch.setOnCheckedChangeListener(null);
+
+                        dialog.dismiss();
+                    }
+                });
+
+                movePictoButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        dialog.dismiss();
+
+
+                        new AlertDialog.Builder(IOBoardActivity.this)
+                                .setTitle(getString(R.string.move))
+                                .setMessage(getString(R.string.move_hint))
+                                .setPositiveButton(getString(R.string.continue_string), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        IOGlobalConfiguration.isInSwapMode = true;
+                                        IOGlobalConfiguration.swapStorage = spkBtn;
+
+                                        for (IOSpeakableImageButton btn : mActualLevel.getBoardAtIndex(mActualIndex).getButtons())
+                                            if(btn.getmSentence().equals(IOGlobalConfiguration.swapStorage.getmSentence()) && btn.getmImageFile().equals(IOGlobalConfiguration.swapStorage.getmImageFile()))
+                                                IOGlobalConfiguration.firstIndex = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().indexOf(btn);
+
+                                        IOGlobalConfiguration.firstList = mActualLevel.getBoardAtIndex(mActualIndex).getButtons();
+                                        IOGlobalConfiguration.swapLevelIndex = mActualIndex;
+                                    }
+                                })
+                                .setNegativeButton(getString(R.string.cancel), null)
+                                .create()
+                                .show();
+
+                    }
+                });
+
+                deletePictoButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        int index = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().indexOf(spkBtn);
+                        mActualLevel.getBoardAtIndex(mActualIndex).getButtons().remove(spkBtn);
+
+                        mActualLevel.getBoardAtIndex(mActualIndex).getButtons().add(index, new IOSpeakableImageButton(IOBoardActivity.this));
+
+                        refreshView();
+
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+
+            }
+
 
 
         } else {
@@ -473,8 +707,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                 IOSpeakableImageButton scannedButton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(mActualScanIndex);
                 if (scannedButton.getAudioFile() != null && scannedButton.getAudioFile().length() > 0) {
 
-                    final MediaPlayer mPlayer = new MediaPlayer();
                     try {
+                        mPlayer.reset();
                         mPlayer.setDataSource(scannedButton.getAudioFile());
                         mPlayer.prepare();
 
@@ -494,10 +728,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                     }
                 } else if (mCanSpeak) {
                     Log.d("speakable_debug", "should say: " + scannedButton.getSentence());
-                    if (scannedButton.getSentence() == "")
-                        tts.speak(getResources().getString(R.string.tts_nosentence), TextToSpeech.QUEUE_FLUSH, null);
-                    else
-                        tts.speak(scannedButton.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
+
+                    tts.speak(scannedButton.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
                 }
@@ -509,8 +741,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
                 if (spkBtn.getAudioFile() != null && spkBtn.getAudioFile().length() > 0) {
 
-                    final MediaPlayer mPlayer = new MediaPlayer();
                     try {
+                        mPlayer.reset();
                         mPlayer.setDataSource(spkBtn.getAudioFile());
                         mPlayer.prepare();
 
@@ -530,10 +762,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                     }
                 } else if (mCanSpeak) {
                     Log.d("speakable_debug", "should say: " + spkBtn.getSentence());
-                    if (spkBtn.getSentence() == "")
-                        tts.speak(getResources().getString(R.string.tts_nosentence), TextToSpeech.QUEUE_FLUSH, null);
-                    else
-                        tts.speak(spkBtn.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
+                    tts.speak(spkBtn.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
                 }
@@ -560,6 +789,14 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(mUnlockAlert != null && mUnlockAlert.isShowing())
+            mUnlockAlert.dismiss();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
@@ -580,6 +817,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     @Override
     public boolean onMenuOpened(int featureId, Menu menu) {
 
+        IOGlobalConfiguration.isInSwapMode = false;
 
         if (mUILocked) {
             closeOptionsMenu();
@@ -721,23 +959,74 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
             case R.id.action_new: {
 
+
+
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.warning))
                         .setMessage(getString(R.string.new_board_alert))
                         .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                FragmentManager fm = getSupportFragmentManager();
-                                while (fm.getBackStackEntryCount() > 0)
-                                    fm.popBackStackImmediate();
 
-                                mActiveConfig = new IOConfiguration();
-                                fm.beginTransaction()
-                                        .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActiveConfig.getLevel()))
-                                        .commit();
+                                final AlertDialog.Builder alert = new AlertDialog.Builder(IOBoardActivity.this);
 
-                                if (!IOGlobalConfiguration.isEditing)
-                                    toggleEditing();
+                                View contentView = getLayoutInflater().inflate(R.layout.rename_alert_layout, null);
+
+                                final EditText inputText = (EditText) contentView.findViewById(R.id.newNameEditText);
+
+                                alert.setView(contentView);
+                                alert.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        String value = inputText.getText().toString().trim();
+
+                                        if (value.indexOf(".xml") != -1)
+                                            value = value.replace(".xml", "");
+
+                                        File dirFile = new File(Environment.getExternalStorageDirectory()
+                                                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
+                                        File file = new File(dirFile.toString(), value + ".xml");
+
+                                        if (file.exists()) {
+                                            dialog.cancel();
+
+                                            new AlertDialog.Builder(IOBoardActivity.this)
+                                                    .setTitle(getString(R.string.warning))
+                                                    .setMessage(getString(R.string.file_already_exists))
+                                                    .setPositiveButton(getString(R.string.continue_string), null)
+                                                    .create()
+                                                    .show();
+
+                                        } else {
+
+                                            FragmentManager fm = getSupportFragmentManager();
+                                            while (fm.getBackStackEntryCount() > 0)
+                                                fm.popBackStackImmediate();
+
+                                            mActiveConfig = new IOConfiguration();
+                                            fm.beginTransaction()
+                                                    .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActiveConfig.getLevel()))
+                                                    .commit();
+
+                                            if (!IOGlobalConfiguration.isEditing)
+                                                toggleEditing();
+
+
+                                            IOBoardActivity.this.mActiveConfig.saveAs(value);
+                                            mActualConfigName = value;
+                                        }
+                                    }
+                                });
+
+                                alert.setNegativeButton(getString(R.string.cancel),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                                alert.show();
+
+
 
                             }
                         })
@@ -818,12 +1107,19 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                     @Override
                     public boolean accept(File dir, String filename) {
 
-                        if (filename.indexOf(".xml") != -1)
+                        if (filename.indexOf(".xml") != -1) {
                             return true;
+                        }
 
                         return false;
                     }
                 });
+
+                int ss = configFiles.length;
+                for(int i = 0; i < ss; i++)
+                {
+                    configFiles[i] = configFiles[i].replace(".xml", "");
+                }
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item);
 
@@ -837,7 +1133,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                             public void onClick(DialogInterface dialog, int which) {
                                 Log.d("media_debug", "click on item " + which);
 
-                                String fileName = configFiles[which];
+                                String fileName = configFiles[which] + ".xml";
                                 Log.d("board_debug", fileName);
 
                                 FragmentManager fm = getSupportFragmentManager();
@@ -845,7 +1141,13 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                                     fm.popBackStackImmediate();
 
 
-                                mActiveConfig = IOConfiguration.getSavedConfiguration(fileName);
+                                 mActiveConfig = IOConfiguration.getSavedConfiguration(fileName);
+                                SharedPreferences preferences = getSharedPreferences(IOApplication.APPLICATION_NAME, MODE_PRIVATE);
+
+                                mActualConfigName = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, null);
+                                if(mActualConfigName != null)
+                                    mActualConfigName = mActualConfigName.replace(".xml", "");
+
 
                                 fm.beginTransaction()
                                         .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActiveConfig.getLevel()))
@@ -895,27 +1197,19 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             else
                 IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
 
-            Iconify.setIcon(mLeftNavigationButton, Iconify.IconValue.fa_arrow_left);
-            Iconify.setIcon(mRightNavigationButton, Iconify.IconValue.fa_arrow_right);
+            mLeftEditButton.setVisibility(View.GONE);
+            mRightEditButton.setVisibility(View.GONE);
 
             mCenterTrashNavigationButton.setVisibility(View.GONE);
 
-            if (mActualLevel.getLevelSize() == 1) {
-                mLeftNavigationButton.setVisibility(View.GONE);
-                mRightNavigationButton.setVisibility(View.GONE);
-            } else {
-                mLeftNavigationButton.setVisibility(View.VISIBLE);
-                mRightNavigationButton.setVisibility(View.VISIBLE);
-
-            }
 
         } else {
-            Iconify.setIcon(mLeftNavigationButton, Iconify.IconValue.fa_plus);
-            Iconify.setIcon(mRightNavigationButton, Iconify.IconValue.fa_plus);
+
+            mLeftEditButton.setVisibility(View.VISIBLE);
+            mRightEditButton.setVisibility(View.VISIBLE);
+
             mCenterTrashNavigationButton.setVisibility(View.VISIBLE);
 
-            mLeftNavigationButton.setVisibility(View.VISIBLE);
-            mRightNavigationButton.setVisibility(View.VISIBLE);
 
         }
 
@@ -1104,7 +1398,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
                     @Override
                     public void onFinish() {
-                        IOBoardActivity.this.mUnlockAlert.dismiss();
+                        if(mUnlockAlert != null && mUnlockAlert.isShowing())
+                                mUnlockAlert.dismiss();
                         lockUI();
                     }
                 };
@@ -1154,11 +1449,19 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         * */
         tgDevice.connect(true);
 
-        mFrameLayout.setOnClickListener(new View.OnClickListener() {
+
+        findViewById(R.id.rootContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IOSpeakableImageButton actualButton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(mActualScanIndex);
-                actualButton.callOnClick();
+
+                if(mActualScanIndex == mScanModeMaxIndex)
+                    paginateRight();
+                else if(mActualScanIndex == mScanModeMaxIndex + 1 )
+                    paginateLeft();
+                else {
+                    IOSpeakableImageButton actualButton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(mActualScanIndex);
+                    actualButton.callOnClick();
+                }
 
             }
         });
@@ -1170,7 +1473,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         scanModeRunnable = new Runnable() {
             @Override
             public void run() {
-
+                Log.d("Debug", "higlighting: " + (mActualScanIndex+1));
                 highlightButtonAtIndex(mActualScanIndex + 1);
 
                 scanModeHandler.postDelayed(this, mScanModeDelay);
@@ -1183,18 +1486,38 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
     private void highlightButtonAtIndex(int index) {
 
-        int scanModeMaxIndex = mActualLevel.getBoardAtIndex(mActualIndex).getCols() * mActualLevel.getBoardAtIndex(mActualIndex).getRows();
-        index = mod(index, scanModeMaxIndex);
-        int scanModePrevIndex = mod(index - 1, scanModeMaxIndex);
+        mScanModeMaxIndex = mActualLevel.getBoardAtIndex(mActualIndex).getCols() * mActualLevel.getBoardAtIndex(mActualIndex).getRows();
+        index = mod(index, mScanModeMaxIndex + 2);
+        int scanModePrevIndex = mod(index - 1, mScanModeMaxIndex);
 
-        IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(index);
-        button.setIsHiglighted(true);
-        button.invalidate();
+        if(index == mScanModeMaxIndex + 1 )
+        {
+            //left
 
-        IOSpeakableImageButton prevbutton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(scanModePrevIndex);
-        prevbutton.setIsHiglighted(false);
-        prevbutton.invalidate();
+            mLeftSideArrowButton.setIsHiglighted(true);
+            mLeftSideArrowButton.invalidate();
+        }else if(index == mScanModeMaxIndex)
+        {
+            //right
+            mRightSideArrowButton.setIsHiglighted(true);
+            mRightSideArrowButton.invalidate();
 
+        }else {
+
+            mRightSideArrowButton.setIsHiglighted(false);
+            mRightSideArrowButton.invalidate();
+
+            mLeftSideArrowButton.setIsHiglighted(false);
+            mLeftSideArrowButton.invalidate();
+
+            IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(index);
+            button.setIsHiglighted(true);
+            button.invalidate();
+
+            IOSpeakableImageButton prevbutton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(scanModePrevIndex);
+            prevbutton.setIsHiglighted(false);
+            prevbutton.invalidate();
+        }
         mActualScanIndex = index;
 
     }
@@ -1213,7 +1536,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         button.setIsHiglighted(false);
         button.invalidate();
 
-        mFrameLayout.setOnClickListener(null);
+        findViewById(R.id.rootContainer).setOnClickListener(null);
 
         scanModeHandler.removeCallbacks(scanModeRunnable);
         scanModeHandler = null;

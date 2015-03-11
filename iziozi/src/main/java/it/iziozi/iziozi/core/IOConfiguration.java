@@ -45,7 +45,6 @@ import it.iziozi.iziozi.R;
 @Root(name = "IOConfiguration")
 public class IOConfiguration {
 
-    public static final String IO_LAST_BOARD_USED = "last_board_used";
 
     private Context context;
 
@@ -119,7 +118,9 @@ public class IOConfiguration {
             serializer.write(this, file);
 
             SharedPreferences.Editor preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE).edit();
-            preferences.putString(IO_LAST_BOARD_USED, fileName + ".xml");
+            preferences.putString(IOGlobalConfiguration.IO_LAST_BOARD_USED, fileName + ".xml");
+
+            preferences.commit();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,7 +150,7 @@ public class IOConfiguration {
 
         SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
 
-        String lastBoard = preferences.getString(IO_LAST_BOARD_USED, "config.xml");
+        String lastBoard = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, "config.xml");
 
         File file = new File(dirFile.toString(), lastBoard);
 
@@ -183,8 +184,8 @@ public class IOConfiguration {
             config = serializer.read(IOConfiguration.class, file);
 
             SharedPreferences.Editor preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE).edit();
-            preferences.putString(IO_LAST_BOARD_USED, fileName);
-
+            preferences.putString(IOGlobalConfiguration.IO_LAST_BOARD_USED, fileName);
+            preferences.commit();
 
         } catch (Exception e) {
             Log.w("XmlSeializer", "Unable to read config.xml");

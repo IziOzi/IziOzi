@@ -112,7 +112,6 @@
     <string name="tap_to_stop_recording">Tap anywhere when you\'re gone!</string>
     <string name="audio_file">Audio File: </string>
     <string name="no_audio_file">No audio file set.</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="image">PIC</string>
     <string name="board">BRD</string>
@@ -124,6 +123,13 @@
     <string name="manage_boards">Manage boards</string>
 
     <string name="new_board_alert">Warning! Every unsaved modify will be lost!</string>
+
+    <!--Move mode-->
+    <string name="swap_board">Move image</string>
+    <string name="move">Move</string>
+    <string name="move_hint">Tap on the position where the image should be moved. The two images will be swapped.</string>
+
+    <string name="delete_image">Delete image</string>
 
 
 </resources>

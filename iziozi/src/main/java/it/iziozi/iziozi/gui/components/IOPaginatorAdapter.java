@@ -49,6 +49,8 @@ public class IOPaginatorAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
+        if(mLevel == null)
+            return 0;
         return mLevel.getLevelSize();
     }
 

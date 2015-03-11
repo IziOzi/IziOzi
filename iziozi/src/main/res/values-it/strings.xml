@@ -122,15 +122,19 @@
     <string name="board">TAV</string>
     <string name="board_enabled">Tavola ad abero</string>
     <string name="edit_picto">Configura immagine</string>
-    <string name="edit_board">Configura Tavola</string>
+    <string name="edit_board">Configura tavola</string>
     <string name="file_already_exists">Un file con questo nome esiste già! Scegline un altro.</string>
     <string name="delete_page_alert">Sei sicuro di voler eliminare questa pagina? L\'operazione sarà definitiva!</string>
     <string name="manage_boards">Gestisci tavole</string>
 
-
     <string name="new_board_alert">Attenzione, ogni modifica non salvata andrà persa!</string>
 
+    <!--Move mode-->
+    <string name="swap_board">Sposta immagina</string>
+    <string name="move">Sposta</string>
+    <string name="move_hint">Tocca ora la nuova posizione dove muovere l\'immagine. Le due immagini verranno scambiate.</string>
 
+    <string name="delete_image">Cancella immagine</string>
 
 
 

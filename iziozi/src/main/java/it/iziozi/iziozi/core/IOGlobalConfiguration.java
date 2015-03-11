@@ -21,6 +21,8 @@
 
 package it.iziozi.iziozi.core;
 
+import java.util.List;
+
 /**
  * Created by martinolessio on 31/10/14.
  */
@@ -28,6 +30,14 @@ public class IOGlobalConfiguration {
 
     public static Boolean isEditing = false;
     public static Boolean isScanMode = false;
+    public static Boolean isInSwapMode = false;
+    public static int swapLevelIndex = -1;
+
+    public static List<IOSpeakableImageButton> firstList = null;
+    public static int firstIndex = -1;
+    public static IOSpeakableImageButton swapStorage = null;
+
+    public static final String IO_LAST_BOARD_USED = "last_board_used";
 
 
 }

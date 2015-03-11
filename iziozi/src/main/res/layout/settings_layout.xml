@@ -53,7 +53,7 @@
         android:layout_toLeftOf="@+id/numRowsLbl"
         android:layout_toRightOf="@+id/textView1"
         android:indeterminate="false"
-        android:max="8"
+        android:max="10"
         android:progress="1" />
 
     <SeekBar
@@ -64,7 +64,7 @@
         android:layout_alignLeft="@+id/seekRows"
         android:layout_alignRight="@+id/seekRows"
         android:indeterminate="false"
-        android:max="5" />
+        android:max="10" />
 
     <TextView
         android:id="@+id/numColsLbl"

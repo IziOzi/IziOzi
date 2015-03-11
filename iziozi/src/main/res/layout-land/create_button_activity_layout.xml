@@ -26,7 +26,8 @@
     android:focusableInTouchMode="true"
     android:background="@android:color/white"
     android:focusable="true"
-    android:padding="20dp">
+    android:padding="20dp"
+    android:id="@+id/mainLayout">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -216,6 +217,21 @@
     </RelativeLayout>
 
     <requestFocus />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#a6000000"
+        android:padding="30dp"
+        android:id="@+id/createButtonOverlayView"
+        android:visibility="invisible" >
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/createButtonFragmentContainer" />
+    </LinearLayout>
 
 
 </RelativeLayout>

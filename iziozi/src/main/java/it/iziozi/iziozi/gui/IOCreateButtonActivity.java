@@ -321,7 +321,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         switch (item.getItemId()) {
             case R.id.manageMedias:
 
-                if (mOverlayView.getVisibility() == View.INVISIBLE) {
+                if (null != mOverlayView && mOverlayView.getVisibility() == View.INVISIBLE) {
 
                     getFragmentManager().beginTransaction()
                             .add(mFragmentContainer.getId(), new IOMediaManagerFragment())
@@ -349,7 +349,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     @Override
     public void onBackPressed() {
 
-        if (View.VISIBLE == mOverlayView.getVisibility()) {
+        if (mOverlayView != null && View.VISIBLE == mOverlayView.getVisibility()) {
             hideOverlayView();
         } else if (null != mRecordingOverlay)
             hideRecordingOverlay();
@@ -387,7 +387,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     private void hideOverlayView() {
 
 
-        if (mOverlayView.getVisibility() == View.VISIBLE) {
+        if (mOverlayView != null && mOverlayView.getVisibility() == View.VISIBLE) {
 
             AlphaAnimation a = new AlphaAnimation(1.0f, 0.f);
             a.setDuration(500);
@@ -631,6 +631,10 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     public void playAudio(View v) {
 
         if (mAudioFile == null || (mPlayer != null && mPlayer.isPlaying())) {
+
+            if(mPlayer == null)
+                return;
+
             onPlay(false);
             return;
         }
@@ -758,10 +762,15 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mAudioFile = mFileDir + "/" + new Date().getTime() + ".3gp";
-        mRecorder.setOutputFile(mAudioFile);
+
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mRecorder.setAudioEncodingBitRate(16);
+        mRecorder.setAudioSamplingRate(44100);
+
+
+        mAudioFile = mFileDir + "/" + new Date().getTime() + ".mp4";
+        mRecorder.setOutputFile(mAudioFile);
 
 
         try {
@@ -775,9 +784,11 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     }
 
     private void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
+        if(mRecorder != null) {
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+        }
         updateAudioTextLabel();
     }
 

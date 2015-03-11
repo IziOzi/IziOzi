@@ -75,6 +75,9 @@ public class IOMediaManagerFragment extends ListFragment {
             mAudioFilesList = audioFolder.listFiles();
         }
 
+        if(mAudioFilesList == null)
+            mAudioFilesList = new File[0];
+
         setListAdapter(new IOAudioFilesListAdapter(getActivity(), R.layout.audiolist_cell, mAudioFilesList));
     }
 

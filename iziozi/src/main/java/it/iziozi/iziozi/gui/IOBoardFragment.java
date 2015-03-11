@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.Header;
 
@@ -84,6 +85,8 @@ public class IOBoardFragment extends Fragment {
 
     private Integer mBoardLevel = 0;
     private int mBoardIndex = 0;
+
+    private ImageLoader imageLoader = ImageLoader.getInstance();
 
     /*
     * Interface widgets
@@ -171,136 +174,146 @@ public class IOBoardFragment extends Fragment {
 
     private View buildView(boolean editMode) {
 
-        this.homeRows.clear();
-        final List<IOSpeakableImageButton> mButtons = new ArrayList<IOSpeakableImageButton>();
-        List<IOSpeakableImageButton> configButtons = this.mBoard.getButtons();
+        if(mBoard != null) {
+            this.homeRows.clear();
+            final List<IOSpeakableImageButton> mButtons = new ArrayList<IOSpeakableImageButton>();
+            List<IOSpeakableImageButton> configButtons = this.mBoard.getButtons();
 
-        ViewGroup mainView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.table_main_layout, null);
-
-
-        LinearLayout tableContainer = new LinearLayout(getActivity());
-        LinearLayout.LayoutParams mainParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        tableContainer.setLayoutParams(mainParams);
-        tableContainer.setOrientation(LinearLayout.VERTICAL);
-
-        for (int i = 0; i < this.mBoard.getRows(); i++) {
-
-            LinearLayout rowLayout = new LinearLayout(getActivity());
-            LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1.f);
-            rowLayout.setLayoutParams(rowParams);
-            rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-            Random color = new Random();
-            rowLayout.setBackgroundColor(Color.WHITE);
-            tableContainer.addView(rowLayout);
-            this.homeRows.add(rowLayout);
-        }
-
-        for (int j = 0; j < this.homeRows.size(); j++) {
-            LinearLayout homeRow = this.homeRows.get(j);
-
-            for (int i = 0; i < this.mBoard.getCols(); i++) {
-                LinearLayout btnContainer = new LinearLayout(getActivity());
-                LinearLayout.LayoutParams btnContainerParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.f);
-                btnContainer.setLayoutParams(btnContainerParams);
-                btnContainer.setOrientation(LinearLayout.VERTICAL);
-                btnContainer.setGravity(Gravity.CENTER);
-
-                homeRow.addView(btnContainer);
+            ViewGroup mainView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.table_main_layout, null);
 
 
-                final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(getActivity());
-                imgButton.setmContext(getActivity());
-                imgButton.setShowBorder(IOConfiguration.getShowBorders());
-                if(IOGlobalConfiguration.isEditing)
-                    imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
-                else
-                    imgButton.setImageDrawable(null);
-                imgButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imgButton.setBackgroundColor(Color.TRANSPARENT);
+            LinearLayout tableContainer = new LinearLayout(getActivity());
+            LinearLayout.LayoutParams mainParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            tableContainer.setLayoutParams(mainParams);
+            tableContainer.setOrientation(LinearLayout.VERTICAL);
+
+            for (int i = 0; i < this.mBoard.getRows(); i++) {
+
+                LinearLayout rowLayout = new LinearLayout(getActivity());
+                LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1.f);
+                rowLayout.setLayoutParams(rowParams);
+                rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+                Random color = new Random();
+                rowLayout.setBackgroundColor(Color.WHITE);
+                tableContainer.addView(rowLayout);
+                this.homeRows.add(rowLayout);
+            }
+
+            for (int j = 0; j < this.homeRows.size(); j++) {
+                LinearLayout homeRow = this.homeRows.get(j);
+
+                for (int i = 0; i < this.mBoard.getCols(); i++) {
+                    LinearLayout btnContainer = new LinearLayout(getActivity());
+                    LinearLayout.LayoutParams btnContainerParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.f);
+                    btnContainer.setLayoutParams(btnContainerParams);
+                    btnContainer.setOrientation(LinearLayout.VERTICAL);
+                    btnContainer.setGravity(Gravity.CENTER);
+
+                    homeRow.addView(btnContainer);
 
 
-                if (imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0) {
-
-                    if (!new File(imgButton.getmImageFile()).exists()) {
-                        if (mAlertDialog == null || !mAlertDialog.isShowing()) {
-                            mAlertDialog = new AlertDialog.Builder(getActivity())
-                                    .setCancelable(true)
-                                    .setTitle(getString(R.string.image_missing))
-                                    .setMessage(getString(R.string.image_missing_text))
-                                    .setNegativeButton(getString(R.string.continue_string), null)
-                                    .create();
-                            mAlertDialog.show();
-                        }
-
-                        //download image
-
-                        if (isExternalStorageReadable()) {
-
-                            File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
-                            Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/") + 1);
-                            File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
-
-                            if (isExternalStorageWritable()) {
-
-                                pictoFolder.mkdirs();
-
-                                //download it
-
-                                AsyncHttpClient client = new AsyncHttpClient();
-                                client.get(imgButton.getmUrl(), new FileAsyncHttpResponseHandler(new File(imgButton.getmImageFile())) {
-                                    @Override
-                                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-                                        Toast.makeText(getActivity(), getString(R.string.download_error) + file.toString(), Toast.LENGTH_LONG).show();
-                                    }
+                    final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(getActivity());
+                    imgButton.setmContext(getActivity());
+                    imgButton.setShowBorder(IOConfiguration.getShowBorders());
+                    if (IOGlobalConfiguration.isEditing)
+                        imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
+                    else
+                        imgButton.setImageDrawable(null);
+                    imgButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    imgButton.setBackgroundColor(Color.TRANSPARENT);
 
 
-                                    @Override
-                                    public void onSuccess(int statusCode, Header[] headers, File downloadedFile) {
+                    if (imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0) {
 
+                        if (!new File(imgButton.getmImageFile()).exists()) {
+                            if (mAlertDialog == null || !mAlertDialog.isShowing()) {
+                                mAlertDialog = new AlertDialog.Builder(getActivity())
+                                        .setCancelable(true)
+                                        .setTitle(getString(R.string.image_missing))
+                                        .setMessage(getString(R.string.image_missing_text))
+                                        .setNegativeButton(getString(R.string.continue_string), null)
+                                        .create();
+                                mAlertDialog.show();
+                            }
 
-                                        if (new File(imgButton.getmImageFile()).exists()) {
-                                            imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
-                                        } else {
-                                            Toast.makeText(getActivity(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
+                            //download image
+
+                            if (isExternalStorageReadable()) {
+
+                                File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
+                                Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/") + 1);
+                                File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
+
+                                if (isExternalStorageWritable()) {
+
+                                    pictoFolder.mkdirs();
+
+                                    //download it
+
+                                    AsyncHttpClient client = new AsyncHttpClient();
+                                    client.get(imgButton.getmUrl(), new FileAsyncHttpResponseHandler(new File(imgButton.getmImageFile())) {
+                                        @Override
+                                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
+                                            Toast.makeText(getActivity(), getString(R.string.download_error) + file.toString(), Toast.LENGTH_LONG).show();
                                         }
-                                    }
-                                });
-                            } else {
 
+
+                                        @Override
+                                        public void onSuccess(int statusCode, Header[] headers, File downloadedFile) {
+
+
+                                            if (new File(imgButton.getmImageFile()).exists()) {
+                                                imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
+                                            } else {
+                                                Toast.makeText(getActivity(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                } else {
+
+                                    Toast.makeText(getActivity(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
                                 Toast.makeText(getActivity(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                             }
+
                         } else {
-                            Toast.makeText(getActivity(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else
+/*
                         imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
-                }
+*/
 
-                ViewGroup parent = (ViewGroup) imgButton.getParent();
-
-                if (parent != null)
-                    parent.removeAllViews();
-
-                btnContainer.addView(imgButton);
-
-                mButtons.add(imgButton);
-
-                imgButton.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        int index = mButtons.indexOf(v);
-                        if (mListener != null)
-                            mListener.tapOnSpeakableButton(mButtons.get(index), mBoardLevel);
+                            imageLoader.displayImage("file://" + imgButton.getmImageFile(), imgButton);
+                        }
                     }
-                });
+
+                    ViewGroup parent = (ViewGroup) imgButton.getParent();
+
+                    if (parent != null)
+                        parent.removeAllViews();
+
+                    btnContainer.addView(imgButton);
+
+                    mButtons.add(imgButton);
+
+                    imgButton.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            int index = mButtons.indexOf(v);
+                            if (mListener != null)
+                                mListener.tapOnSpeakableButton(mButtons.get(index), mBoardLevel);
+                        }
+                    });
+                }
             }
+
+            this.mBoard.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);
+
+            return tableContainer;
+
         }
 
-        this.mBoard.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);
-
-        return tableContainer;
+        return null;
     }
 
     /* Checks if external storage is available for read and write */

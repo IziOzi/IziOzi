@@ -23,12 +23,16 @@ package it.iziozi.iziozi.core;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 
+import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
+import io.fabric.sdk.android.Fabric;
 import it.iziozi.iziozi.R;
 
 /**
@@ -47,10 +51,12 @@ public class IOApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         IOApplication.CONTEXT = getApplicationContext();
 
         IOApiClient.setupClient();
+
 
         // Create global configuration and initialize ImageLoader with this configuration
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
@@ -60,6 +66,9 @@ public class IOApplication extends Application {
                 .defaultDisplayImageOptions(new DisplayImageOptions.Builder()
                                 .showImageOnLoading(getResources().getDrawable(R.drawable.logo_org))
                                 .cacheOnDisk(true)
+                                .cacheInMemory(true)
+                                .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2) // default
+                                .bitmapConfig(Bitmap.Config.ALPHA_8) // default
                                 .build()
                 )
                 .writeDebugLogs()

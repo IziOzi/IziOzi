@@ -78,6 +78,8 @@ public class IOSpeakableImageButton extends ImageButton {
 
         setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
 
+        setScaleType(ScaleType.CENTER_INSIDE);
+
     }
 
     public IOSpeakableImageButton(@Element(name = "mSentence") String sentence) {
