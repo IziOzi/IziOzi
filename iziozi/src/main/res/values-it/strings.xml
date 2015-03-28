@@ -135,7 +135,7 @@
     <string name="move_hint">Tocca ora la nuova posizione dove muovere l\'immagine. Le due immagini verranno scambiate.</string>
 
     <string name="delete_image">Cancella immagine</string>
-
+    <string name="title_activity_iovideo_player">Video</string>
 
 
 </resources>

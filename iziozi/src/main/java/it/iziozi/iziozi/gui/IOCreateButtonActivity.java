@@ -24,16 +24,19 @@ package it.iziozi.iziozi.gui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.ThumbnailUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -61,7 +64,10 @@ import android.widget.TextView;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.joanzapata.android.iconify.Iconify;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -75,7 +81,10 @@ import it.iziozi.iziozi.core.IODatabaseHelper;
 
 public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
 
+    private final String TAG = "IOCreateButtonActivity";
+
     public final static String IMAGE_FILE = "image_file";
+    public final static String VIDEO_FILE = "image_file";
     public final static String IMAGE_TITLE = "image_title";
     public final static String IMAGE_URL = "image_url";
 
@@ -88,6 +97,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     private TextView mTapHereTextView;
 
     private String mImageFile = null;
+    private String mVideoFile = null;
     private String mImageTitle = null;
     private String mImageText = null;
     private String mImageUrl = null;
@@ -438,6 +448,9 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         if (mAudioFile != null && mAudioFile.length() > 0)
             resultIntent.putExtra(IOBoardActivity.BUTTON_AUDIO_FILE, mAudioFile);
 
+        if (mVideoFile != null && mVideoFile.length() > 0)
+            resultIntent.putExtra(IOBoardActivity.BUTTON_VIDEO_FILE, mVideoFile);
+
         resultIntent.putExtra(IOBoardActivity.BUTTON_INDEX, mButtonIndex);
 
         setResult(RESULT_OK, resultIntent);
@@ -508,7 +521,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
     private void pickFromGallery() {
         Intent pickIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        pickIntent.setType("image/*");
+        pickIntent.setType("image/*,video/*");
         startActivityForResult(pickIntent, IMAGE_GALLERY_PICK_INTENT);
     }
 
@@ -516,22 +529,63 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
-        Log.d("img_picker_debug", "enter with code " + resultCode + "req:" + requestCode);
-
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case IMAGE_GALLERY_PICK_INTENT: {
 
-                    Uri selectedImage = data.getData();
-                    Log.d("image_debug", selectedImage.toString());
-                    InputStream imageStream;
-                    try {
-                        imageStream = getContentResolver().openInputStream(selectedImage);
-                        Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
-                        Log.d("image_debug", "onActivityResult:" + bitmap.getWidth() + " " + bitmap.getHeight());
-                        if (bitmap.getHeight() >= 2048 || bitmap.getWidth() >= 2048) {
-                            bitmap = scaleToFill(bitmap, 1024, 1024);
+                    boolean isVideo;
+
+                    ContentResolver contentResolver = getContentResolver();
+
+                    String type = contentResolver.getType(data.getData());
+
+                    isVideo = type.contains("video");
+
+                    Log.d(TAG, "data type is: " + type);
+
+                    if (isVideo) {
+
+                        Uri selectedVideo = data.getData();
+
+                        String sourceFilename = getRealPathFromURI(this, selectedVideo);
+
+                        mFileDir = new File(Environment.getExternalStorageDirectory()
+                                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/video");
+                        if (!mFileDir.isDirectory())
+                            mFileDir.mkdirs();
+
+
+                        String extension = sourceFilename.substring(sourceFilename.lastIndexOf("."));
+
+                        mDestinationFile = new File(mFileDir, new Date().getTime() + extension);
+
+
+                        BufferedInputStream bis = null;
+                        BufferedOutputStream bos = null;
+
+                        try {
+                            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
+                            bos = new BufferedOutputStream(new FileOutputStream(mDestinationFile, false));
+                            byte[] buf = new byte[1024];
+                            bis.read(buf);
+                            do {
+                                bos.write(buf);
+                            } while (bis.read(buf) != -1);
+                        } catch (IOException e) {
+
+                        } finally {
+                            try {
+                                if (bis != null) bis.close();
+                                if (bos != null) bos.close();
+                            } catch (IOException e) {
+
+                            }
                         }
+
+                        mVideoFile = mDestinationFile.toString();
+
+
+                        Bitmap videoThumbnail = ThumbnailUtils.createVideoThumbnail(mDestinationFile.toString(), MediaStore.Images.Thumbnails.MINI_KIND);
 
                         mFileDir = new File(Environment.getExternalStorageDirectory()
                                 .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/gallery");
@@ -544,7 +598,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
                         try {
                             out = new FileOutputStream(mDestinationFile);
 
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                            videoThumbnail.compress(Bitmap.CompressFormat.PNG, 90, out);
                         } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
@@ -558,12 +612,56 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
                         }
 
 
-                        mImageButton.setImageBitmap(bitmap);
+                        mImageButton.setImageBitmap(videoThumbnail);
                         mImageFile = mDestinationFile.toString();
 
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+
+                    } else {
+                        //is image
+
+                        Uri selectedImage = data.getData();
+                        InputStream imageStream;
+                        try {
+                            imageStream = getContentResolver().openInputStream(selectedImage);
+                            Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                            Log.d("image_debug", "onActivityResult:" + bitmap.getWidth() + " " + bitmap.getHeight());
+                            if (bitmap.getHeight() >= 2048 || bitmap.getWidth() >= 2048) {
+                                bitmap = scaleToFill(bitmap, 1024, 1024);
+                            }
+
+                            mFileDir = new File(Environment.getExternalStorageDirectory()
+                                    .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/gallery");
+                            if (!mFileDir.isDirectory())
+                                mFileDir.mkdirs();
+
+                            mDestinationFile = new File(mFileDir, new Date().getTime() + ".jpg");
+
+                            FileOutputStream out = null;
+                            try {
+                                out = new FileOutputStream(mDestinationFile);
+
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    if (out != null) {
+                                        out.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                            mImageButton.setImageBitmap(bitmap);
+                            mImageFile = mDestinationFile.toString();
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
+
                     break;
                 }
 
@@ -608,6 +706,20 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         }
     }
 
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
 
     public Bitmap scaleToFill(Bitmap b, int width, int height) {
         float factorH = height / (float) b.getWidth();
@@ -632,7 +744,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
         if (mAudioFile == null || (mPlayer != null && mPlayer.isPlaying())) {
 
-            if(mPlayer == null)
+            if (mPlayer == null)
                 return;
 
             onPlay(false);
@@ -784,7 +896,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     }
 
     private void stopRecording() {
-        if(mRecorder != null) {
+        if (mRecorder != null) {
             mRecorder.stop();
             mRecorder.release();
             mRecorder = null;

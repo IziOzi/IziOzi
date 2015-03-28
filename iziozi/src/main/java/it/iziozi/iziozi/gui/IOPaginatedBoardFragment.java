@@ -96,7 +96,7 @@ public class IOPaginatedBoardFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (mListener != null) {
+        if (mListener != null && mLevel != null) {
             mListener.onRegisterActiveLevel(mLevel);
         }
 
@@ -126,6 +126,14 @@ public class IOPaginatedBoardFragment extends Fragment {
 
     public void setLevel(IOLevel mLevel) {
         this.mLevel = mLevel;
+    }
+
+    public boolean canGoLeft(){
+        return mViewPager.getCurrentItem() > 0;
+    }
+
+    public boolean canGoRight(){
+        return mViewPager.getCurrentItem() < mViewPager.getAdapter().getCount() - 1;
     }
 
     public void paginateLeft() {

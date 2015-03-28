@@ -65,7 +65,6 @@
         android:id="@+id/scanMode"
         android:checkable="true"
         android:checked="false"
-        android:enabled="true"
         android:orderInCategory="20"
         android:title="@string/scan_mode"
         android:visible="true"></item>

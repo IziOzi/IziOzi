@@ -48,6 +48,9 @@ public class IOSpeakableImageButton extends ImageButton {
     private String mAudioFile = "";
 
     @Element(required = false)
+    private String mVideoFile = "";
+
+    @Element(required = false)
     private String mTitle = "";
 
     @Element(required = false)
@@ -153,6 +156,14 @@ public class IOSpeakableImageButton extends ImageButton {
 
     public void setAudioFile(String mAudioFile) {
         this.mAudioFile = mAudioFile;
+    }
+
+    public String getVideoFile() {
+        return mVideoFile;
+    }
+
+    public void setVideoFile(String mVideoFile) {
+        this.mVideoFile = mVideoFile;
     }
 
     public Boolean getIsMatrioska() {

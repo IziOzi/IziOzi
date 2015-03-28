@@ -30,7 +30,6 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -67,6 +66,7 @@ import com.neurosky.thinkgear.TGEegPower;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import it.iziozi.iziozi.R;
@@ -76,6 +76,7 @@ import it.iziozi.iziozi.core.IOConfiguration;
 import it.iziozi.iziozi.core.IOGlobalConfiguration;
 import it.iziozi.iziozi.core.IOLevel;
 import it.iziozi.iziozi.core.IOSpeakableImageButton;
+import it.iziozi.iziozi.helpers.IOHelper;
 
 
 public class IOBoardActivity extends FragmentActivity implements IOBoardFragment.OnBoardFragmentInteractionListener, IOPaginatedBoardFragment.OnFragmentInteractionListener {
@@ -141,6 +142,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     private IconTextView mCenterBackButton;
     private IconTextView mCenterHomeButton;
 
+    private String mPlayingFile = null;
+
     /*
     * side navigation vars
     * */
@@ -155,6 +158,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     public static final String BUTTON_INDEX = "button_index";
     public static final String BUTTON_URL = "button_url";
     public static final String BUTTON_AUDIO_FILE = "button_audio_file";
+    public static final String BUTTON_VIDEO_FILE = "button_video_file";
 
     int newRows, newCols;
 
@@ -172,7 +176,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
 
         this.mActualConfigName = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, null);
-        if(mActualConfigName != null)
+        if (mActualConfigName != null)
             mActualConfigName = mActualConfigName.replace(".xml", "");
 
         if (this.mActiveConfig == null) {
@@ -234,7 +238,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                         // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
                         if (visibility == View.VISIBLE && IOBoardActivity.this.mUnlockAlert == null) {
                             // TODO: The system bars are visible.
-                            if (mUILocked && !IOGlobalConfiguration.isEditing && canGoImmersive())
+                            if (mUILocked && !IOGlobalConfiguration.isEditing && IOHelper.canGoImmersive())
                                 showUnlockAlert();
 
 
@@ -245,30 +249,30 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                 });
     }
 
-    private void showSideNavButtons()
-    {
+
+
+    private void showSideNavButtons() {
         mLeftSideArrowButton.setVisibility(View.VISIBLE);
         mRightSideArrowButton.setVisibility(View.VISIBLE);
     }
 
-    private void hideSideNavButtons()
-    {
+    private void hideSideNavButtons() {
         mLeftSideArrowButton.setVisibility(View.GONE);
         mRightSideArrowButton.setVisibility(View.GONE);
     }
 
 
-    private void setupSideNavButtons(){
+    private void setupSideNavButtons() {
         ViewGroup leftContainer = (ViewGroup) findViewById(R.id.leftnav_container);
         ViewGroup rightContainer = (ViewGroup) findViewById(R.id.rightnav_container);
 
         IOSpeakableImageButton leftArrow = new IOSpeakableImageButton(this);
         IOSpeakableImageButton rightArrow = new IOSpeakableImageButton(this);
 
-        int size = (int)(getResources().getDimension(R.dimen.nav_buttons_size) * getResources().getDisplayMetrics().densityDpi / 160);
+        int size = (int) (getResources().getDimension(R.dimen.nav_buttons_size) * getResources().getDisplayMetrics().densityDpi / 160);
 
-        leftArrow.setLayoutParams(new ViewGroup.LayoutParams(size,size));
-        rightArrow.setLayoutParams(new ViewGroup.LayoutParams(size,size));
+        leftArrow.setLayoutParams(new ViewGroup.LayoutParams(size, size));
+        rightArrow.setLayoutParams(new ViewGroup.LayoutParams(size, size));
 
         leftArrow.setImageDrawable(getResources().getDrawable(R.drawable.freccia_sx));
         rightArrow.setImageDrawable(getResources().getDrawable(R.drawable.freccia_dx));
@@ -297,9 +301,11 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         mRightSideArrowButton = rightArrow;
         mLeftSideArrowButton = leftArrow;
 
+        hideSideNavButtons();
+
     }
 
-    private void checkScanModeButtons(){
+    private void checkScanModeButtons() {
 
     }
 
@@ -377,7 +383,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             @Override
             public void onClick(View v) {
 
-                    paginateLeft();
+                paginateLeft();
             }
         });
 
@@ -450,12 +456,12 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             @Override
             public void onClick(View v) {
 
-                    paginateRight();
+                paginateRight();
 
             }
         });
 
-        if(mActualLevel.getLevelSize() == 1)
+        if (mActualLevel.getLevelSize() == 1)
             mRightNavigationButton.setVisibility(View.INVISIBLE);
 
 
@@ -523,15 +529,12 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
     @Override
     public void onRegisterActiveLevel(IOLevel level) {
-        mActualLevel = level;
+        if(level != null) {
+            mActualLevel = level;
 
-        Log.d("test", "registered level:" + level.toString());
+            Log.d("test", "registered level:" + level.toString());
 
-        if (mActualLevel.getLevelSize() > 1 || IOGlobalConfiguration.isEditing) {
-            mRightNavigationButton.setVisibility(View.VISIBLE);
-        } else {
-            mLeftNavigationButton.setVisibility(View.GONE);
-            mRightNavigationButton.setVisibility(View.GONE);
+            updateNavigationItems();
         }
     }
 
@@ -539,7 +542,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     protected void onPause() {
         super.onPause();
 
-        mPlayer.reset();
+        if (mPlayer != null)
+            mPlayer.reset();
     }
 
     @Override
@@ -547,23 +551,17 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         mActualIndex = newIndex;
         mActualLevel.setActiveIndex(newIndex);
 
-        mLeftNavigationButton.setVisibility(View.VISIBLE);
-        mRightNavigationButton.setVisibility(View.VISIBLE);
+        updateNavigationItems();
 
         Log.d("TAG", "level size" + mActualLevel.getLevelSize());
         Log.d("TAG", "level size" + mActiveConfig.getLevel().getLevelSize());
 
-        if (newIndex == 0)
-            mLeftNavigationButton.setVisibility(View.INVISIBLE);
-        else if (newIndex == mActiveConfig.getLevel().getLevelSize() - 1)
-            mRightNavigationButton.setVisibility(View.INVISIBLE);
     }
 
     public void tapOnSpeakableButton(final IOSpeakableImageButton spkBtn, final Integer level) {
         if (IOGlobalConfiguration.isEditing) {
 
-            if(IOGlobalConfiguration.isInSwapMode)
-            {
+            if (IOGlobalConfiguration.isInSwapMode) {
 
 /*
                 IOSpeakableImageButton firstButton = IOGlobalConfiguration.swapStorage;
@@ -585,8 +583,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                 refreshView();
 */
 
-            }else
-            {
+            } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 LayoutInflater inflater = getLayoutInflater();
 
@@ -666,7 +663,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                                         IOGlobalConfiguration.swapStorage = spkBtn;
 
                                         for (IOSpeakableImageButton btn : mActualLevel.getBoardAtIndex(mActualIndex).getButtons())
-                                            if(btn.getmSentence().equals(IOGlobalConfiguration.swapStorage.getmSentence()) && btn.getmImageFile().equals(IOGlobalConfiguration.swapStorage.getmImageFile()))
+                                            if (btn.getmSentence().equals(IOGlobalConfiguration.swapStorage.getmSentence()) && btn.getmImageFile().equals(IOGlobalConfiguration.swapStorage.getmImageFile()))
                                                 IOGlobalConfiguration.firstIndex = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().indexOf(btn);
 
                                         IOGlobalConfiguration.firstList = mActualLevel.getBoardAtIndex(mActualIndex).getButtons();
@@ -700,66 +697,40 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             }
 
 
-
         } else {
 
-            if (IOGlobalConfiguration.isScanMode) {
-                IOSpeakableImageButton scannedButton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(mActualScanIndex);
-                if (scannedButton.getAudioFile() != null && scannedButton.getAudioFile().length() > 0) {
-
-                    try {
-                        mPlayer.reset();
-                        mPlayer.setDataSource(scannedButton.getAudioFile());
-                        mPlayer.prepare();
-
-                        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                            @Override
-                            public void onCompletion(MediaPlayer mp) {
-                                mPlayer.release();
-
-                            }
-                        });
-
-                        mPlayer.start();
-
-
-                    } catch (IOException e) {
-                        Log.e("playback_debug", "prepare() failed");
-                    }
-                } else if (mCanSpeak) {
-                    Log.d("speakable_debug", "should say: " + scannedButton.getSentence());
-
-                    tts.speak(scannedButton.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
-                } else {
-                    Toast.makeText(this, getResources().getString(R.string.tts_notinitialized), Toast.LENGTH_LONG).show();
-                }
-
-                if (scannedButton.getIsMatrioska() && null != scannedButton.getLevel()) {
-                    pushLevel(scannedButton.getLevel());
-                }
-            } else {
+            {
 
                 if (spkBtn.getAudioFile() != null && spkBtn.getAudioFile().length() > 0) {
 
                     try {
-                        mPlayer.reset();
-                        mPlayer.setDataSource(spkBtn.getAudioFile());
-                        mPlayer.prepare();
 
-                        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                            @Override
-                            public void onCompletion(MediaPlayer mp) {
-                                mPlayer.release();
+                        if(mPlayingFile != null && mPlayingFile.equals(spkBtn.getAudioFile())) {
+                            mPlayer.reset();
+                            mPlayingFile = null;
+                        }
+                        else{
+                            mPlayer.reset();
+                            mPlayer.setDataSource(spkBtn.getAudioFile());
+                            mPlayer.prepare();
+                            mPlayingFile = spkBtn.getAudioFile();
+                            mPlayer.start();
 
-                            }
-                        });
+                        }
 
-                        mPlayer.start();
+
 
 
                     } catch (IOException e) {
                         Log.e("playback_debug", "prepare() failed");
                     }
+                }else if(spkBtn.getVideoFile() != null && spkBtn.getVideoFile().length() > 0){
+
+                    Intent intent = new Intent(this, IOVideoPlayerActivity.class);
+                    intent.putExtra(IOVideoPlayerActivity.VIDEO_URL, spkBtn.getVideoFile());
+
+                    startActivity(intent);
+
                 } else if (mCanSpeak) {
                     Log.d("speakable_debug", "should say: " + spkBtn.getSentence());
                     tts.speak(spkBtn.getSentence(), TextToSpeech.QUEUE_FLUSH, null);
@@ -792,7 +763,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
     protected void onDestroy() {
         super.onDestroy();
 
-        if(mUnlockAlert != null && mUnlockAlert.isShowing())
+        if (mUnlockAlert != null && mUnlockAlert.isShowing())
             mUnlockAlert.dismiss();
     }
 
@@ -949,6 +920,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                 item.setChecked(!item.isChecked());
                 IOGlobalConfiguration.isScanMode = item.isChecked();
 
+                updateNavigationItems();
+
                 if (IOGlobalConfiguration.isScanMode)
                     startScanMode();
                 else
@@ -958,7 +931,6 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             }
 
             case R.id.action_new: {
-
 
 
                 new AlertDialog.Builder(this)
@@ -1025,7 +997,6 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                                             }
                                         });
                                 alert.show();
-
 
 
                             }
@@ -1116,8 +1087,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                 });
 
                 int ss = configFiles.length;
-                for(int i = 0; i < ss; i++)
-                {
+                for (int i = 0; i < ss; i++) {
                     configFiles[i] = configFiles[i].replace(".xml", "");
                 }
 
@@ -1141,11 +1111,11 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                                     fm.popBackStackImmediate();
 
 
-                                 mActiveConfig = IOConfiguration.getSavedConfiguration(fileName);
+                                mActiveConfig = IOConfiguration.getSavedConfiguration(fileName);
                                 SharedPreferences preferences = getSharedPreferences(IOApplication.APPLICATION_NAME, MODE_PRIVATE);
 
                                 mActualConfigName = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, null);
-                                if(mActualConfigName != null)
+                                if (mActualConfigName != null)
                                     mActualConfigName = mActualConfigName.replace(".xml", "");
 
 
@@ -1216,15 +1186,82 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         refreshView();
     }
 
+    public boolean canGoLeft(){
+        IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
+        return fragment.canGoLeft();
+    }
+
+    public boolean canGoRight(){
+        IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
+        return fragment.canGoRight();
+
+    }
+
+    private void updateNavigationItems()
+    {
+
+        if(IOGlobalConfiguration.isScanMode)
+        {
+            mLeftNavigationButton.setVisibility(View.INVISIBLE);
+            mRightNavigationButton.setVisibility(View.INVISIBLE);
+        }
+
+        if(canGoLeft())
+        {
+            if(IOGlobalConfiguration.isScanMode)
+            {
+                mLeftSideArrowButton.setVisibility(View.VISIBLE);
+            }else
+            {
+                mLeftNavigationButton.setVisibility(View.VISIBLE);
+            }
+        }else
+        {
+            if(IOGlobalConfiguration.isScanMode)
+            {
+                mLeftSideArrowButton.setVisibility(View.INVISIBLE);
+            }else
+            {
+                mLeftNavigationButton.setVisibility(View.INVISIBLE);
+            }
+
+        }
+
+        if(canGoRight())
+        {
+            if(IOGlobalConfiguration.isScanMode)
+            {
+                mRightSideArrowButton.setVisibility(View.VISIBLE);
+            }else
+            {
+                mRightNavigationButton.setVisibility(View.VISIBLE);
+            }
+        }else
+        {
+            if(IOGlobalConfiguration.isScanMode)
+            {
+                mRightSideArrowButton.setVisibility(View.INVISIBLE);
+            }else
+            {
+                mRightNavigationButton.setVisibility(View.INVISIBLE);
+            }
+        }
+
+
+    }
+
     private void paginateLeft() {
         IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
         fragment.paginateLeft();
+
+        updateNavigationItems();
     }
 
     private void paginateRight() {
         IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
         fragment.paginateRight();
 
+        updateNavigationItems();
     }
 
     private void pushLevel(IOLevel board) {
@@ -1320,6 +1357,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                 String imageFile = extras.getString(BUTTON_IMAGE_FILE);
                 String imageUrl = extras.getString(BUTTON_URL);
                 String audioFile = extras.getString(BUTTON_AUDIO_FILE);
+                String videoFile = extras.getString(BUTTON_VIDEO_FILE);
 
                 IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(index);
 
@@ -1338,6 +1376,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                     button.setmUrl(imageUrl);
 
                 button.setAudioFile(audioFile);
+                button.setVideoFile(videoFile);
             }
         } else
             super.onActivityResult(requestCode, resultCode, data);
@@ -1345,7 +1384,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
 
     private void lockUI() {
-        if (canGoImmersive())
+        if (IOHelper.canGoImmersive())
             hideSystemUI();
 
         mUILocked = true;
@@ -1362,7 +1401,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
                         mUILocked = false;
                         showSystemUI();
                         mDecorView.invalidate();
-                        if (canGoImmersive() == false)
+                        if (IOHelper.canGoImmersive() == false)
                             openOptionsMenu();
                     }
                 })
@@ -1398,8 +1437,8 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
                     @Override
                     public void onFinish() {
-                        if(mUnlockAlert != null && mUnlockAlert.isShowing())
-                                mUnlockAlert.dismiss();
+                        if (mUnlockAlert != null && mUnlockAlert.isShowing())
+                            mUnlockAlert.dismiss();
                         lockUI();
                     }
                 };
@@ -1411,11 +1450,6 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         this.mUnlockAlert.show();
     }
 
-    private Boolean canGoImmersive() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            return true;
-        return false;
-    }
 
     private void showHintAlert() {
         new AlertDialog.Builder(this)
@@ -1449,14 +1483,17 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         * */
         tgDevice.connect(true);
 
+        View scanClickDetector = findViewById(R.id.scanModeClickDetector);
 
-        findViewById(R.id.rootContainer).setOnClickListener(new View.OnClickListener() {
+        scanClickDetector.setVisibility(View.VISIBLE);
+
+        scanClickDetector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(mActualScanIndex == mScanModeMaxIndex)
+                if (mActualScanIndex == mScanModeMaxIndex)
                     paginateRight();
-                else if(mActualScanIndex == mScanModeMaxIndex + 1 )
+                else if (mActualScanIndex == mScanModeMaxIndex + 1)
                     paginateLeft();
                 else {
                     IOSpeakableImageButton actualButton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(mActualScanIndex);
@@ -1466,6 +1503,12 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             }
         });
 
+        scanClickDetector.bringToFront();
+
+/*
+        showSideNavButtons();
+*/
+
         scanModeHandler = new Handler();
 
         mActualScanIndex = 0;
@@ -1473,7 +1516,7 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         scanModeRunnable = new Runnable() {
             @Override
             public void run() {
-                Log.d("Debug", "higlighting: " + (mActualScanIndex+1));
+                Log.d("Debug", "higlighting: " + (mActualScanIndex + 1));
                 highlightButtonAtIndex(mActualScanIndex + 1);
 
                 scanModeHandler.postDelayed(this, mScanModeDelay);
@@ -1486,23 +1529,88 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
 
     private void highlightButtonAtIndex(int index) {
 
+        List<IOSpeakableImageButton> buttons = mActualLevel.getBoardAtIndex(mActualIndex).getButtons();
         mScanModeMaxIndex = mActualLevel.getBoardAtIndex(mActualIndex).getCols() * mActualLevel.getBoardAtIndex(mActualIndex).getRows();
-        index = mod(index, mScanModeMaxIndex + 2);
-        int scanModePrevIndex = mod(index - 1, mScanModeMaxIndex);
 
-        if(index == mScanModeMaxIndex + 1 )
+        index = mod(index, mScanModeMaxIndex + 2);
+
+        if(index == mScanModeMaxIndex + 1 && mLeftSideArrowButton.getVisibility() == View.INVISIBLE)
         {
+            index += 1;
+            index = mod(index, mScanModeMaxIndex + 2);
+        }
+
+        if(index == mScanModeMaxIndex && mRightSideArrowButton.getVisibility() == View.INVISIBLE)
+        {
+            index += 1;
+            index = mod(index, mScanModeMaxIndex + 2);
+        }
+
+        int originalIndex = index;
+
+        for(int i = index; i < mScanModeMaxIndex; i++)
+        {
+
+            if(buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
+                break;
+            }
+            index = i+1;
+        }
+
+        if(index == mScanModeMaxIndex + 1 && mLeftSideArrowButton.getVisibility() == View.INVISIBLE)
+        {
+            index += 1;
+            index = mod(index, mScanModeMaxIndex + 2);
+        }
+
+        if(index == mScanModeMaxIndex && mRightSideArrowButton.getVisibility() == View.INVISIBLE)
+        {
+            index += 1;
+            index = mod(index, mScanModeMaxIndex + 2);
+        }
+
+        Log.d("debug", "calculated index: " + index);
+
+        int scanModePrevIndex = Math.min(originalIndex - 1, mScanModeMaxIndex);
+
+        if(scanModePrevIndex < mScanModeMaxIndex) {
+            for (int i = scanModePrevIndex; i >= 0; i--) {
+                if (buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
+                    scanModePrevIndex = i;
+                    break;
+                }
+
+                scanModePrevIndex = i - 1;
+            }
+        }
+
+        scanModePrevIndex = mod(scanModePrevIndex, mScanModeMaxIndex + 2);
+
+
+        if (index == mScanModeMaxIndex + 1) {
             //left
 
             mLeftSideArrowButton.setIsHiglighted(true);
+            mRightSideArrowButton.setIsHiglighted(false);
+            mRightSideArrowButton.invalidate();
             mLeftSideArrowButton.invalidate();
-        }else if(index == mScanModeMaxIndex)
-        {
+
+            if(scanModePrevIndex < mScanModeMaxIndex) {
+                IOSpeakableImageButton prevbutton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(scanModePrevIndex);
+                prevbutton.setIsHiglighted(false);
+                prevbutton.invalidate();
+            }
+
+        } else if (index == mScanModeMaxIndex) {
             //right
             mRightSideArrowButton.setIsHiglighted(true);
             mRightSideArrowButton.invalidate();
 
-        }else {
+            if(scanModePrevIndex < mScanModeMaxIndex) {
+                buttons.get(scanModePrevIndex).setIsHiglighted(false);
+                buttons.get(scanModePrevIndex).invalidate();
+            }
+        } else {
 
             mRightSideArrowButton.setIsHiglighted(false);
             mRightSideArrowButton.invalidate();
@@ -1514,9 +1622,11 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
             button.setIsHiglighted(true);
             button.invalidate();
 
-            IOSpeakableImageButton prevbutton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(scanModePrevIndex);
-            prevbutton.setIsHiglighted(false);
-            prevbutton.invalidate();
+            if(scanModePrevIndex <= mScanModeMaxIndex) {
+                IOSpeakableImageButton prevbutton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(scanModePrevIndex);
+                prevbutton.setIsHiglighted(false);
+                prevbutton.invalidate();
+            }
         }
         mActualScanIndex = index;
 
@@ -1536,13 +1646,23 @@ public class IOBoardActivity extends FragmentActivity implements IOBoardFragment
         button.setIsHiglighted(false);
         button.invalidate();
 
-        findViewById(R.id.rootContainer).setOnClickListener(null);
+
+        View scanClickDetector = findViewById(R.id.scanModeClickDetector);
+
+        scanClickDetector.setVisibility(View.GONE);
+
+        scanClickDetector.setOnClickListener(null);
 
         scanModeHandler.removeCallbacks(scanModeRunnable);
         scanModeHandler = null;
         scanModeRunnable = null;
         tgDevice.close();
         //TODO:createView();
+
+        hideSideNavButtons();
+
+        updateNavigationItems();
+
         refreshView();
     }
 

@@ -225,7 +225,7 @@
         android:background="#a6000000"
         android:padding="30dp"
         android:id="@+id/createButtonOverlayView"
-        android:visibility="invisible" >
+        android:visibility="gone" >
 
         <FrameLayout
             android:layout_width="fill_parent"

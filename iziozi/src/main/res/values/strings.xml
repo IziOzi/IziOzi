@@ -68,8 +68,6 @@
     <string name="load">Load</string>
     <string name="new_board">Nuova</string>
 
-
-
     <!-- Debugging strings -->
     <string name="should_say">I should say:</string>
     <string name="speak_button">Speak!</string>
@@ -112,7 +110,6 @@
     <string name="tap_to_stop_recording">Tap anywhere when you\'re gone!</string>
     <string name="audio_file">Audio File: </string>
     <string name="no_audio_file">No audio file set.</string>
-
     <string name="image">PIC</string>
     <string name="board">BRD</string>
     <string name="board_enabled">Tree board</string>
@@ -121,15 +118,13 @@
     <string name="file_already_exists">A file with this name already exists! Please choose another one.</string>
     <string name="delete_page_alert">Are you sure you want to delete this page? The operation will be persistent!</string>
     <string name="manage_boards">Manage boards</string>
-
     <string name="new_board_alert">Warning! Every unsaved modify will be lost!</string>
 
-    <!--Move mode-->
+    <!-- Move mode -->
     <string name="swap_board">Move image</string>
     <string name="move">Move</string>
     <string name="move_hint">Tap on the position where the image should be moved. The two images will be swapped.</string>
-
     <string name="delete_image">Delete image</string>
-
+    <string name="title_activity_iovideo_player">Video</string>
 
 </resources>

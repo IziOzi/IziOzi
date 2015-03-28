@@ -39,13 +39,13 @@ ADDED from AndroidManifest.xml:32:5
 uses-feature#android.hardware.camera
 ADDED from AndroidManifest.xml:34:5
 	android:required
+		ADDED from AndroidManifest.xml:36:9
+	android:name
 		ADDED from AndroidManifest.xml:35:9
-	android:name
-		ADDED from AndroidManifest.xml:34:19
 uses-permission#android.permission.GET_ACCOUNTS
-ADDED from AndroidManifest.xml:38:5
+ADDED from AndroidManifest.xml:39:5
 	android:name
-		ADDED from AndroidManifest.xml:38:22
+		ADDED from AndroidManifest.xml:39:22
 application
 ADDED from AndroidManifest.xml:41:5
 MERGED from com.crashlytics.sdk.android:crashlytics:2.2.0:13:5
@@ -55,15 +55,15 @@ MERGED from com.crashlytics.sdk.android:beta:1.1.0:11:5
 MERGED from io.fabric.sdk.android:fabric:1.1.0:11:5
 MERGED from io.fabric.sdk.android:fabric:1.1.0:11:5
 	android:label
-		ADDED from AndroidManifest.xml:46:9
+		ADDED from AndroidManifest.xml:45:9
 	android:allowBackup
 		ADDED from AndroidManifest.xml:43:9
 	android:icon
-		ADDED from AndroidManifest.xml:45:9
+		ADDED from AndroidManifest.xml:44:9
 	android:theme
 		ADDED from AndroidManifest.xml:47:9
 	android:largeHeap
-		ADDED from AndroidManifest.xml:44:9
+		ADDED from AndroidManifest.xml:46:9
 	android:name
 		ADDED from AndroidManifest.xml:42:9
 meta-data#android.app.default_searchable
@@ -135,11 +135,27 @@ ADDED from AndroidManifest.xml:103:9
 	android:name
 		ADDED from AndroidManifest.xml:104:13
 meta-data#com.crashlytics.ApiKey
-ADDED from AndroidManifest.xml:107:9
+ADDED from AndroidManifest.xml:108:9
 	android:name
-		ADDED from AndroidManifest.xml:108:13
-	android:value
 		ADDED from AndroidManifest.xml:109:13
+	android:value
+		ADDED from AndroidManifest.xml:110:13
+activity#it.iziozi.iziozi.gui.IOVideoPlayerActivity
+ADDED from AndroidManifest.xml:112:9
+	android:label
+		ADDED from AndroidManifest.xml:114:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:115:13
+	android:parentActivityName
+		ADDED from AndroidManifest.xml:116:13
+	android:name
+		ADDED from AndroidManifest.xml:113:13
+meta-data#android.support.PARENT_ACTIVITY
+ADDED from AndroidManifest.xml:117:13
+	android:name
+		ADDED from AndroidManifest.xml:118:17
+	android:value
+		ADDED from AndroidManifest.xml:119:17
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
 MERGED from com.crashlytics.sdk.android:crashlytics:2.2.0:7:5
