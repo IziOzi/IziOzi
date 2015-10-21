@@ -24,6 +24,7 @@ package it.iziozi.iziozi.core;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -75,6 +76,8 @@ public class IOApplication extends Application {
                 .build();
 
         ImageLoader.getInstance().init(config);
+
+        Log.w("STORAGE_DIR", getExternalFilesDir(null).getAbsolutePath());
 
     }
 }

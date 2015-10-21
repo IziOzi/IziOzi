@@ -28,6 +28,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.util.TypedValue;
 import android.widget.ImageButton;
 
@@ -55,6 +56,12 @@ public class IOSpeakableImageButton extends ImageButton {
 
     @Element(required = false)
     private String mUrl = "";
+
+    @Element(required = false)
+    private String mIntentPackageName = "";
+
+    @Element(required = false)
+    private String mIntentName = "";
 
     /*
     * Nested boards
@@ -98,6 +105,22 @@ public class IOSpeakableImageButton extends ImageButton {
         setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
     }
 
+    public String getIntentPackageName() {
+        return mIntentPackageName;
+    }
+
+    public void setIntentPackageName(String mIntentPackageName) {
+        this.mIntentPackageName = mIntentPackageName;
+    }
+
+    public String getIntentName() {
+        return mIntentName;
+    }
+
+    public void setIntentName(String mIntentName) {
+        this.mIntentName = mIntentName;
+    }
+
     public String getmSentence() {
         return mSentence;
     }
@@ -123,6 +146,21 @@ public class IOSpeakableImageButton extends ImageButton {
     }
 
     public String getmImageFile() {
+
+/*
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT )
+            return mImageFile.replace("emulated/0", "sdcard0");
+*/
+        if(mImageFile == null)
+            return mImageFile;
+
+        if(mImageFile.indexOf("IziOzi") != -1)
+            return Environment.getExternalStorageDirectory() + "/iziozi" + mImageFile.split("IziOzi")[1];
+
+        if(mImageFile.indexOf("iziozi") != -1)
+            return Environment.getExternalStorageDirectory() + "/iziozi" + mImageFile.split("iziozi")[1];
+
+
         return mImageFile;
     }
 

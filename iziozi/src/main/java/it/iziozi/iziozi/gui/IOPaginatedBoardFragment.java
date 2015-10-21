@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.core.IOLevel;
+import it.iziozi.iziozi.core.IOViewPager;
 import it.iziozi.iziozi.gui.components.IOPaginatorAdapter;
 
 public class IOPaginatedBoardFragment extends Fragment {
@@ -39,13 +40,14 @@ public class IOPaginatedBoardFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onRegisterActiveLevel(IOLevel level);
+
         public void onPageScrolled(int newIndex);
     }
 
     private OnFragmentInteractionListener mListener;
 
     private IOLevel mLevel = null;
-    private ViewPager mViewPager = null;
+    private IOViewPager mViewPager = null;
 
 
     public static IOPaginatedBoardFragment newInstance(IOLevel level) {
@@ -55,6 +57,7 @@ public class IOPaginatedBoardFragment extends Fragment {
 
         return fragment;
     }
+
     public IOPaginatedBoardFragment() {
         // Required empty public constructor
     }
@@ -70,10 +73,10 @@ public class IOPaginatedBoardFragment extends Fragment {
 
         ViewGroup mainView = (ViewGroup) inflater.inflate(R.layout.fragment_iopaginated_board, container, false);
 
-        mViewPager = (ViewPager) mainView.findViewById(R.id.viewPager);
+        mViewPager = (IOViewPager) mainView.findViewById(R.id.viewPager);
         mViewPager.setAdapter(new IOPaginatorAdapter(getFragmentManager(), mLevel));
 
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
@@ -100,12 +103,14 @@ public class IOPaginatedBoardFragment extends Fragment {
             mListener.onRegisterActiveLevel(mLevel);
         }
 
-        mViewPager.setCurrentItem(mLevel.getActiveIndex(), false);
+        if (mViewPager != null && mLevel != null)
+            mViewPager.setCurrentItem(mLevel.getActiveIndex(), false);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -128,11 +133,11 @@ public class IOPaginatedBoardFragment extends Fragment {
         this.mLevel = mLevel;
     }
 
-    public boolean canGoLeft(){
+    public boolean canGoLeft() {
         return mViewPager.getCurrentItem() > 0;
     }
 
-    public boolean canGoRight(){
+    public boolean canGoRight() {
         return mViewPager.getCurrentItem() < mViewPager.getAdapter().getCount() - 1;
     }
 
@@ -146,8 +151,7 @@ public class IOPaginatedBoardFragment extends Fragment {
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
     }
 
-    public void refreshView(int newIndex)
-    {
+    public void refreshView(int newIndex) {
         Log.d("trst", "adapter views " + mViewPager.getCurrentItem() + " " + mViewPager.getChildCount());
         mViewPager.setAdapter(new IOPaginatorAdapter(getFragmentManager(), mLevel));
 

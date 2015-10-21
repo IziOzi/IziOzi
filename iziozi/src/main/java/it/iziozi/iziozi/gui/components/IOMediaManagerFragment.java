@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  */
 
-package it.iziozi.iziozi.gui;
+package it.iziozi.iziozi.gui.components;
 
 import android.app.AlertDialog;
 import android.app.ListFragment;
@@ -43,6 +43,7 @@ import java.io.IOException;
 
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.core.IOApplication;
+import it.iziozi.iziozi.gui.IOCreateButtonActivity;
 
 /**
  * Created by martinolessio on 29/10/14.

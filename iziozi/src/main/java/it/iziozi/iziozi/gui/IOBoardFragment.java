@@ -23,8 +23,10 @@ package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -55,20 +57,11 @@ import it.iziozi.iziozi.core.IOConfiguration;
 import it.iziozi.iziozi.core.IOGlobalConfiguration;
 import it.iziozi.iziozi.core.IOLevel;
 import it.iziozi.iziozi.core.IOSpeakableImageButton;
+import it.iziozi.iziozi.helpers.IOHelper;
 
 
 public class IOBoardFragment extends Fragment {
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnBoardFragmentInteractionListener {
 
         public void tapOnSpeakableButton(IOSpeakableImageButton button, Integer level);
@@ -238,7 +231,7 @@ public class IOBoardFragment extends Fragment {
 
                             //download image
 
-                            if (isExternalStorageReadable()) {
+                            if (isExternalStorageReadable() && IOHelper.checkForRequiredPermissions(getActivity())) {
 
                                 File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
                                 Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/") + 1);
@@ -254,7 +247,8 @@ public class IOBoardFragment extends Fragment {
                                     client.get(imgButton.getmUrl(), new FileAsyncHttpResponseHandler(new File(imgButton.getmImageFile())) {
                                         @Override
                                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-                                            Toast.makeText(getActivity(), getString(R.string.download_error) + file.toString(), Toast.LENGTH_LONG).show();
+
+                                            Toast.makeText(getContext(), getString(R.string.download_error) + file.toString(), Toast.LENGTH_LONG).show();
                                         }
 
 
@@ -265,16 +259,16 @@ public class IOBoardFragment extends Fragment {
                                             if (new File(imgButton.getmImageFile()).exists()) {
                                                 imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
                                             } else {
-                                                Toast.makeText(getActivity(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
                                 } else {
 
-                                    Toast.makeText(getActivity(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(getActivity(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                             }
 
                         } else {
@@ -283,6 +277,15 @@ public class IOBoardFragment extends Fragment {
 */
 
                             imageLoader.displayImage("file://" + imgButton.getmImageFile(), imgButton);
+                        }
+                    }else if(imgButton.getIntentName() != null && imgButton.getIntentName().length() > 0)
+                    {
+                        Drawable icon = null;
+                        try {
+                            icon = getActivity().getPackageManager().getApplicationIcon(imgButton.getIntentPackageName());
+                            imgButton.setImageDrawable(icon);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
                         }
                     }
 
@@ -318,21 +321,38 @@ public class IOBoardFragment extends Fragment {
 
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
+        if(IOHelper.checkForRequiredPermissions(getActivity())) {
+            String state = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                return true;
+            }
         }
         return false;
     }
 
     /* Checks if external storage is available to at least read */
     public boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
+        if(IOHelper.checkForRequiredPermissions(getActivity())) {
+            String state = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(state) ||
+                    Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                return true;
+            }
         }
         return false;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    /*
+    private Context getContext()
+    {
+        if(isAdded())
+            return getActivity();
+        return IOApplication.CONTEXT;
+    }
+*/
 }

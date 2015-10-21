@@ -106,4 +106,44 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="25dp" />
 
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_swipe"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/bordersCheckbox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/swipe_checkbox"
+        android:checked="false"
+        android:layout_alignTop="@+id/textView5"
+        android:layout_alignLeft="@+id/bordersCheckbox"
+        android:layout_alignStart="@+id/bordersCheckbox" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_giga_navigation"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/swipe_checkbox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bignav_checkbox"
+        android:checked="false"
+        android:layout_alignTop="@+id/textView6"
+        android:layout_alignLeft="@+id/swipe_checkbox"
+        android:layout_alignStart="@+id/swipe_checkbox" />
+
 </RelativeLayout>

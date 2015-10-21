@@ -21,16 +21,16 @@
 
 package it.iziozi.iziozi.gui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
 import it.iziozi.iziozi.R;
 
-public class IOAboutActivity extends Activity {
+public class IOAboutActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

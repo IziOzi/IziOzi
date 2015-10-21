@@ -130,12 +130,25 @@
     <string name="new_board_alert">Attenzione, ogni modifica non salvata andrà persa!</string>
 
     <!--Move mode-->
-    <string name="swap_board">Sposta immagina</string>
+    <string name="swap_board">Scambia immagini</string>
     <string name="move">Sposta</string>
     <string name="move_hint">Tocca ora la nuova posizione dove muovere l\'immagine. Le due immagini verranno scambiate.</string>
 
     <string name="delete_image">Cancella immagine</string>
     <string name="title_activity_iovideo_player">Video</string>
+    <string name="add_intent">Collega applicazione</string>
+    <string name="remove_intent">Rimuovi applicazione</string>
+    <string name="application_name">App:</string>
+    <string name="no_application">Nessuna app selezionata.</string>
+    <string name="enable_swipe">Swipe per cambiare pagina</string>
+    <string name="enable_giga_navigation">Pulsanti di navigazione grandi</string>
+    <string name="tree_board">Tavola ad albero</string>
+    <string name="delete_image_alert">Sei sicuro di voler eliminare questa immagine? L\'operazione sarà definitiva!</string>
+    <string name="not_yet_implemented">Oops! Questa funzionalità è in fase di sviluppo! Presto sarà disponibile!</string>
+    <string name="tree_alert_text">La tavola ad albero è una speciale tavola che puoi usare per mostrare una tabella dentro ad un\'immagine. Questa tabella sarà mostrata quando toccherai l\'immagine essa associata.</string>
+    <string name="disable">Disabilita</string>
+    <string name="set">Configura</string>
+    <string name="tts_unavailable">Il motore di sintesi vocale(TTS) di Android non è disponibile. Controlla le tue impostazioni di sistema.</string>
 
 
 </resources>

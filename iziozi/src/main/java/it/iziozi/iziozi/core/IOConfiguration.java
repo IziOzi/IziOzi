@@ -51,20 +51,41 @@ public class IOConfiguration {
     @Element(required = false)
     private IOLevel mLevel;
 
-    @Attribute
+    @Attribute(required = false)
     private static Boolean showBorders = true;
+
+    @Attribute(required = false)
+    private static Boolean swipeEnabled = true;
+
+    @Attribute(required = false)
+    private static Boolean bigNavigation = false;
 
 
     public IOConfiguration() {
     }
 
+    public static Boolean isSwipeEnabled() {
+        return swipeEnabled;
+    }
+
+    public static void setSwipeEnabled(Boolean swipeEnabled) {
+        IOConfiguration.swipeEnabled = swipeEnabled;
+    }
+
+    public static Boolean isBigNavigation() {
+        return bigNavigation;
+    }
+
+    public static void setBigNavigation(Boolean bigNavigation) {
+        IOConfiguration.bigNavigation = bigNavigation;
+    }
 
     public static Boolean getShowBorders() {
         return showBorders;
     }
 
-    public void setShowBorders(Boolean showBorders) {
-        this.showBorders = showBorders;
+    public static void setShowBorders(Boolean showBorders) {
+        IOConfiguration.showBorders = showBorders;
     }
 
     public IOLevel getLevel() {

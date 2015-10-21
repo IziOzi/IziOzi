@@ -147,6 +147,26 @@
                 android:layout_marginLeft="10dp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/application_name"
+                android:id="@+id/textView" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_application"
+                android:id="@+id/app_status_text"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>
+
 
     </LinearLayout>
 

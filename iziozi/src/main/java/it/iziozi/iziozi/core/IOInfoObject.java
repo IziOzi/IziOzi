@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Martino Lessio -
+ * Copyright (c) 2015 Martino Lessio -
  * www.martinolessio.com
  * martino [at] iziozi [dot] org
  *
@@ -21,27 +21,25 @@
 
 package it.iziozi.iziozi.core;
 
-import android.content.Context;
-
-import java.util.List;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 /**
- * Created by martinolessio on 31/10/14.
+ * Created by martinolessio on 11/04/15.
+ *
+ * Inspirated by http://stackoverflow.com/a/15329255/1826349
+ *
  */
-public class IOGlobalConfiguration {
+public class IOInfoObject {
+    public String appname = "";
+    public String pname = "";
+    public String versionName = "";
+    public int versionCode = 0;
+    public Drawable icon;
 
-    public static Boolean isEditing = false;
-    public static Boolean isScanMode = false;
-    public static Boolean isInSwapMode = false;
-    public static int swapLevelIndex = -1;
 
-    public static List<IOSpeakableImageButton> firstList = null;
-    public static int firstIndex = -1;
-    public static IOSpeakableImageButton swapStorage = null;
-
-    public static final String IO_LAST_BOARD_USED = "last_board_used";
-
-    public static Context baseContext;
-
+    public void InfoObjectAggregatePrint() {//not used yet
+        Log.v(appname, appname + "\t" + pname + "\t" + versionName + "\t" + versionCode);
+    }
 
 }

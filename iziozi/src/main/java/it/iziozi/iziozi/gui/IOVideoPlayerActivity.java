@@ -21,8 +21,8 @@
 
 package it.iziozi.iziozi.gui;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
@@ -33,7 +33,7 @@ import com.joanzapata.android.iconify.Iconify;
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.helpers.IOHelper;
 
-public class IOVideoPlayerActivity extends Activity {
+public class IOVideoPlayerActivity extends AppCompatActivity {
 
     public final static String VIDEO_URL = "video_url";
     private VideoView mVideoView;
@@ -42,6 +42,9 @@ public class IOVideoPlayerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iovideo_player);
+
+        if( ! IOHelper.checkForRequiredPermissions(this) )
+            finish();
 
         lockUI();
 
@@ -78,9 +81,7 @@ public class IOVideoPlayerActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
         lockUI();
-
         mVideoView.start();
 
     }
@@ -106,5 +107,10 @@ public class IOVideoPlayerActivity extends Activity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE
         );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

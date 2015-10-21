@@ -30,9 +30,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -43,6 +45,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -58,10 +63,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.io.BufferedInputStream;
@@ -76,10 +79,12 @@ import java.util.Date;
 
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.core.IOApplication;
-import it.iziozi.iziozi.core.IODatabaseHelper;
+import it.iziozi.iziozi.gui.components.IOApplicationPickerFragment;
+import it.iziozi.iziozi.gui.components.IOMediaManagerFragment;
+import it.iziozi.iziozi.helpers.IOHelper;
 
 
-public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
+public class IOCreateButtonActivity extends AppCompatActivity {
 
     private final String TAG = "IOCreateButtonActivity";
 
@@ -95,6 +100,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     private ImageButton mImageButton;
     private EditText mTitleText, mTextText;
     private TextView mTapHereTextView;
+    private TextView mAppStatusText;
 
     private String mImageFile = null;
     private String mVideoFile = null;
@@ -102,6 +108,8 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     private String mImageText = null;
     private String mImageUrl = null;
     private String mAudioFile = null;
+    private String mIntentName = null;
+    private String mIntentPackageName = null;
 
     private TextView mPlayIcon;
     private TextView mRecordIcon;
@@ -132,7 +140,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+
         super.onCreate(savedInstanceState);
 
         Bundle extras = getIntent().getExtras();
@@ -143,7 +151,8 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
             mImageText = extras.getString(IOBoardActivity.BUTTON_TEXT);
             mImageUrl = extras.getString(IOBoardActivity.BUTTON_URL);
             mAudioFile = extras.getString(IOBoardActivity.BUTTON_AUDIO_FILE);
-
+            mIntentName = extras.getString(IOBoardActivity.BUTTON_INTENT_NAME);
+            mIntentPackageName = extras.getString(IOBoardActivity.BUTTON_INTENT_PACKAGENAME);
         }
 
         mButtonIndex = getIntent().getExtras().getInt(IOBoardActivity.BUTTON_INDEX);
@@ -156,6 +165,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         mTitleText = (EditText) findViewById(R.id.CreateButtonTitleText);
         mTextText = (EditText) findViewById(R.id.CreateButtonTextText);
         mTapHereTextView = (TextView) findViewById(R.id.CreateButtonTapLabel);
+        mAppStatusText = (TextView) findViewById(R.id.app_status_text);
 
         mOverlayView = (ViewGroup) findViewById(R.id.createButtonOverlayView);
         mFragmentContainer = (FrameLayout) findViewById(R.id.createButtonFragmentContainer);
@@ -169,6 +179,13 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         if (mImageFile != null && mImageFile.length() > 0) {
             mImageButton.setImageBitmap(BitmapFactory.decodeFile(mImageFile));
             mTapHereTextView.setVisibility(View.INVISIBLE);
+
+            mTapHereTextView.setVisibility(View.INVISIBLE);
+
+        }
+
+        if (mIntentName != null && mIntentName.length() > 0) {
+            mAppStatusText.setText(mIntentName);
         }
 
 
@@ -272,7 +289,6 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     @Override
     protected void onResume() {
         super.onResume();
-
         hideKeyboard();
 /*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
@@ -302,7 +318,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setSubmitButtonEnabled(true);
@@ -324,36 +340,41 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
         hideRecordingOverlay();
 
         switch (item.getItemId()) {
+
             case R.id.manageMedias:
-
-                if (null != mOverlayView && mOverlayView.getVisibility() == View.INVISIBLE) {
-
-                    getFragmentManager().beginTransaction()
-                            .add(mFragmentContainer.getId(), new IOMediaManagerFragment())
-                            .commit();
-
-                    AlphaAnimation a = new AlphaAnimation(0.f, 1.f);
-                    a.setDuration(500);
-
-                    mOverlayView.setVisibility(View.VISIBLE);
-                    mOverlayView.startAnimation(a);
-
-
-                    return true;
-                }
+                manageMedias();
+                break;
 
             default:
-
                 hideOverlayView();
                 break;
         }
 
-        return super.onMenuItemSelected(featureId, item);
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void manageMedias() {
+        if (IOHelper.checkForRequiredPermissions(this)) {
+
+            if (null != mOverlayView && mOverlayView.getVisibility() == View.INVISIBLE) {
+
+                getFragmentManager().beginTransaction()
+                        .add(mFragmentContainer.getId(), new IOMediaManagerFragment())
+                        .commit();
+
+                AlphaAnimation a = new AlphaAnimation(0.f, 1.f);
+                a.setDuration(500);
+
+                mOverlayView.setVisibility(View.VISIBLE);
+                mOverlayView.startAnimation(a);
+            }
+        }
     }
 
     @Override
@@ -451,6 +472,12 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         if (mVideoFile != null && mVideoFile.length() > 0)
             resultIntent.putExtra(IOBoardActivity.BUTTON_VIDEO_FILE, mVideoFile);
 
+        if (mIntentName != null && mIntentName.length() > 0)
+            resultIntent.putExtra(IOBoardActivity.BUTTON_INTENT_NAME, mIntentName);
+
+        if (mIntentPackageName != null && mIntentPackageName.length() > 0)
+            resultIntent.putExtra(IOBoardActivity.BUTTON_INTENT_PACKAGENAME, mIntentPackageName);
+
         resultIntent.putExtra(IOBoardActivity.BUTTON_INDEX, mButtonIndex);
 
         setResult(RESULT_OK, resultIntent);
@@ -464,8 +491,10 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item);
         adapter.add(getResources().getString(R.string.img_search));
         adapter.add(getResources().getString(R.string.img_gallery));
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY))
-            adapter.add(getResources().getString(R.string.img_camera));
+        adapter.add(getResources().getString(R.string.img_camera));
+
+        adapter.add(getString(R.string.add_intent));
+        adapter.add(getString(R.string.remove_intent));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getResources().getString(R.string.choose))
@@ -478,14 +507,72 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
                             searchImage();
                         else if (which == 1)
                             pickFromGallery();
-                        else if (which == 2)
+                        else if (which == 2 && getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY))
                             pickFromCamera();
+                        else if (which == 3) {
+                            //Link application
+                            doLinkApplication();
+                        } else if (which == 4) {
+                            //remove application
+                            doUnlinkApplication();
+                        }
 
                     }
                 }).setNegativeButton(getResources().getString(R.string.cancel), null)
                 .create().show();
 
 
+    }
+
+    private void doLinkApplication() {
+
+        if (null != mOverlayView && mOverlayView.getVisibility() == View.INVISIBLE) {
+
+            IOApplicationPickerFragment pickerFragment = IOApplicationPickerFragment.getInstance(new IOApplicationPickerFragment.IOApplicationSelectionListener() {
+                @Override
+                public void onApplicationSelected(ResolveInfo resolveInfo) {
+
+                    mIntentName = resolveInfo.activityInfo.name;
+                    mIntentPackageName = resolveInfo.activityInfo.applicationInfo.packageName;
+
+                    mAppStatusText.setText(mIntentName);
+
+                    if (mImageFile == null || mImageFile.length() == 0) {
+                        mTapHereTextView.setVisibility(View.INVISIBLE);
+
+                        Drawable icon = null;
+                        try {
+                            icon = getPackageManager().getApplicationIcon(mIntentPackageName);
+                            mImageButton.setImageDrawable(icon);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    onBackPressed();
+
+                }
+            });
+
+            getFragmentManager().beginTransaction()
+                    .add(mFragmentContainer.getId(), pickerFragment)
+                    .commit();
+
+            AlphaAnimation a = new AlphaAnimation(0.f, 1.f);
+            a.setDuration(500);
+
+            mOverlayView.setVisibility(View.VISIBLE);
+            mOverlayView.startAnimation(a);
+        }
+
+    }
+
+    private void doUnlinkApplication() {
+        mIntentName = "";
+        mIntentPackageName = "";
+
+        mAppStatusText.setText(getString(R.string.no_application));
     }
 
     private void searchImage() {
@@ -496,33 +583,37 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
     private void pickFromCamera() {
 
-        mFileDir = new File(Environment.getExternalStorageDirectory()
-                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/camera");
-        if (!mFileDir.isDirectory())
-            mFileDir.mkdirs();
+        if (IOHelper.checkForRequiredPermissions(this)) {
 
-        mDestinationFile = new File(mFileDir, new Date().getTime() + ".jpg");
-        cameraFile = mDestinationFile.getAbsolutePath();
-        try {
-            if (!mDestinationFile.createNewFile())
-                Log.e("check", "unable to create empty file");
+            mFileDir = new File(Environment.getExternalStorageDirectory()
+                    .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/camera");
+            if (!mFileDir.isDirectory())
+                mFileDir.mkdirs();
 
-            mFile = new File(mDestinationFile.getAbsolutePath());
-            Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mDestinationFile));
-            startActivityForResult(i, IMAGE_CAMERA_PICK_INTENT);
+            mDestinationFile = new File(mFileDir, new Date().getTime() + ".jpg");
+            cameraFile = mDestinationFile.getAbsolutePath();
+            try {
+                if (!mDestinationFile.createNewFile())
+                    Log.e("check", "unable to create empty file");
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
+                mFile = new File(mDestinationFile.getAbsolutePath());
+                Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mDestinationFile));
+                startActivityForResult(i, IMAGE_CAMERA_PICK_INTENT);
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
-
-
     }
 
     private void pickFromGallery() {
-        Intent pickIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        pickIntent.setType("image/*,video/*");
-        startActivityForResult(pickIntent, IMAGE_GALLERY_PICK_INTENT);
+        if (IOHelper.checkForRequiredPermissions(this)) {
+
+            Intent pickIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            pickIntent.setType("image/*,video/*");
+            startActivityForResult(pickIntent, IMAGE_GALLERY_PICK_INTENT);
+        }
     }
 
     @Override
@@ -614,6 +705,7 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
                         mImageButton.setImageBitmap(videoThumbnail);
                         mImageFile = mDestinationFile.toString();
+                        mTapHereTextView.setVisibility(View.INVISIBLE);
 
 
                     } else {
@@ -656,6 +748,8 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
                             mImageButton.setImageBitmap(bitmap);
                             mImageFile = mDestinationFile.toString();
+
+                            mTapHereTextView.setVisibility(View.INVISIBLE);
 
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -709,8 +803,8 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
     public String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
@@ -730,8 +824,11 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
 
     public void recordAudio(View v) {
-        hideKeyboard();
-        onRecord(true);
+        if (IOHelper.checkForRequiredPermissions(this)) {
+
+            hideKeyboard();
+            onRecord(true);
+        }
     }
 
     public void clearAudio(View v) {
@@ -742,16 +839,19 @@ public class IOCreateButtonActivity extends OrmLiteBaseActivity<IODatabaseHelper
 
     public void playAudio(View v) {
 
-        if (mAudioFile == null || (mPlayer != null && mPlayer.isPlaying())) {
+        if (IOHelper.checkForRequiredPermissions(this)) {
 
-            if (mPlayer == null)
+            if (mAudioFile == null || (mPlayer != null && mPlayer.isPlaying())) {
+
+                if (mPlayer == null)
+                    return;
+
+                onPlay(false);
                 return;
+            }
 
-            onPlay(false);
-            return;
+            onPlay(true);
         }
-
-        onPlay(true);
     }
 
     public String getAudioFile() {

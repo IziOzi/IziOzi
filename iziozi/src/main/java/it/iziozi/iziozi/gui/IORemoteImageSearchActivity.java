@@ -32,6 +32,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +45,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -64,10 +64,10 @@ import java.util.Locale;
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.core.IOApiClient;
 import it.iziozi.iziozi.core.IOApplication;
-import it.iziozi.iziozi.core.IODatabaseHelper;
 import it.iziozi.iziozi.core.dbclasses.IOPictogram;
+import it.iziozi.iziozi.helpers.IOHelper;
 
-public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
+public class IORemoteImageSearchActivity extends AppCompatActivity {
 
     private GridView mGridView;
     private List<IOPictogram> mPictograms;
@@ -83,6 +83,10 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smimages_search);
 
+        if (!IOHelper.checkForRequiredPermissions(this)) {
+            finish();
+        }
+
         mGridView = (GridView) findViewById(R.id.ImageSearchGridView);
         mEmptyTextView = (TextView) findViewById(R.id.ImageSearchNotFoundText);
         mEmptyTextView.setText(getString(R.string.no_picto_found));
@@ -97,7 +101,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if (isExternalStorageReadable()) {
+                if (IOHelper.checkForRequiredPermissions(IORemoteImageSearchActivity.this) && isExternalStorageReadable()) {
                     final IOPictogram pictogram = mPictograms.get(position);
 
                     File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
@@ -181,7 +185,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
                     })
                     .create()
                     .show();
-        }else
+        } else
             handleIntent(getIntent());
 
     }
@@ -261,7 +265,7 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
                             pictogram.setFilePath(jsonObject.getString("file"));
                             pictogram.setUrl(jsonObject.getString("deepurl"));
                             String text = jsonObject.getString("text");
-                            pictogram.setDescription(text.substring(0,1).toUpperCase() + text.substring(1).toLowerCase());
+                            pictogram.setDescription(text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase());
                             //TODO: add type or category
 
                             mPictograms.add(pictogram);
@@ -290,6 +294,10 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -353,19 +361,23 @@ public class IORemoteImageSearchActivity extends OrmLiteBaseActivity<IODatabaseH
 
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
+        if (IOHelper.checkForRequiredPermissions(this)) {
+            String state = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                return true;
+            }
         }
         return false;
     }
 
     /* Checks if external storage is available to at least read */
     public boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
+        if (IOHelper.checkForRequiredPermissions(this)) {
+            String state = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(state) ||
+                    Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                return true;
+            }
         }
         return false;
     }

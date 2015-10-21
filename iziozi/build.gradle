@@ -40,13 +40,16 @@ android {
         IziOzi {
         }
     }
-    compileSdkVersion 19
-    buildToolsVersion '20.0.0'
+
+    useLibrary  'org.apache.http.legacy'
+
+    compileSdkVersion 23
+    buildToolsVersion '21.1.2'
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 19
-        versionCode 20150328
-        versionName '1.5'
+        targetSdkVersion 23
+        versionCode 20151013
+        versionName '1.5.1dev'
         signingConfig signingConfigs.IziOzi
     }
     buildTypes {
@@ -65,7 +68,7 @@ dependencies {
     //chromecast support
     //compile 'com.google.android.gms:play-services:4.3.23'
     //compile 'com.android.support:support-v7-mediarouter:19.0.0'
-    compile 'com.android.support:support-v4:19.0.0'
+    compile 'com.android.support:support-v4:23.0.0'
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile files('libs/ThinkGear.jar')
@@ -73,4 +76,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.2.0@aar') {
         transitive = true;
     }
+    compile 'com.android.support:appcompat-v7:23.0.0'
 }
