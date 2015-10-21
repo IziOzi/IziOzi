@@ -1797,13 +1797,16 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
 
     private void stopScanMode() {
+
         IOGlobalConfiguration.isScanMode = false;
         int scanModeMaxIndex = mActualLevel.getBoardAtIndex(mActualIndex).getCols() * mActualLevel.getBoardAtIndex(mActualIndex).getRows();
         int index = IOHelper.mod(mActualScanIndex, scanModeMaxIndex);
 
-        IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(index);
-        button.setIsHiglighted(false);
-        button.invalidate();
+        if(index < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size()) {
+            IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(index);
+            button.setIsHiglighted(false);
+            button.invalidate();
+        }
 
         View scanClickDetector = findViewById(R.id.scanModeClickDetector);
 
