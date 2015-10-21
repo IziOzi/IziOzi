@@ -49,7 +49,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 20151013
-        versionName '1.5.1dev'
+        versionName '1.6rc'
         signingConfig signingConfigs.IziOzi
     }
     buildTypes {
