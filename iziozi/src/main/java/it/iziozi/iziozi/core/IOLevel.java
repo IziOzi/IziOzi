@@ -21,8 +21,6 @@
 
 package it.iziozi.iziozi.core;
 
-import android.util.Log;
-
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
@@ -78,9 +76,7 @@ public class IOLevel {
 
     public void addInnerBoardAtIndex(IOBoard board, int index)
     {
-        Log.d(LOG_TAG, "addinnerboard at " + index);
-        mLevel.add(index, board);
-
+        mLevel.add(Math.min(index, mLevel.size()), board);
     }
 
     public void removeBoardAtIndex(int index)
