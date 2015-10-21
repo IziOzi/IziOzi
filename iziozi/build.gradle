@@ -48,7 +48,7 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 20151013
+        versionCode 20151021
         versionName '1.6rc'
         signingConfig signingConfigs.IziOzi
     }
