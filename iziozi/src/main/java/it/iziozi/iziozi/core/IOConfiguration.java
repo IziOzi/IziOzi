@@ -146,7 +146,7 @@ public class IOConfiguration {
 
         if(fileName == null){
             SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
-            preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, "config.xml");
+            fileName = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, "config.xml");
         }
 
         File file = new File(dirFile.toString(), fileName);
