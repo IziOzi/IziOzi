@@ -797,6 +797,9 @@ public class IOCreateButtonActivity extends AppCompatActivity {
                 default:
                     super.onActivityResult(requestCode, resultCode, data);
             }
+        }else
+        {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
