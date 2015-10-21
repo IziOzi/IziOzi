@@ -22,7 +22,6 @@
 package it.iziozi.iziozi.gui;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,7 +35,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -61,8 +59,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
-import com.neurosky.thinkgear.TGDevice;
-import com.neurosky.thinkgear.TGEegPower;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -126,8 +122,10 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     /*
     * Neurosky Mindwave support for blink detection
     * */
+/*
     private TGDevice tgDevice;
     private BluetoothAdapter btAdapter;
+*/
 
     /*
     * Pagination vars
@@ -1602,8 +1600,10 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         /*
         * Neurosky Mindwave support
         * */
+/*
         if (tgDevice != null)
             tgDevice.connect(true);
+*/
 
         View scanClickDetector = findViewById(R.id.scanModeClickDetector);
 
@@ -1821,7 +1821,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             scanModeHandler.removeCallbacks(scanModeRunnable);
         scanModeHandler = null;
         scanModeRunnable = null;
+/*
         tgDevice.close();
+*/
 
         updateNavigationItems();
         refreshView();
@@ -1833,6 +1835,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 * Neurosky Mindwave support
 * */
 
+/*
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -1857,23 +1860,29 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                     }
                     break;
                 case TGDevice.MSG_POOR_SIGNAL:
+*/
 /*
                     Log.v("HelloEEG", "PoorSignal: " + msg.arg1);
-*/
+*//*
+
                     break;
                 case TGDevice.MSG_ATTENTION:
+*/
 /*
                     Log.v("HelloEEG", "Attention: " + msg.arg1);
-*/
+*//*
+
                     break;
                 case TGDevice.MSG_RAW_DATA:
                     int rawValue = msg.arg1;
                     break;
                 case TGDevice.MSG_EEG_POWER:
                     TGEegPower ep = (TGEegPower) msg.obj;
+*/
 /*
                     Log.v("HelloEEG", "Delta: " + ep.delta);
-*/
+*//*
+
                     break;
                 case TGDevice.MSG_BLINK:
                     Toast.makeText(getApplicationContext(), "blink!", Toast.LENGTH_SHORT).show();
@@ -1887,4 +1896,5 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             }
         }
     };
+*/
 }
