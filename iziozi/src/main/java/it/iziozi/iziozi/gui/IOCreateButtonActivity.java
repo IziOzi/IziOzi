@@ -716,39 +716,40 @@ public class IOCreateButtonActivity extends AppCompatActivity {
                         try {
                             imageStream = getContentResolver().openInputStream(selectedImage);
                             Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
-                            Log.d("image_debug", "onActivityResult:" + bitmap.getWidth() + " " + bitmap.getHeight());
-                            if (bitmap.getHeight() >= 2048 || bitmap.getWidth() >= 2048) {
-                                bitmap = scaleToFill(bitmap, 1024, 1024);
-                            }
-
-                            mFileDir = new File(Environment.getExternalStorageDirectory()
-                                    .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/gallery");
-                            if (!mFileDir.isDirectory())
-                                mFileDir.mkdirs();
-
-                            mDestinationFile = new File(mFileDir, new Date().getTime() + ".jpg");
-
-                            FileOutputStream out = null;
-                            try {
-                                out = new FileOutputStream(mDestinationFile);
-
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                try {
-                                    if (out != null) {
-                                        out.close();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                            if(null != bitmap) {
+                                Log.d("image_debug", "onActivityResult:" + bitmap.getWidth() + " " + bitmap.getHeight());
+                                if (bitmap.getHeight() >= 2048 || bitmap.getWidth() >= 2048) {
+                                    bitmap = scaleToFill(bitmap, 1024, 1024);
                                 }
+
+                                mFileDir = new File(Environment.getExternalStorageDirectory()
+                                        .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/gallery");
+                                if (!mFileDir.isDirectory())
+                                    mFileDir.mkdirs();
+
+                                mDestinationFile = new File(mFileDir, new Date().getTime() + ".jpg");
+
+                                FileOutputStream out = null;
+                                try {
+                                    out = new FileOutputStream(mDestinationFile);
+
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    try {
+                                        if (out != null) {
+                                            out.close();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+
+                                mImageButton.setImageBitmap(bitmap);
+                                mImageFile = mDestinationFile.toString();
                             }
-
-
-                            mImageButton.setImageBitmap(bitmap);
-                            mImageFile = mDestinationFile.toString();
-
                             mTapHereTextView.setVisibility(View.INVISIBLE);
 
                         } catch (FileNotFoundException e) {
@@ -768,29 +769,30 @@ public class IOCreateButtonActivity extends AppCompatActivity {
                     } else
                         Log.e("check", mFile.getAbsolutePath());
                     Bitmap bitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
-                    if (bitmap.getHeight() >= 2048 || bitmap.getWidth() >= 2048) {
-                        bitmap = scaleToFill(bitmap, 1024, 1024);
-                    }
-
-                    FileOutputStream out = null;
-                    try {
-                        out = new FileOutputStream(cameraFile);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        try {
-                            if (out != null) {
-                                out.close();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    if(null != bitmap) {
+                        if (bitmap.getHeight() >= 2048 || bitmap.getWidth() >= 2048) {
+                            bitmap = scaleToFill(bitmap, 1024, 1024);
                         }
+
+                        FileOutputStream out = null;
+                        try {
+                            out = new FileOutputStream(cameraFile);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            try {
+                                if (out != null) {
+                                    out.close();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        mImageButton.setImageBitmap(bitmap);
+                        mImageFile = mFile.toString();
                     }
-
-                    mImageButton.setImageBitmap(bitmap);
-                    mImageFile = mFile.toString();
-
                     break;
                 }
 
