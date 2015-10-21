@@ -21,9 +21,7 @@
 
 package it.iziozi.iziozi.core;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
@@ -36,17 +34,12 @@ import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
 
-import it.iziozi.iziozi.R;
-
 /**
  * Created by martinolessio on 05/11/14.
  */
 
 @Root(name = "IOConfiguration")
 public class IOConfiguration {
-
-
-    private Context context;
 
     @Element(required = false)
     private IOLevel mLevel;
@@ -94,37 +87,20 @@ public class IOConfiguration {
         return mLevel;
     }
 
-    public void save() {
+    public boolean save() {
 
-        Serializer serializer = new Persister();
-
-        File dirFile = new File(Environment.getExternalStorageDirectory()
-                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
-        if (!dirFile.exists())
-            dirFile.mkdirs();
-
-        File file = new File(dirFile.toString(), "config.xml");
-
-        try {
-            serializer.write(this, file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("XmlConfig", "Error writing config.xml");
-            new AlertDialog.Builder(context)
-                    .setTitle(this.context.getResources().getString(R.string.error))
-                    .setMessage(this.context.getResources().getString(R.string.xml_save_fail))
-                    .setNegativeButton(this.context.getResources().getString(R.string.continue_string), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .show();
-        }
+        return saveAs(null);
 
     }
 
-    public void saveAs(String fileName) {
+    public boolean save(String filename){
+        return saveAs(filename);
+    }
+
+    private boolean saveAs(String fileName) {
+
+        if(fileName == null)
+            fileName = "config";
 
         Serializer serializer = new Persister();
 
@@ -146,56 +122,32 @@ public class IOConfiguration {
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("XmlConfig", "Error writing xml");
-            new AlertDialog.Builder(context)
-                    .setTitle(this.context.getResources().getString(R.string.error))
-                    .setMessage(this.context.getResources().getString(R.string.xml_save_fail))
-                    .setNegativeButton(this.context.getResources().getString(R.string.continue_string), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .show();
-        }
 
+            return false;
+        }
+        return true;
     }
 
 
     public static IOConfiguration getSavedConfiguration() {
-        Serializer serializer = new Persister();
-
-        File dirFile = new File(Environment.getExternalStorageDirectory()
-                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
-        if (!dirFile.exists())
-            dirFile.mkdirs();
-
-        SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
-
-        String lastBoard = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, "config.xml");
-
-        File file = new File(dirFile.toString(), lastBoard);
-
-        IOConfiguration config = null;
-
-        try {
-            config = serializer.read(IOConfiguration.class, file);
-        } catch (Exception e) {
-            Log.w("XmlSeializer", "Unable to read config.xml");
-            Log.d("XmlSerializer", "" + IOApplication.CONTEXT.getFilesDir());
-            e.printStackTrace();
-        }
-
-        return config;
-
+        return getSavedConfiguration(null);
     }
 
+
+
     public static IOConfiguration getSavedConfiguration(String fileName) {
+
         Serializer serializer = new Persister();
 
         File dirFile = new File(Environment.getExternalStorageDirectory()
                 .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
         if (!dirFile.exists())
             dirFile.mkdirs();
+
+        if(fileName == null){
+            SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
+            preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, "config.xml");
+        }
 
         File file = new File(dirFile.toString(), fileName);
 
@@ -209,7 +161,7 @@ public class IOConfiguration {
             preferences.commit();
 
         } catch (Exception e) {
-            Log.w("XmlSeializer", "Unable to read config.xml");
+            Log.w("XmlSeializer", "Unable to read configuration file");
             Log.d("XmlSerializer", "" + IOApplication.CONTEXT.getFilesDir());
             e.printStackTrace();
         }

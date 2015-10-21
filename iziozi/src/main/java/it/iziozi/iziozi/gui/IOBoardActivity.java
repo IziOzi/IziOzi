@@ -221,8 +221,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             @Override
             public void onInit(int status) {
 
-                if(status == TextToSpeech.SUCCESS)
-                {
+                if (status == TextToSpeech.SUCCESS) {
                     Locale locale = Locale.getDefault();
                     if (null == locale)
                         locale = Locale.ITALIAN;
@@ -233,7 +232,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                         tts.setLanguage(Locale.ENGLISH);
 
                     mCanSpeak = true;
-                }else{
+                } else {
                     Toast.makeText(IOBoardActivity.this, getString(R.string.tts_unavailable), Toast.LENGTH_LONG).show();
                     mCanSpeak = false;
                 }
@@ -1009,7 +1008,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             }
 
             case R.id.action_save: {
-                saveBoard();
+                saveBoard(null);
                 break;
             }
 
@@ -1049,6 +1048,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Method used to create a new configuration file.
+     * */
     private void newBoard() {
 
         if (IOHelper.checkForRequiredPermissions(this)) {
@@ -1103,7 +1105,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                                             toggleEditing();
 
 
-                                        IOBoardActivity.this.mActiveConfig.saveAs(value);
+                                        saveBoard(value);
                                         mActualConfigName = value;
                                     }
                                 }
@@ -1127,17 +1129,40 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         }
     }
 
-    private void saveBoard() {
+    /**
+     * Unique method to save a board.
+     * Please use no other methods.
+     * */
+    private void saveBoard(String fileName) {
         if (IOHelper.checkForRequiredPermissions(this)) {
 
-            if (null == mActualConfigName)
-                IOBoardActivity.this.mActiveConfig.save();
-            else
-                IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
+            boolean result;
 
+            if (null != fileName)
+                result = mActiveConfig.save(fileName);
+            else if (null != mActualConfigName)
+                result = mActiveConfig.save(mActualConfigName);
+            else
+                result = mActiveConfig.save();
+
+            if (result == false) {
+                new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.error))
+                        .setMessage(getString(R.string.xml_save_fail))
+                        .setNegativeButton(getString(R.string.continue_string), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
         }
     }
 
+    /**
+     * Method used to ask a filename to the user.
+     * */
     private void saveBoardAs() {
 
         if (IOHelper.checkForRequiredPermissions(this)) {
@@ -1172,7 +1197,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                                 .show();
 
                     } else {
-                        IOBoardActivity.this.mActiveConfig.saveAs(value);
+                        saveBoard(value);
                         mActualConfigName = value;
                     }
                 }
@@ -1258,9 +1283,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         if (!IOGlobalConfiguration.isEditing) {
             if (null == mActualConfigName)
-                IOBoardActivity.this.mActiveConfig.save();
+                saveBoard(null);
             else
-                IOBoardActivity.this.mActiveConfig.saveAs(mActualConfigName);
+                saveBoard(mActualConfigName);
 
             mLeftEditButton.setVisibility(View.GONE);
             mRightEditButton.setVisibility(View.GONE);
@@ -1640,6 +1665,10 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * Actually not more used.
+     * TODO: implement permissions callbacks for most sensible actions(eg. saving, loading...)
+     * */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         // If request is cancelled, the result arrays are empty.
@@ -1654,7 +1683,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 break;
             case IOHelper.IO_PERMISSIONS_WRITE_STORAGE_FOR_SAVING:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    saveBoard();
+                    saveBoard(null);
                 break;
             case IOHelper.IO_PERMISSIONS_WRITE_STORAGE_FOR_SAVINGAS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
