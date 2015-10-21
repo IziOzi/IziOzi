@@ -132,7 +132,8 @@ public class IORemoteImageSearchActivity extends AppCompatActivity {
                         client.get(pictogram.getUrl(), new FileAsyncHttpResponseHandler(pictoFile) {
                             @Override
                             public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-                                mBarProgressDialog.cancel();
+                                if (null != mBarProgressDialog)
+                                    mBarProgressDialog.cancel();
                                 Toast.makeText(getApplicationContext(), getString(R.string.download_error), Toast.LENGTH_LONG).show();
                             }
 
