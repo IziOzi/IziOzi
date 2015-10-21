@@ -81,7 +81,7 @@ public class IOLevel {
 
     public void removeBoardAtIndex(int index)
     {
-        mLevel.remove(index);
+        mLevel.remove(Math.min(index, mLevel.size()));
     }
 
     public int getActiveIndex() {
