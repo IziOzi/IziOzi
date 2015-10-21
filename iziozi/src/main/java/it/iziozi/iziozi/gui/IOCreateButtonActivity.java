@@ -319,23 +319,23 @@ public class IOCreateButtonActivity extends AppCompatActivity {
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setSubmitButtonEnabled(true);
+
+        if (null != searchView) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            searchView.setSubmitButtonEnabled(true);
 
 
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus)
-                    mSearchView.setIconified(true);
-                else
-                    hideRecordingOverlay();
-            }
-        });
-
-        mSearchView = searchView;
-
+            searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus)
+                        mSearchView.setIconified(true);
+                    else
+                        hideRecordingOverlay();
+                }
+            });
+            mSearchView = searchView;
+        }
         return true;
     }
 
@@ -797,8 +797,7 @@ public class IOCreateButtonActivity extends AppCompatActivity {
                 default:
                     super.onActivityResult(requestCode, resultCode, data);
             }
-        }else
-        {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
