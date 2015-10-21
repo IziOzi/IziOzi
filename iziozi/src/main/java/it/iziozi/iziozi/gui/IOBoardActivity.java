@@ -1716,7 +1716,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         for (int i = index; i < mScanModeMaxIndex; i++) {
 
-            if (buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
+            if ( i < buttons.size() && buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
                 break;
             }
             index = i + 1;
@@ -1738,7 +1738,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         if (scanModePrevIndex < mScanModeMaxIndex) {
             for (int i = scanModePrevIndex; i >= 0; i--) {
-                if (buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
+                if ( i < buttons.size() && buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
                     scanModePrevIndex = i;
                     break;
                 }
@@ -1758,7 +1758,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             mRightSideArrowButton.invalidate();
             mLeftSideArrowButton.invalidate();
 
-            if (scanModePrevIndex < mScanModeMaxIndex) {
+            if (scanModePrevIndex < mScanModeMaxIndex && scanModePrevIndex < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size() ) {
                 IOSpeakableImageButton prevbutton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(scanModePrevIndex);
                 prevbutton.setIsHiglighted(false);
                 prevbutton.invalidate();
@@ -1769,7 +1769,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             mRightSideArrowButton.setIsHiglighted(true);
             mRightSideArrowButton.invalidate();
 
-            if (scanModePrevIndex < mScanModeMaxIndex) {
+            if (scanModePrevIndex < mScanModeMaxIndex && scanModePrevIndex < buttons.size()) {
                 buttons.get(scanModePrevIndex).setIsHiglighted(false);
                 buttons.get(scanModePrevIndex).invalidate();
             }
@@ -1781,16 +1781,19 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             mLeftSideArrowButton.setIsHiglighted(false);
             mLeftSideArrowButton.invalidate();
 
-            IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(index);
-            button.setIsHiglighted(true);
-            button.invalidate();
+            if( index < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size()) {
+                IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(index);
+                button.setIsHiglighted(true);
+                button.invalidate();
+            }
 
-            if (scanModePrevIndex <= mScanModeMaxIndex) {
+            if (scanModePrevIndex <= mScanModeMaxIndex && scanModePrevIndex < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size()) {
                 IOSpeakableImageButton prevbutton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(scanModePrevIndex);
                 prevbutton.setIsHiglighted(false);
                 prevbutton.invalidate();
             }
         }
+
         mActualScanIndex = index;
 
     }
