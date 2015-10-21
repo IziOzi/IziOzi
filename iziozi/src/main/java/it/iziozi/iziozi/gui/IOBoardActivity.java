@@ -1050,7 +1050,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
     /**
      * Method used to create a new configuration file.
-     * */
+     */
     private void newBoard() {
 
         if (IOHelper.checkForRequiredPermissions(this)) {
@@ -1132,7 +1132,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     /**
      * Unique method to save a board.
      * Please use no other methods.
-     * */
+     */
     private void saveBoard(String fileName) {
         if (IOHelper.checkForRequiredPermissions(this)) {
 
@@ -1162,7 +1162,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
     /**
      * Method used to ask a filename to the user.
-     * */
+     */
     private void saveBoardAs() {
 
         if (IOHelper.checkForRequiredPermissions(this)) {
@@ -1552,7 +1552,8 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                         int sVal = ((int) Math.ceil(millisUntilFinished / 1000.f));
 
-                        IOBoardActivity.this.mUnlockAlert.setMessage(getResources().getQuantityString(R.plurals.unlock_question, sVal, sVal));
+                        if (null != mUnlockAlert)
+                            mUnlockAlert.setMessage(getResources().getQuantityString(R.plurals.unlock_question, sVal, sVal));
                     }
 
                     @Override
@@ -1668,7 +1669,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     /**
      * Actually not more used.
      * TODO: implement permissions callbacks for most sensible actions(eg. saving, loading...)
-     * */
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         // If request is cancelled, the result arrays are empty.
@@ -1716,7 +1717,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         for (int i = index; i < mScanModeMaxIndex; i++) {
 
-            if ( i < buttons.size() && buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
+            if (i < buttons.size() && buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
                 break;
             }
             index = i + 1;
@@ -1738,7 +1739,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         if (scanModePrevIndex < mScanModeMaxIndex) {
             for (int i = scanModePrevIndex; i >= 0; i--) {
-                if ( i < buttons.size() && buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
+                if (i < buttons.size() && buttons.get(i).getmImageFile() != null && buttons.get(i).getmImageFile().length() > 0) {
                     scanModePrevIndex = i;
                     break;
                 }
@@ -1758,7 +1759,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             mRightSideArrowButton.invalidate();
             mLeftSideArrowButton.invalidate();
 
-            if (scanModePrevIndex < mScanModeMaxIndex && scanModePrevIndex < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size() ) {
+            if (scanModePrevIndex < mScanModeMaxIndex && scanModePrevIndex < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size()) {
                 IOSpeakableImageButton prevbutton = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(scanModePrevIndex);
                 prevbutton.setIsHiglighted(false);
                 prevbutton.invalidate();
@@ -1781,7 +1782,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             mLeftSideArrowButton.setIsHiglighted(false);
             mLeftSideArrowButton.invalidate();
 
-            if( index < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size()) {
+            if (index < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size()) {
                 IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(index);
                 button.setIsHiglighted(true);
                 button.invalidate();
@@ -1805,7 +1806,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         int scanModeMaxIndex = mActualLevel.getBoardAtIndex(mActualIndex).getCols() * mActualLevel.getBoardAtIndex(mActualIndex).getRows();
         int index = IOHelper.mod(mActualScanIndex, scanModeMaxIndex);
 
-        if(index < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size()) {
+        if (index < mActualLevel.getBoardAtIndex(mActualIndex).getButtons().size()) {
             IOSpeakableImageButton button = mActualLevel.getBoardAtIndex(mActualIndex).getButtons().get(index);
             button.setIsHiglighted(false);
             button.invalidate();
