@@ -37,7 +37,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root(name = "IOSpeakableImageButton")
-public class IOSpeakableImageButton extends ImageButton {
+public class IOSpeakableImageButton extends ImageButton  {
 
     @Element(required = false)
     private String mSentence = "";
@@ -79,7 +79,7 @@ public class IOSpeakableImageButton extends ImageButton {
     private Boolean mShowBorder;
 
     private int mPaddingWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-    ;
+
 
 
     public IOSpeakableImageButton(Context ctx) {

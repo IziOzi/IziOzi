@@ -90,7 +90,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     /*
     * MediaPlayer vars
     * */
-
     private final MediaPlayer mPlayer = new MediaPlayer();
 
     /*
@@ -526,6 +525,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             refreshView();
             return;
         }
+
+        // Added to avoid a NPE on mUnlockCountDown
+        if (IOGlobalConfiguration.isEditing) toggleEditing();
 
         super.onBackPressed();
     }
