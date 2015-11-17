@@ -21,7 +21,91 @@
 -->
 <resources>
 
+    <!-- Strings for each tutorial page, format: page_header_[0..n], page_details1/2_[0..n] -->
+    <string name="tutorial_header_0">Welcome to IziOzi</string>
+    <string name="tutorial_details1_0">This introduction will help you understand how to use this app and
+        will only take a few minutes of your time.
+        \n\nYou can navigate by swiping the pages from right to left. Let\'s begin.</string>
+
+    <string name="tutorial_header_1">Add pictograms in edit mode</string>
+    <string name="tutorial_details1_1">At the first run of the app \"edit mode\" will be activated and you
+        will be presented with 6 pictograms. This is called a "board".
+        \n\nYou can start editing by tapping on a pictogram.</string>
+    <string name="tutorial_details2_1">From the plus buttons you can add another board. The trashbin
+        deletes the current board you are on.</string>
+
+    <string name="tutorial_header_2">Set a new image</string>
+    <string name="tutorial_details1_2">Tapping on a pictogram will show you a set of options. Setting
+        this pictogram as a tree board means adding a board inside it, such that when you click on that
+        pictogram, a new board will be displayed.
+        \n\nYou can also delete and set an image.</string>
+    <string name="tutorial_header_3">Set the pictogram information</string>
+    <string name="tutorial_details1_3">After choosing to set an image you can tap on the current empty
+        box to select a source for the picture.</string>
+    <string name="tutorial_details2_3">You should also set the title and optionally the text to be spoken.
+        \n\nInstead of the text to be spoken you can register a sound by pressing the record button. Click
+        the save icon when you\'re done.</string>
+
+    <string name="tutorial_header_4">Choose a pictogram source</string>
+    <string name="tutorial_details1_4">You have a couple of options to choose your pictograms from.</string>
+    <string name="tutorial_details2_4">Selecting to search from the database will position the cursor
+        at the top and you can start typing. Let\'s search for the word \"bus\".
+        \n\nPress enter when finished to start searching.</string>
+
+    <string name="tutorial_header_5">Database search results</string>
+    <string name="tutorial_details1_5">The search results will display a list of pictograms which you
+        can scroll through until you find the one you like. Select one by tapping on it. This will
+        cause the app to download the image and display it on the preview section.
+        \n\nIt will also complete the title field with the title of the image you selected.</string>
+
+    <string name="tutorial_header_6">The main menu</string>
+    <string name="tutorial_details1_6">You can enter the main menu by tapping on the three dots in the
+        top-right corner. This will present you with all the options available.
+        \n\nThe option \"manage boards\" lets you save, load and create a new board. When saving you can use
+        \"save as\" to give your board a name. The name will appear when you will load a new board.
+    </string>
+    <string name="tutorial_details2_6">The \"Lock\" option locks the screen and hides the options menu and
+        the system bar. Doing so prevents others from accessing the menu and making changes.
+        \n\nTo exit the lock mode position your finger at the top of the screen and swipe down and select
+        unlock.
+    </string>
+
+    <string name="tutorial_header_7">Change the settings of the board</string>
+    <string name="tutorial_details1_7">The settings menu allows you to make changes to your board
+        configuration. More pictograms can be displayed by selecting the number of rows and columns.
+        \n\nFinally, you can disallow swipe movements from one board to the other and instead use the
+        navigational arrows. This is available if you have more than one board.</string>
+
+    <string name="tutorial_header_8">Thank you for using IziOzi</string>
+    <string name="tutorial_details1_8">This project is free and open source and was done in collaboration
+        with University of Eastern Piedmont. \n\nPlease consider supporting our efforts and donating.
+    </string>
+
+    <!-- Strings for the page title of the viewpager; format is `page_title_[0..9]` -->
+    <string name="page_title_0">Intro</string>
+    <string name="page_title_1">Edit mode</string>
+    <string name="page_title_2">Set image</string>
+    <string name="page_title_3">Source</string>
+    <string name="page_title_4">Select</string>
+    <string name="page_title_5">Database search</string>
+    <string name="page_title_6">Menu</string>
+    <string name="page_title_7">Settings</string>
+    <string name="page_title_8">Finish</string>
+
+    <!-- Strings for the initial tutorial -->
+    <string name="slideone_header">Welcome to IziOzi</string>
+    <string name="slideone_details">This introduction will help you understand how to use this app
+        and will only take a few minutes of your time. You can navigate by swiping the pages from right
+        to left. Let\'s begin.</string>
+
+    <string name="tutorial">Tutorial</string>
+    <string name="exit_tutorial_title">Exit tutorial</string>
+    <string name="exit_tutorial_msg">You are about to exit the tutorial. If you are sure then press Exit,
+        otherwise press Cancel. You can always access the tutorial later from the menu.
+    </string>
+
     <!-- Generic strings -->
+    <string name="finish">Finish</string>
     <string name="apply">Apply</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>

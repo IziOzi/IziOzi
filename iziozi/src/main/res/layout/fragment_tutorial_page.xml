@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2015 Martino Lessio -
+  ~ www.martinolessio.com
+  ~ martino [at] iziozi [dot] org
+  ~
+  ~
+  ~ This file is part of the IziOzi project.
+  ~
+  ~ IziOzi is free software:
+  ~ you can redistribute it and/or modify it under the terms of the GNU General Public
+  ~ License as published by the Free Software Foundation, either version 3 of the License,
+  ~ or (at your option) any later version.
+  ~
+  ~ IziOzi is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  ~ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along with IziOzi.
+  ~ If not, see http://www.gnu.org/licenses/.
+  -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:background="#f59400"
+                android:fontFamily="sans-serif-medium"
+                android:paddingBottom="@dimen/tv_header_padding_top"
+                android:paddingLeft="@dimen/tv_header_padding_side"
+                android:paddingRight="@dimen/tv_header_padding_side"
+                android:paddingTop="@dimen/tv_header_padding_top"
+                android:text="This is the header that presents the operation"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/tv_header_size" />
+
+            <ImageView
+                android:id="@+id/iv_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_header" />
+
+            <TextView
+                android:id="@+id/tv_details_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_image"
+                android:layout_marginTop="@dimen/tv_detail_margin_top"
+                android:fontFamily="sans-serif-light"
+                android:paddingBottom="@dimen/tv_detail_margin_top"
+                android:paddingLeft="@dimen/tv_detail_padding_left"
+                android:paddingRight="@dimen/tv_detail_padding_right"
+                android:textSize="18dp" />
+
+            <ImageView
+                android:id="@+id/iv_image2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_details_1"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/tv_details_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_image2"
+                android:layout_marginTop="@dimen/tv_detail_margin_top"
+                android:fontFamily="sans-serif-light"
+                android:paddingBottom="@dimen/tv_detail_margin_top"
+                android:paddingLeft="@dimen/tv_detail_padding_left"
+                android:paddingRight="@dimen/tv_detail_padding_right"
+                android:textSize="@dimen/tv_detail_size" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_finish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/finish"
+        android:visibility="gone" />
+
+</RelativeLayout>

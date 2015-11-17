@@ -20,6 +20,17 @@
   -->
 
 <resources>
+
+    <!-- paddings and margins for the tutorial views -->
+    <dimen name="tv_header_size">32dp</dimen>
+    <dimen name="tv_header_padding_top">20dp</dimen>
+    <dimen name="tv_header_padding_side">10dp</dimen>
+
+    <dimen name="tv_detail_size">18dp</dimen>
+    <dimen name="tv_detail_margin_top">15dp</dimen>
+    <dimen name="tv_detail_padding_right">5dp</dimen>
+    <dimen name="tv_detail_padding_left">25dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -31,6 +42,5 @@
     <dimen name="navigation_bar_button_size">60dp</dimen>
 
     <dimen name="nav_buttons_size">150dp</dimen>
-
 
 </resources>

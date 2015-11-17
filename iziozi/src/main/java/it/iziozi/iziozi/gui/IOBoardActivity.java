@@ -36,6 +36,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -54,6 +55,7 @@ import android.widget.FrameLayout;
 import android.widget.IconTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,10 +75,13 @@ import it.iziozi.iziozi.core.IOConfiguration;
 import it.iziozi.iziozi.core.IOGlobalConfiguration;
 import it.iziozi.iziozi.core.IOLevel;
 import it.iziozi.iziozi.core.IOSpeakableImageButton;
+import it.iziozi.iziozi.gui.tutorial.FragmentTutorialPage;
+import it.iziozi.iziozi.gui.tutorial.FragmentTutorialViewPager;
 import it.iziozi.iziozi.helpers.IOHelper;
 
 
-public class IOBoardActivity extends AppCompatActivity implements IOBoardFragment.OnBoardFragmentInteractionListener, IOPaginatedBoardFragment.OnFragmentInteractionListener {
+public class IOBoardActivity extends AppCompatActivity implements IOBoardFragment.OnBoardFragmentInteractionListener,
+        IOPaginatedBoardFragment.OnFragmentInteractionListener, FragmentTutorialPage.OnTutorialFinishedListener {
 
 
     /*
@@ -162,6 +167,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
     int newRows, newCols;
 
+    private boolean showTutorial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +181,8 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             this.mActiveConfig = IOConfiguration.getSavedConfiguration();
         }
 
-        SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME,
+                Context.MODE_PRIVATE);
 
         this.mActualConfigName = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, null);
         if (mActualConfigName != null)
@@ -183,25 +190,28 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         if (this.mActiveConfig == null) {
             this.mActiveConfig = new IOConfiguration();
-            showHintAlert();
-        } else {
-            lockUI();
         }
 
-        mActualLevel = mActiveConfig.getLevel();
+        SharedPreferences prefs = getSharedPreferences("tutorial", Context.MODE_PRIVATE);
+        showTutorial = prefs.getBoolean("showTutorial", true);
 
+        mActualLevel = mActiveConfig.getLevel();
         mFrameLayout = (FrameLayout) findViewById(R.id.mainLayoutTableContainer);
 
         FragmentManager fm = getSupportFragmentManager();
 
-        fm.beginTransaction()
+        if (showTutorial) {
+            showTutorial();
+        } else {
+            lockUI();
+            fm.beginTransaction()
                 .add(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActualLevel))
                 .commit();
 
+        }
+
         setupNavButtons();
-
         setupSideNavButtons();
-
         /*
         * Neurosky Mindwave support
         * */
@@ -213,11 +223,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             }
         }
 */
-
         this.tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-
                 if (status == TextToSpeech.SUCCESS) {
                     Locale locale = Locale.getDefault();
                     if (null == locale)
@@ -230,7 +238,8 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                     mCanSpeak = true;
                 } else {
-                    Toast.makeText(IOBoardActivity.this, getString(R.string.tts_unavailable), Toast.LENGTH_LONG).show();
+                    Toast.makeText(IOBoardActivity.this, getString(R.string.tts_unavailable),
+                            Toast.LENGTH_LONG).show();
                     mCanSpeak = false;
                 }
             }
@@ -238,7 +247,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         this.mDecorView.setOnSystemUiVisibilityChangeListener
                 (new View.OnSystemUiVisibilityChangeListener() {
-
                     @Override
                     public void onSystemUiVisibilityChange(int visibility) {
                         // Note that system bars will only be "visible" if none of the
@@ -248,7 +256,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                             if (mUILocked && !IOGlobalConfiguration.isEditing && IOHelper.canGoImmersive())
                                 showUnlockAlert();
 
-
                         } else {
                             // TODO: The system bars are NOT visible.
                         }
@@ -256,6 +263,46 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 });
     }
 
+    @Override
+    public void onTutorialFinish() {
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction()
+                .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActualLevel))
+                .commit();
+
+        getSupportActionBar().show();
+        RelativeLayout navLayout = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
+        navLayout.setVisibility(View.VISIBLE);
+
+        fm.executePendingTransactions();
+
+        if (showTutorial) {
+            saveTutorialPref();
+            toggleEditing();
+        }
+    }
+
+    private void saveTutorialPref() {
+        if (showTutorial) {
+            showTutorial = false;
+            SharedPreferences prefs = getSharedPreferences("tutorial", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("showTutorial", false);
+            editor.commit();
+        }
+    }
+
+    private void showTutorial() {
+        getSupportActionBar().hide();
+        RelativeLayout navLayout = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
+        navLayout.setVisibility(View.GONE);
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTutorialViewPager fragmentTutorialViewPager = new FragmentTutorialViewPager();
+        fm.beginTransaction()
+                .replace(mFrameLayout.getId(), fragmentTutorialViewPager)
+                .commit();
+    }
 
     private void showSideNavButtons() {
         mLeftSideArrowButton.setVisibility(View.VISIBLE);
@@ -314,7 +361,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     private void checkScanModeButtons() {
 
     }
-
 
     private void setupNavButtons() {
 
@@ -515,21 +561,51 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
     }
 
+    private void displayTutorialExitDialog() {
+        new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.exit_tutorial_title))
+            .setMessage(getString(R.string.exit_tutorial_msg))
+            .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onTutorialFinish();
+                }
+            })
+            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+            .setCancelable(false)
+            .create()
+            .show();
+    }
+
     @Override
     public void onBackPressed() {
+        // Check if we need to remove the tutorial fragment
+        Fragment fragment = getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
 
-        IOGlobalConfiguration.isInSwapMode = false;
+        if (fragment instanceof FragmentTutorialViewPager) {
+            // If this is the first run display a dialog
+            if (showTutorial) displayTutorialExitDialog();
+            else onTutorialFinish();
 
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStackImmediate();
-            refreshView();
-            return;
+        } else {
+            IOGlobalConfiguration.isInSwapMode = false;
+
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                getSupportFragmentManager().popBackStackImmediate();
+                refreshView();
+                return;
+            }
+
+            // Added to avoid a NPE on mUnlockCountDown
+            if (IOGlobalConfiguration.isEditing) toggleEditing();
+
+            super.onBackPressed();
         }
-
-        // Added to avoid a NPE on mUnlockCountDown
-        if (IOGlobalConfiguration.isEditing) toggleEditing();
-
-        super.onBackPressed();
     }
 
     /*
@@ -820,7 +896,11 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 /*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 */
-        refreshView();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
+        if (!(fragment instanceof FragmentTutorialViewPager)) {
+            refreshView();
+        }
+
         super.onResume();
     }
 
@@ -1039,6 +1119,10 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 lockUI();
                 break;
             }
+
+            case R.id.action_tutorial:
+                showTutorial();
+                break;
 
             default:
                 break;
@@ -1280,7 +1364,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     private void toggleEditing() {
         IOGlobalConfiguration.isEditing = !IOGlobalConfiguration.isEditing;
 
-
         if (!IOGlobalConfiguration.isEditing) {
             if (null == mActualConfigName)
                 saveBoard(null);
@@ -1303,7 +1386,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             mCenterTrashNavigationButton.setVisibility(View.VISIBLE);
 
             setTitle(getString(R.string.edit_mode));
-
         }
 
         refreshView();
