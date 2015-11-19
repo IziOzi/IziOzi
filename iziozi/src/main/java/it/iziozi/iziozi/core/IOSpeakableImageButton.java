@@ -36,6 +36,8 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
+import it.iziozi.iziozi.R;
+
 @Root(name = "IOSpeakableImageButton")
 public class IOSpeakableImageButton extends ImageButton  {
 
@@ -268,11 +270,19 @@ public class IOSpeakableImageButton extends ImageButton  {
 
             Rect r = new Rect();
 
-            r.top = Math.max(mPaddingWidth / 2, getHeight() / 2 - actH / 2 - mPaddingWidth);
-            r.left = Math.max(mPaddingWidth / 2, getWidth() / 2 - actW / 2 - mPaddingWidth);
-            r.right = Math.min(getWidth() - mPaddingWidth / 2, getWidth() / 2 + actW / 2 + mPaddingWidth);
-            r.bottom = Math.min(getHeight() - mPaddingWidth / 2, getHeight() / 2 + actH / 2 + mPaddingWidth);
+            if (getTag() != null && (getTag().equals("leftArrow") || getTag().equals("rightArrow"))) {
+                int size = (int) (getResources().getDimension(R.dimen.nav_buttons_size) * getResources().getDisplayMetrics().densityDpi / 160);
 
+                r.top = 12;
+                r.bottom = canvas.getHeight() - 12;
+                r.left = 12;
+                r.right = size - 12;
+            } else {
+                r.top = Math.max(mPaddingWidth / 2, getHeight() / 2 - actH / 2 - mPaddingWidth);
+                r.left = Math.max(mPaddingWidth / 2, getWidth() / 2 - actW / 2 - mPaddingWidth);
+                r.right = Math.min(getWidth() - mPaddingWidth / 2, getWidth() / 2 + actW / 2 + mPaddingWidth);
+                r.bottom = Math.min(getHeight() - mPaddingWidth / 2, getHeight() / 2 + actH / 2 + mPaddingWidth);
+            }
             canvas.drawRect(r, paint);
         }
 

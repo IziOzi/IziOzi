@@ -39,6 +39,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -169,11 +170,15 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
     private boolean showTutorial;
 
+    RelativeLayout mainNavContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_board);
+
+        mainNavContainer = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
 
         this.mDecorView = getWindow().getDecorView();
 
@@ -270,7 +275,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActualLevel))
                 .commit();
 
-        getSupportActionBar().show();
+        if (getSupportActionBar() != null) getSupportActionBar().show();
         RelativeLayout navLayout = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
         navLayout.setVisibility(View.VISIBLE);
 
@@ -293,7 +298,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     }
 
     private void showTutorial() {
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
         RelativeLayout navLayout = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
         navLayout.setVisibility(View.GONE);
 
@@ -324,17 +329,22 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         int size = (int) (getResources().getDimension(R.dimen.nav_buttons_size) * getResources().getDisplayMetrics().densityDpi / 160);
 
-        leftArrow.setLayoutParams(new ViewGroup.LayoutParams(size, size));
-        rightArrow.setLayoutParams(new ViewGroup.LayoutParams(size, size));
+        leftArrow.setLayoutParams(new ViewGroup.LayoutParams(size, ViewGroup.LayoutParams.MATCH_PARENT));
+        rightArrow.setLayoutParams(new ViewGroup.LayoutParams(size, ViewGroup.LayoutParams.MATCH_PARENT));
 
         leftArrow.setImageDrawable(getResources().getDrawable(R.drawable.freccia_sx));
         rightArrow.setImageDrawable(getResources().getDrawable(R.drawable.freccia_dx));
 
+        leftArrow.setTag("leftArrow");
+        rightArrow.setTag("rightArrow");
+
         leftArrow.setShowBorder(mActiveConfig.getShowBorders());
         rightArrow.setShowBorder(mActiveConfig.getShowBorders());
 
-        leftContainer.addView(leftArrow);
+        leftArrow.setBackgroundColor(Color.WHITE);
+        rightArrow.setBackgroundColor(Color.WHITE);
 
+        leftContainer.addView(leftArrow);
         rightContainer.addView(rightArrow);
 
         leftArrow.setOnClickListener(new View.OnClickListener() {
@@ -1074,11 +1084,14 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                 updateNavigationItems();
 
-                if (IOGlobalConfiguration.isScanMode)
+                if (IOGlobalConfiguration.isScanMode) {
                     startScanMode();
-                else
+                    mainNavContainer.setVisibility(View.GONE);
+                }
+                else {
                     stopScanMode();
-
+                    mainNavContainer.setVisibility(View.VISIBLE);
+                }
                 break;
             }
 
