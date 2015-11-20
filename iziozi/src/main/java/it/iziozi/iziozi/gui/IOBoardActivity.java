@@ -1072,6 +1072,12 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             case R.id.editMode: {
                 Log.d("options menu", "edit mode selected");
                 item.setChecked(!item.isChecked());
+
+                if (IOGlobalConfiguration.isScanMode) {
+                    stopScanMode();
+                    mainNavContainer.setVisibility(View.VISIBLE);
+                }
+
                 toggleEditing();
 
                 break;
