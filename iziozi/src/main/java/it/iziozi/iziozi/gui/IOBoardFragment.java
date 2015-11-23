@@ -24,7 +24,6 @@ package it.iziozi.iziozi.gui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -156,12 +155,17 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
     public boolean onDrag(View v, DragEvent event) {
         int action = event.getAction();
         IOSpeakableImageButton draggedImage = (IOSpeakableImageButton) event.getLocalState();
+        ViewGroup parentDraggedImage = (ViewGroup) draggedImage.getParent();
+
         ViewGroup view = (ViewGroup) v;
-        IOSpeakableImageButton targetView = (IOSpeakableImageButton) view.getChildAt(0);
-        Vibrator vibObj = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        IOSpeakableImageButton targetImage = (IOSpeakableImageButton) view.getChildAt(0);
+
+        Vibrator vibObj = null;
+        if (getActivity() != null) {
+            vibObj = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        }
 
         switch (action) {
-
             case DragEvent.ACTION_DRAG_STARTED:
                 draggedImage.setVisibility(View.INVISIBLE);
                 if (vibObj != null) {
@@ -177,7 +181,20 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
                 break;
 
             case DragEvent.ACTION_DROP:
-                switchPositions(draggedImage, targetView);
+                // if it's not the same viewgroup, i.e. drag&drop in any different position than the current one
+                if (parentDraggedImage != view) {
+                    if (parentDraggedImage.getChildCount() > 0) parentDraggedImage.removeViewAt(0);
+                    if (view.getChildCount() > 0) view.removeViewAt(0);
+
+                    parentDraggedImage.addView(targetImage, 0);
+                    view.addView(draggedImage, 0);
+
+                    int targetIndex = getBoard().getButtons().indexOf(targetImage);
+                    int draggedIndex = getBoard().getButtons().indexOf(draggedImage);
+                    getBoard().getButtons().set(targetIndex, draggedImage);
+                    getBoard().getButtons().set(draggedIndex, targetImage);
+                }
+
                 draggedImage.setVisibility(View.VISIBLE);
                 break;
 
@@ -433,16 +450,6 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
         return IOApplication.CONTEXT;
     }
 */
-
-    private void switchPositions(IOSpeakableImageButton src, IOSpeakableImageButton dest) {
-        Drawable temp = src.getDrawable();
-        src.setImageDrawable(dest.getDrawable());
-        dest.setImageDrawable(temp);
-
-        String targetImageFile = src.getmImageFile();
-        src.setmImageFile(dest.getmImageFile());
-        dest.setmImageFile(targetImageFile);
-    }
 
     private static class PictogramDragShadow extends View.DragShadowBuilder {
 
