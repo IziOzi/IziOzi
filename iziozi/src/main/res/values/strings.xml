@@ -21,6 +21,12 @@
 -->
 <resources>
 
+    <!-- String languages -->
+    <string-array name="languages_array">
+        <item>English</item>
+        <item>Italian</item>
+    </string-array>
+    
     <!-- Strings for each tutorial page, format: page_header_[0..n], page_details1/2_[0..n] -->
     <string name="tutorial_header_0">Welcome to IziOzi</string>
     <string name="tutorial_details1_0">This introduction will help you understand how to use this app and
@@ -105,6 +111,7 @@
     </string>
 
     <!-- Generic strings -->
+    <string name="language">Language</string>
     <string name="finish">Finish</string>
     <string name="apply">Apply</string>
     <string name="cancel">Cancel</string>
@@ -150,7 +157,7 @@
     <string name="exit">Exit</string>
     <string name="save_as">Save as</string>
     <string name="load">Load</string>
-    <string name="new_board">Nuova</string>
+    <string name="new_board">New</string>
 
     <!-- Debugging strings -->
     <string name="should_say">I should say:</string>

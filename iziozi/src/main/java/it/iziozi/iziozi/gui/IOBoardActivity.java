@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -39,7 +40,6 @@ import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -49,6 +49,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -58,6 +59,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +68,8 @@ import com.joanzapata.android.iconify.Iconify;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -79,7 +83,6 @@ import it.iziozi.iziozi.core.IOSpeakableImageButton;
 import it.iziozi.iziozi.gui.tutorial.FragmentTutorialPage;
 import it.iziozi.iziozi.gui.tutorial.FragmentTutorialViewPager;
 import it.iziozi.iziozi.helpers.IOHelper;
-
 
 public class IOBoardActivity extends AppCompatActivity implements IOBoardFragment.OnBoardFragmentInteractionListener,
         IOPaginatedBoardFragment.OnFragmentInteractionListener, FragmentTutorialPage.OnTutorialFinishedListener {
@@ -169,6 +172,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     int newRows, newCols;
 
     private boolean showTutorial;
+    private static boolean hasLanguageChanged;
+    private int langSelection;
+    private String[] languageCode = {"en", "it"};
 
     RelativeLayout mainNavContainer;
 
@@ -198,6 +204,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         }
 
         SharedPreferences prefs = getSharedPreferences("tutorial", Context.MODE_PRIVATE);
+        SharedPreferences langPrefs = getSharedPreferences("lang", Context.MODE_PRIVATE);
+
+        langSelection = langPrefs.getInt("lang", 0);
         showTutorial = prefs.getBoolean("showTutorial", true);
 
         mActualLevel = mActiveConfig.getLevel();
@@ -208,15 +217,19 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         if (showTutorial) {
             showTutorial();
         } else {
-            lockUI();
+            if (!hasLanguageChanged) lockUI();
+            else hasLanguageChanged = false;
+
             fm.beginTransaction()
-                .add(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActualLevel))
-                .commit();
+                    .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActualLevel))
+                    .commit();
 
         }
-
         setupNavButtons();
         setupSideNavButtons();
+
+        setLocale(langSelection);
+
         /*
         * Neurosky Mindwave support
         * */
@@ -567,8 +580,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         mCenterTrashNavigationButton.setVisibility(View.GONE);
         mCenterHomeButton.setVisibility(View.GONE);
         mCenterBackButton.setVisibility(View.GONE);
-
-
     }
 
     private void displayTutorialExitDialog() {
@@ -972,6 +983,13 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 final CheckBox bordersCheckbox = (CheckBox) layoutView.findViewById(R.id.bordersCheckbox);
                 final CheckBox swipeCheckbox = (CheckBox) layoutView.findViewById(R.id.swipe_checkbox);
                 final CheckBox bigNavCheckbox = (CheckBox) layoutView.findViewById(R.id.bignav_checkbox);
+                final Spinner spinnerLang = (Spinner) layoutView.findViewById(R.id.spinner_lang);
+
+                final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getApplicationContext(),
+                        R.array.languages_array, R.layout.spinner_textview);
+                spinnerAdapter.setDropDownViewResource(R.layout.spinner_textview);
+                spinnerLang.setAdapter(spinnerAdapter);
+                spinnerLang.setSelection(langSelection);
 
                 bordersCheckbox.setChecked(IOConfiguration.getShowBorders());
                 swipeCheckbox.setChecked(IOConfiguration.isSwipeEnabled());
@@ -996,6 +1014,11 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                                 IOConfiguration.setBigNavigation(bigNavCheckbox.isChecked());
 
                                 refreshView();
+
+                                if (spinnerLang.getSelectedItemPosition() != langSelection) {
+                                    setLocale(spinnerLang.getSelectedItemPosition());
+                                    recreate();
+                                }
                             }
                         })
                         .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -1149,6 +1172,25 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setLocale(int newLangSelection) {
+        Locale locale = new Locale(languageCode[newLangSelection]);
+        Locale oldLocale = Locale.getDefault();
+        Locale.setDefault(locale);
+
+        Configuration conf = new Configuration();
+        conf.locale = locale;
+        getBaseContext().getResources().updateConfiguration(conf, getBaseContext().getResources().getDisplayMetrics());
+
+        if (newLangSelection != langSelection) {
+            SharedPreferences prefs = getSharedPreferences("lang", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt("lang", newLangSelection);
+            editor.commit();
+        }
+
+        if (!oldLocale.getLanguage().equals(locale.getLanguage())) hasLanguageChanged = true;
     }
 
     /**
