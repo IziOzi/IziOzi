@@ -310,6 +310,9 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
                     if (IOGlobalConfiguration.isEditing) {
                         imgButton.setOnTouchListener(this);
                         imgButton.setOnLongClickListener(this);
+                    } else {
+                        imgButton.setOnTouchListener(null);
+                        imgButton.setOnLongClickListener(null);
                     }
 
                     if (imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0) {
