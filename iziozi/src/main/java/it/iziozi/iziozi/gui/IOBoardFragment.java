@@ -175,13 +175,21 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
                 break;
 
             case DragEvent.ACTION_DRAG_ENTERED:
+                // add red border around view
+                targetImage.setIsHiglighted(true);
+                targetImage.invalidate();
                 break;
 
             case DragEvent.ACTION_DRAG_EXITED:
+                targetImage.setIsHiglighted(false);
+                targetImage.invalidate();
                 break;
 
             case DragEvent.ACTION_DROP:
                 // if it's not the same viewgroup, i.e. drag&drop in any different position than the current one
+                targetImage.setIsHiglighted(false);
+                targetImage.invalidate();
+
                 if (parentDraggedImage != view) {
                     if (parentDraggedImage.getChildCount() > 0) parentDraggedImage.removeViewAt(0);
                     if (view.getChildCount() > 0) view.removeViewAt(0);
