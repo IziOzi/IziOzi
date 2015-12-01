@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- String languages -->
+    <string-array name="languages_array">
+        <item>Anglais</item>
+        <item>Italien</item>
+        <item>Espagnol</item>
+        <item>Français</item>
+        <item>Allemand</item>
+    </string-array>
+
+    <!-- Generic strings -->
+    <string name="language">Langue</string>
+    <string name="finish">Terminer</string>
+    <string name="apply">Appliquer</string>
+    <string name="cancel">Annuler</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="confirm">Confirmez</string>
+    <string name="error">Erreur</string>
+    <string name="continue_string">Continuer</string>
+    <string name="c_title">Titre:</string>
+    <string name="c_text">Texte à dire:</string>
+    <string name="s_search">Recherche</string>
+    <string name="manage_medias">Gérer les fichiers</string>
+
+    <!-- App specific strings -->
+    <string name="app_name">IziOzi</string>
+    <string name="btn_inserttext">Entrez le texte pour dire:</string>
+    <string name="rows">Lignes:</string>
+    <string name="cols">Cols:</string>
+    <string name="show_borders">Voir frontières</string>
+    <string name="preview">Aperçu</string>
+    <string name="set_image">Définir l\'image</string>
+    <string name="img_search">Recherche sur base de données</string>
+    <string name="img_camera">Choisissez de la caméra</string>
+    <string name="choose">Choisissez...</string>
+    <string name="img_gallery">Choisissez parmi la galerie</string>
+    <string name="tap_for_image">Appuyez ici pour insérer une image!</string>
+
+    <!-- Actions strings -->
+    <string name="settings">Paramètres</string>
+    <string name="edit_mode">Edit Mode</string>
+    <string name="scan_mode">mode mode</string>
+    <string name="save">Enregistrer</string>
+    <string name="about">A propos</string>
+    <string name="exit">Quitter</string>
+    <string name="save_as">Enregistrer sous</string>
+    <string name="load">Charger</string>
+    <string name="new_board">Nouveau</string>
+
+    <!-- Device interface lock -->
+    <string name="lock">Bloquer</string>
+    <string name="unlock">Ouvrir</string>
+
+</resources>

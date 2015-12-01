@@ -25,6 +25,9 @@
     <string-array name="languages_array">
         <item>English</item>
         <item>Italian</item>
+        <item>Spanish</item>
+        <item>French</item>
+        <item>German</item>
     </string-array>
     
     <!-- Strings for each tutorial page, format: page_header_[0..n], page_details1/2_[0..n] -->

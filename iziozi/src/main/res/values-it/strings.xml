@@ -26,6 +26,9 @@
     <string-array name="languages_array">
         <item>Inglese</item>
         <item>Italiano</item>
+        <item>Spagnolo</item>
+        <item>Francese</item>
+        <item>Tedesco</item>
     </string-array>
 
     <string name="tutorial">Tutoriale</string>

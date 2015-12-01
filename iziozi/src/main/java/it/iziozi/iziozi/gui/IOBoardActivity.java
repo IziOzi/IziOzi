@@ -174,7 +174,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     private boolean showTutorial;
     private static boolean hasLanguageChanged;
     private int langSelection;
-    private String[] languageCode = {"en", "it"};
+    private String[] languageCode = {"en", "it", "es", "fr", "de"};
 
     RelativeLayout mainNavContainer;
 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="languages_array">
+        <item>Englisch</item>
+        <item>Italienisch</item>
+        <item>Spanisch</item>
+        <item>Französisch</item>
+        <item>Deutschen</item>
+    </string-array>
+
+    <!-- Generic strings -->
+    <string name="language">Sprache</string>
+    <string name="finish">Fertig</string>
+    <string name="apply">Anwenden</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="error">Fehler</string>
+    <string name="continue_string">Weiter</string>
+    <string name="c_title">Titel:</string>
+    <string name="c_text">Text gesprochen werden:</string>
+    <string name="s_search">Suchen</string>
+    <string name="manage_medias">Dateien verwalten</string>
+
+    <!-- App specific strings -->
+    <string name="app_name">IziOzi</string>
+    <string name="btn_inserttext">Geben sie den text zu sagen:</string>
+    <string name="rows">Zeilen:</string>
+    <string name="cols">Cols:</string>
+    <string name="show_borders">Show borders</string>
+    <string name="preview">Vorschau</string>
+    <string name="set_image">Set image</string>
+    <string name="img_search">Suche in datenbank</string>
+    <string name="img_camera">Pick von der kamera</string>
+    <string name="choose">Wählen...</string>
+    <string name="img_gallery">Wählen Sie aus Galerie</string>
+    <string name="tap_for_image">Tippen sie hier, um ein bild einzufügen!</string>
+
+    <!-- Actions strings -->
+    <string name="settings">Einstellungen</string>
+    <string name="edit_mode">Edit Mode</string>
+    <string name="scan_mode">Scan-Modus</string>
+    <string name="save">Speichern</string>
+    <string name="about">Über</string>
+    <string name="exit">Beenden</string>
+    <string name="save_as">Speichern as</string>
+    <string name="load">Laden</string>
+    <string name="new_board">Neu</string>
+
+    <!-- Device interface lock -->
+    <string name="lock">Sperren</string>
+    <string name="unlock">Entsperren</string>
+
+</resources>
