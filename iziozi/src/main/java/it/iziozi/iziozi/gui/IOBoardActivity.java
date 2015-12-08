@@ -1568,13 +1568,10 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     // This snippet hides the system bars.
     private void hideSystemUI() {
         mDecorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE
-        );
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_IMMERSIVE);
+        getSupportActionBar().hide();
     }
 
 
@@ -1599,6 +1596,8 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     private void showSystemUI() {
 
         mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+
+        getSupportActionBar().show();
         findViewById(R.id.rootContainer).invalidate();
     }
 
@@ -1647,9 +1646,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
     private void lockUI() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            if (IOHelper.canGoImmersive())
+            if (IOHelper.canGoImmersive()) {
                 hideSystemUI();
-
+            }
             mUILocked = true;
         }
     }
