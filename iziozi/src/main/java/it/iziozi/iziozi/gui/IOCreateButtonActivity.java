@@ -23,6 +23,7 @@ package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -384,8 +385,31 @@ public class IOCreateButtonActivity extends AppCompatActivity {
             hideOverlayView();
         } else if (null != mRecordingOverlay)
             hideRecordingOverlay();
-        else
-            super.onBackPressed();
+        else {
+//            super.onBackPressed();
+            showExitDialog(this);
+        }
+    }
+
+    private void showExitDialog(final Activity activity) {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.exit))
+                .setCancelable(false)
+                .setMessage(getString(R.string.alert_dialog_exit))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        activity.finish();
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
     }
 
     private void hideKeyboard() {

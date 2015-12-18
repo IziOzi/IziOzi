@@ -240,4 +240,6 @@
 
     <string name="feature_unavailable">This feature is not available on your device.</string>
 
+    <string name="alert_dialog_exit">Are you sure you want to leave? Your modifications will NOT be
+        saved.</string>
 </resources>
