@@ -21,7 +21,8 @@
 
 <resources>
 
-    <color name="black_overlay">#66000000</color>
-    <color name="gray">#22222200</color>
-    <color name="white">#ffffffff</color>
+    <dimen name="social_icons">60dp</dimen>
+    <dimen name="logo_about">70dp</dimen>
+
+    <dimen name="logo_margin_bottom">30dp</dimen>
 </resources>

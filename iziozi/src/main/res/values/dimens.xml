@@ -42,5 +42,13 @@
     <dimen name="navigation_bar_button_size">60dp</dimen>
 
     <dimen name="nav_buttons_size">150dp</dimen>
+    <dimen name="layout_margin_top">20dp</dimen>
+
+    <dimen name="links_padding">4dp</dimen>
+
+    <dimen name="social_icons">40dp</dimen>
+    <dimen name="logo_about">70dp</dimen>
+
+    <dimen name="logo_margin_bottom">10dp</dimen>
 
 </resources>
