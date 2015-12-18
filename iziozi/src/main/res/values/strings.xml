@@ -234,4 +234,10 @@
     <string name="set">Set</string>
     <string name="tts_unavailable">Android text to speech(TTS) is unavailable. Please check your system settings.</string>
 
+    <string name="external_storage_permission">No permissions to write on the external storage!</string>
+    <string name="pdf_created">Done creating PDF</string>
+    <string name="pdf_create_error">There was an error while attempting to create the PDF.</string>
+
+    <string name="feature_unavailable">This feature is not available on your device.</string>
+
 </resources>

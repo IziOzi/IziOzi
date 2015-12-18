@@ -28,8 +28,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.pdf.PdfDocument;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,7 +51,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -64,12 +65,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,6 +83,7 @@ import it.iziozi.iziozi.core.IOConfiguration;
 import it.iziozi.iziozi.core.IOGlobalConfiguration;
 import it.iziozi.iziozi.core.IOLevel;
 import it.iziozi.iziozi.core.IOSpeakableImageButton;
+import it.iziozi.iziozi.core.pdfcreator.PdfCreatorTask;
 import it.iziozi.iziozi.gui.tutorial.FragmentTutorialPage;
 import it.iziozi.iziozi.gui.tutorial.FragmentTutorialViewPager;
 import it.iziozi.iziozi.helpers.IOHelper;
@@ -217,7 +221,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         if (showTutorial) {
             showTutorial();
         } else {
-            if (!hasLanguageChanged) lockUI();
+            if (!hasLanguageChanged) {}/*lockUI();*/
             else hasLanguageChanged = false;
 
             fm.beginTransaction()
@@ -963,13 +967,28 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
 
         return super.onMenuOpened(featureId, menu);
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+
+            case R.id.action_create_pdf:
+                if (Build.VERSION.SDK_INT >= 19) {
+                    if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                        Toast.makeText(this, getString(R.string.external_storage_permission), Toast.LENGTH_LONG)
+                        .show();
+
+                    } else {
+                        PdfCreatorTask pdfCreateTask = new PdfCreatorTask(this, IOHelper.getOrientation(this));
+                        pdfCreateTask.execute(mActualLevel);
+                    }
+                } else {
+                    Toast.makeText(this, getString(R.string.feature_unavailable), Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
 
             case R.id.action_settings: {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);

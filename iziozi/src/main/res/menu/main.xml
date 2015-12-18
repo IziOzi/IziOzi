@@ -97,4 +97,10 @@
         android:showAsAction="never"
         android:title="@string/tutorial" />
 
+    <item
+        android:id="@+id/action_create_pdf"
+        android:orderInCategory="23"
+        android:showAsAction="never"
+        android:title="Create pdf" />
+
 </menu>
