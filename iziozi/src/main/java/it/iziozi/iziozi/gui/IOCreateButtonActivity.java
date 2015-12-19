@@ -65,6 +65,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
 
@@ -505,6 +506,9 @@ public class IOCreateButtonActivity extends AppCompatActivity {
         resultIntent.putExtra(IOBoardActivity.BUTTON_INDEX, mButtonIndex);
 
         setResult(RESULT_OK, resultIntent);
+
+        Toast.makeText(this, getString(R.string.save_done), Toast.LENGTH_SHORT).show();
+
         finish();
     }
 
@@ -863,6 +867,8 @@ public class IOCreateButtonActivity extends AppCompatActivity {
         Log.d("audio_debug", "audio file:" + mAudioFile);
         mAudioFile = null;
         updateAudioTextLabel();
+
+        Toast.makeText(this, getString(R.string.audio_deleted), Toast.LENGTH_SHORT).show();
     }
 
     public void playAudio(View v) {

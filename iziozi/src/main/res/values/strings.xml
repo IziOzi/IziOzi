@@ -201,7 +201,7 @@
     <string name="file_delete_warning">Are you sure you want to delete file $1%s?</string>
     <string name="insert_new_name">Insert the new file name:</string>
     <string name="now_recording">We\'re recording!</string>
-    <string name="tap_to_stop_recording">Tap anywhere when you\'re gone!</string>
+    <string name="tap_to_stop_recording">Tap anywhere when you\'re done!</string>
     <string name="audio_file">Audio File: </string>
     <string name="no_audio_file">No audio file set.</string>
     <string name="image">PIC</string>
@@ -240,6 +240,12 @@
 
     <string name="feature_unavailable">This feature is not available on your device.</string>
 
-    <string name="alert_dialog_exit">Are you sure you want to leave? Your modifications will NOT be
+    <string name="alert_dialog_exit">Are you sure you want to leave? Your modifications will not be
         saved.</string>
+
+    <string name="save_done">Your modifications were saved.</string>
+    <string name="play_complete">Playback complete</string>
+    <string name="recording_complete">Recording complete</string>
+    <string name="audio_deleted">Audio deleted</string>
+
 </resources>
