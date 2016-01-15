@@ -243,9 +243,20 @@
     <string name="alert_dialog_exit">Are you sure you want to leave? Your modifications will not be
         saved.</string>
 
+    <!-- Other strings -->
     <string name="save_done">Your modifications were saved.</string>
     <string name="play_complete">Playback complete</string>
     <string name="recording_complete">Recording complete</string>
     <string name="audio_deleted">Audio deleted</string>
+    <string name="ok">OK</string>
+
+    <!-- Strings related to the speech board activity -->
+    <string name="create_board_speech">Speech board</string>
+    <string name="downloading">Please wait while downloading... </string>
+    <string name="speech_board_empty_images_title">New board</string>
+    <string name="speech_board_empty_images">A new board will not be created because no images were downloaded.</string>
+    <string name="check_words">Check words</string>
+    <string name="get_images">Getting images</string>
+    <string name="no_images">No images found!</string>
 
 </resources>

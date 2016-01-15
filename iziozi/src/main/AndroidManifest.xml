@@ -107,6 +107,11 @@
             android:label="@string/app_name" >
         </activity>
 
+        <activity
+            android:name=".gui.SpeechBoardActivity"
+            android:label="@string/check_words" >
+        </activity>
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="21a2e56b3497242af9009ec69be93666a23370ed" />

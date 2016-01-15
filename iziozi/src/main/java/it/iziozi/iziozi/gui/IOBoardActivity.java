@@ -28,16 +28,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.pdf.PdfDocument;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -65,14 +64,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,6 +82,7 @@ import it.iziozi.iziozi.core.IOConfiguration;
 import it.iziozi.iziozi.core.IOGlobalConfiguration;
 import it.iziozi.iziozi.core.IOLevel;
 import it.iziozi.iziozi.core.IOSpeakableImageButton;
+import it.iziozi.iziozi.core.dbclasses.IOPictogram;
 import it.iziozi.iziozi.core.pdfcreator.PdfCreatorTask;
 import it.iziozi.iziozi.gui.tutorial.FragmentTutorialPage;
 import it.iziozi.iziozi.gui.tutorial.FragmentTutorialViewPager;
@@ -173,14 +173,20 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     public static final String BUTTON_INTENT_NAME = "button_intent_name";
     public static final String BUTTON_INTENT_PACKAGENAME = "button_intent_packagename";
 
-    int newRows, newCols;
+    private String[] languageCode = {"en", "it", "es", "fr", "de"};
+
+    private static final int SPEECH_RECOGNIZER_CODE = 2;
+    private static final int REMOTE_IMAGE_SEARCH_CODE = 3;
 
     private boolean showTutorial;
     private static boolean hasLanguageChanged;
-    private int langSelection;
-    private String[] languageCode = {"en", "it", "es", "fr", "de"};
 
-    RelativeLayout mainNavContainer;
+    private int newRows, newCols;
+    private int langSelection;
+
+    private RelativeLayout mainNavContainer;
+
+    private ArrayList<IOPictogram> remotePictogramSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1185,6 +1191,15 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 showTutorial();
                 break;
 
+            case R.id.action_create_board_speech:
+                Intent recordAudio = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().getLanguage());
+
+                startActivityForResult(recordAudio, SPEECH_RECOGNIZER_CODE);
+
+                break;
+
             default:
                 break;
 
@@ -1622,8 +1637,8 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CREATE_BUTTON_CODE) {
-            if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CREATE_BUTTON_CODE) {
                 Bundle extras = data.getExtras();
                 int index = extras.getInt(BUTTON_INDEX);
                 String title = extras.getString(BUTTON_TITLE);
@@ -1657,11 +1672,57 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                 button.setAudioFile(audioFile);
                 button.setVideoFile(videoFile);
+
+            } else if (requestCode == SPEECH_RECOGNIZER_CODE) {
+                // Parse the resulting strings
+                ArrayList<String> resultStrings = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                String words = null;
+
+                if (resultStrings != null) words = resultStrings.get(0);
+
+                final String[] wordArray = words.split(" ");
+                final ArrayList<String> wordsFromUser = new ArrayList<>(Arrays.asList(wordArray));
+
+                Intent speechActivity = new Intent(this, SpeechBoardActivity.class);
+                speechActivity.putStringArrayListExtra("speechWords", wordsFromUser);
+                startActivityForResult(speechActivity, REMOTE_IMAGE_SEARCH_CODE);
+
+            } else if (requestCode == REMOTE_IMAGE_SEARCH_CODE) {
+                Bundle res = data.getExtras();
+                ArrayList<HashMap<String, String>> images;
+
+                if (res != null) {
+                    images = (ArrayList<HashMap<String,String>>) res.getSerializable(SpeechBoardActivity.IMAGES_RESULT_KEY);
+                    List<IOSpeakableImageButton> pictogramList = new ArrayList<>();
+
+                    // Create a new board with the result
+                    for (int i = 0; i < images.size(); i++) {
+                        IOSpeakableImageButton b = new IOSpeakableImageButton();
+                        HashMap<String, String> downloadedImage = images.get(i);
+
+                        b.setmImageFile(downloadedImage.get(SpeechBoardActivity.IMAGE_FILE));
+                        b.setmUrl(downloadedImage.get(SpeechBoardActivity.IMAGE_URL));
+                        b.setmTitle(downloadedImage.get(SpeechBoardActivity.IMAGE_TITLE));
+                        pictogramList.add(b);
+                    }
+                    int rows = (int) Math.floor(Math.sqrt(images.size()));
+                    int cols = (int) Math.ceil(Math.sqrt(images.size()));
+
+                    if (rows * cols < images.size()) rows++;
+
+                    IOBoard newBoard = new IOBoard();
+                    newBoard.setButtons(pictogramList);
+                    newBoard.setRows(rows);
+                    newBoard.setCols(cols);
+
+                    mActualLevel.addInnerBoardAtIndex(newBoard, mActualLevel.getLevelSize());
+                    refreshView();
+                    saveBoard(mActualConfigName);
+                }
             }
         } else
             super.onActivityResult(requestCode, resultCode, data);
     }
-
 
     private void lockUI() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

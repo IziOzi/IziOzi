@@ -103,4 +103,10 @@
         android:showAsAction="never"
         android:title="Create pdf" />
 
+    <item
+        android:id="@+id/action_create_board_speech"
+        android:orderInCategory="22"
+        android:showAsAction="never"
+        android:title="@string/create_board_speech" />
+
 </menu>
