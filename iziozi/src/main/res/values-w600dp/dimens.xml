@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Copyright (c) 2014 Martino Lessio -
   ~ www.martinolessio.com
   ~ martino [at] iziozi [dot] org
@@ -19,16 +19,10 @@
   ~ If not, see http://www.gnu.org/licenses/.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="it.iziozi.iziozi.gui.IOPaginatedBoardFragment">
+<resources>
 
-    <it.iziozi.iziozi.core.IOViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/holo_green_dark"></it.iziozi.iziozi.core.IOViewPager>
+    <dimen name="social_icons">60dp</dimen>
+    <dimen name="logo_about">70dp</dimen>
 
-</FrameLayout>
+    <dimen name="logo_margin_bottom">30dp</dimen>
+</resources>

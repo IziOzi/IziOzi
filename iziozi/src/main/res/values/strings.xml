@@ -21,7 +21,101 @@
 -->
 <resources>
 
+    <!-- String languages -->
+    <string-array name="languages_array">
+        <item>English</item>
+        <item>Italian</item>
+        <item>Spanish</item>
+        <item>French</item>
+        <item>German</item>
+    </string-array>
+    
+    <!-- Strings for each tutorial page, format: page_header_[0..n], page_details1/2_[0..n] -->
+    <string name="tutorial_header_0">Welcome to IziOzi</string>
+    <string name="tutorial_details1_0">This introduction will help you understand how to use this app and
+        will only take a few minutes of your time.
+        \n\nYou can navigate by swiping the pages from right to left. Let\'s begin.</string>
+
+    <string name="tutorial_header_1">Add pictograms in edit mode</string>
+    <string name="tutorial_details1_1">At the first run of the app \"edit mode\" will be activated and you
+        will be presented with 6 pictograms. This is called a "board".
+        \n\nYou can start editing by tapping on a pictogram.</string>
+    <string name="tutorial_details2_1">From the plus buttons you can add another board. The trashbin
+        deletes the current board you are on.</string>
+
+    <string name="tutorial_header_2">Set a new image</string>
+    <string name="tutorial_details1_2">Tapping on a pictogram will show you a set of options. Setting
+        this pictogram as a tree board means adding a board inside it, such that when you click on that
+        pictogram, a new board will be displayed.
+        \n\nYou can also delete and set an image.</string>
+    <string name="tutorial_header_3">Set the pictogram information</string>
+    <string name="tutorial_details1_3">After choosing to set an image you can tap on the current empty
+        box to select a source for the picture.</string>
+    <string name="tutorial_details2_3">You should also set the title and optionally the text to be spoken.
+        \n\nInstead of the text to be spoken you can register a sound by pressing the record button. Click
+        the save icon when you\'re done.</string>
+
+    <string name="tutorial_header_4">Choose a pictogram source</string>
+    <string name="tutorial_details1_4">You have a couple of options to choose your pictograms from.</string>
+    <string name="tutorial_details2_4">Selecting to search from the database will position the cursor
+        at the top and you can start typing. Let\'s search for the word \"bus\".
+        \n\nPress enter when finished to start searching.</string>
+
+    <string name="tutorial_header_5">Database search results</string>
+    <string name="tutorial_details1_5">The search results will display a list of pictograms which you
+        can scroll through until you find the one you like. Select one by tapping on it. This will
+        cause the app to download the image and display it on the preview section.
+        \n\nIt will also complete the title field with the title of the image you selected.</string>
+
+    <string name="tutorial_header_6">The main menu</string>
+    <string name="tutorial_details1_6">You can enter the main menu by tapping on the three dots in the
+        top-right corner. This will present you with all the options available.
+        \n\nThe option \"manage boards\" lets you save, load and create a new board. When saving you can use
+        \"save as\" to give your board a name. The name will appear when you will load a new board.
+    </string>
+    <string name="tutorial_details2_6">The \"Lock\" option locks the screen and hides the options menu and
+        the system bar. Doing so prevents others from accessing the menu and making changes.
+        \n\nTo exit the lock mode position your finger at the top of the screen and swipe down and select
+        unlock.
+    </string>
+
+    <string name="tutorial_header_7">Change the settings of the board</string>
+    <string name="tutorial_details1_7">The settings menu allows you to make changes to your board
+        configuration. More pictograms can be displayed by selecting the number of rows and columns.
+        \n\nFinally, you can disallow swipe movements from one board to the other and instead use the
+        navigational arrows. This is available if you have more than one board.</string>
+
+    <string name="tutorial_header_8">Thank you for using IziOzi</string>
+    <string name="tutorial_details1_8">This project is free and open source and was done in collaboration
+        with University of Eastern Piedmont. \n\nPlease consider supporting our efforts and donating.
+    </string>
+
+    <!-- Strings for the page title of the viewpager; format is `page_title_[0..9]` -->
+    <string name="page_title_0">Intro</string>
+    <string name="page_title_1">Edit mode</string>
+    <string name="page_title_2">Set image</string>
+    <string name="page_title_3">Source</string>
+    <string name="page_title_4">Select</string>
+    <string name="page_title_5">Database search</string>
+    <string name="page_title_6">Menu</string>
+    <string name="page_title_7">Settings</string>
+    <string name="page_title_8">Finish</string>
+
+    <!-- Strings for the initial tutorial -->
+    <string name="slideone_header">Welcome to IziOzi</string>
+    <string name="slideone_details">This introduction will help you understand how to use this app
+        and will only take a few minutes of your time. You can navigate by swiping the pages from right
+        to left. Let\'s begin.</string>
+
+    <string name="tutorial">Tutorial</string>
+    <string name="exit_tutorial_title">Exit tutorial</string>
+    <string name="exit_tutorial_msg">You are about to exit the tutorial. If you are sure then press Exit,
+        otherwise press Cancel. You can always access the tutorial later from the menu.
+    </string>
+
     <!-- Generic strings -->
+    <string name="language">Language</string>
+    <string name="finish">Finish</string>
     <string name="apply">Apply</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
@@ -66,7 +160,7 @@
     <string name="exit">Exit</string>
     <string name="save_as">Save as</string>
     <string name="load">Load</string>
-    <string name="new_board">Nuova</string>
+    <string name="new_board">New</string>
 
     <!-- Debugging strings -->
     <string name="should_say">I should say:</string>
@@ -107,7 +201,7 @@
     <string name="file_delete_warning">Are you sure you want to delete file $1%s?</string>
     <string name="insert_new_name">Insert the new file name:</string>
     <string name="now_recording">We\'re recording!</string>
-    <string name="tap_to_stop_recording">Tap anywhere when you\'re gone!</string>
+    <string name="tap_to_stop_recording">Tap anywhere when you\'re done!</string>
     <string name="audio_file">Audio File: </string>
     <string name="no_audio_file">No audio file set.</string>
     <string name="image">PIC</string>
@@ -140,5 +234,30 @@
     <string name="set">Set</string>
     <string name="tts_unavailable">Android text to speech(TTS) is unavailable. Please check your system settings.</string>
     <string name="enable_label">Show label</string>
+
+    <string name="external_storage_permission">No permissions to write on the external storage!</string>
+    <string name="pdf_created">Done creating PDF</string>
+    <string name="pdf_create_error">There was an error while attempting to create the PDF.</string>
+
+    <string name="feature_unavailable">This feature is not available on your device.</string>
+
+    <string name="alert_dialog_exit">Are you sure you want to leave? Your modifications will not be
+        saved.</string>
+
+    <!-- Other strings -->
+    <string name="save_done">Your modifications were saved.</string>
+    <string name="play_complete">Playback complete</string>
+    <string name="recording_complete">Recording complete</string>
+    <string name="audio_deleted">Audio deleted</string>
+    <string name="ok">OK</string>
+
+    <!-- Strings related to the speech board activity -->
+    <string name="create_board_speech">Speech board</string>
+    <string name="downloading">Please wait while downloading... </string>
+    <string name="speech_board_empty_images_title">New board</string>
+    <string name="speech_board_empty_images">A new board will not be created because no images were downloaded.</string>
+    <string name="check_words">Check words</string>
+    <string name="get_images">Getting images</string>
+    <string name="no_images">No images found!</string>
 
 </resources>

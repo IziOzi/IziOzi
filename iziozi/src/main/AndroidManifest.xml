@@ -22,6 +22,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.iziozi.iziozi" >
 
+    <!-- This permission is necessary for the long click feedback on the pictograms -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- Include following permission if you load images from Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -102,6 +105,11 @@
         <activity
             android:name=".gui.IOAboutActivity"
             android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name=".gui.SpeechBoardActivity"
+            android:label="@string/check_words" >
         </activity>
 
         <meta-data

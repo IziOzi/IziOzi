@@ -32,6 +32,7 @@
         android:orderInCategory="21"
         android:showAsAction="never"
         android:title="@string/settings" />
+
     <item android:title="@string/manage_boards">
         <menu>
 
@@ -90,5 +91,22 @@
         android:showAsAction="never"
         android:title="@string/exit" />
 
+    <item
+        android:id="@+id/action_tutorial"
+        android:orderInCategory="22"
+        android:showAsAction="never"
+        android:title="@string/tutorial" />
+
+    <item
+        android:id="@+id/action_create_pdf"
+        android:orderInCategory="23"
+        android:showAsAction="never"
+        android:title="Create pdf" />
+
+    <item
+        android:id="@+id/action_create_board_speech"
+        android:orderInCategory="22"
+        android:showAsAction="never"
+        android:title="@string/create_board_speech" />
 
 </menu>

@@ -64,6 +64,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
 
@@ -384,8 +385,31 @@ public class IOCreateButtonActivity extends AppCompatActivity {
             hideOverlayView();
         } else if (null != mRecordingOverlay)
             hideRecordingOverlay();
-        else
-            super.onBackPressed();
+        else {
+//            super.onBackPressed();
+            showExitDialog(this);
+        }
+    }
+
+    private void showExitDialog(final Activity activity) {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.exit))
+                .setCancelable(false)
+                .setMessage(getString(R.string.alert_dialog_exit))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        activity.finish();
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
     }
 
     private void hideKeyboard() {
@@ -481,6 +505,9 @@ public class IOCreateButtonActivity extends AppCompatActivity {
         resultIntent.putExtra(IOBoardActivity.BUTTON_INDEX, mButtonIndex);
 
         setResult(RESULT_OK, resultIntent);
+
+        Toast.makeText(this, getString(R.string.save_done), Toast.LENGTH_SHORT).show();
+
         finish();
     }
 
@@ -839,6 +866,8 @@ public class IOCreateButtonActivity extends AppCompatActivity {
         Log.d("audio_debug", "audio file:" + mAudioFile);
         mAudioFile = null;
         updateAudioTextLabel();
+
+        Toast.makeText(this, getString(R.string.audio_deleted), Toast.LENGTH_SHORT).show();
     }
 
     public void playAudio(View v) {

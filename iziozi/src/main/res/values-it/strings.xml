@@ -22,6 +22,17 @@
 
 <resources>
 
+    <!-- String languages -->
+    <string-array name="languages_array">
+        <item>Inglese</item>
+        <item>Italiano</item>
+        <item>Spagnolo</item>
+        <item>Francese</item>
+        <item>Tedesco</item>
+    </string-array>
+
+    <string name="tutorial">Tutorial</string>
+
     <!-- Generic strings -->
     <string name="apply">Applica</string>
     <string name="cancel">Annulla</string>
@@ -149,6 +160,8 @@
     <string name="disable">Disabilita</string>
     <string name="set">Configura</string>
     <string name="tts_unavailable">Il motore di sintesi vocale(TTS) di Android non è disponibile. Controlla le tue impostazioni di sistema.</string>
+    <string name="language">Lingua</string>
+    <string name="finish">Fine</string>
     <string name="enable_label">Mostra etichette</string>
 
 
