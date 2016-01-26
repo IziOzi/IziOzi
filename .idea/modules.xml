@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/IziOzi.iml" filepath="$PROJECT_DIR$/IziOzi.iml" />
       <module fileurl="file://$PROJECT_DIR$/iziozi/iziozi.iml" filepath="$PROJECT_DIR$/iziozi/iziozi.iml" />
-      <module fileurl="file://$PROJECT_DIR$/iziozi-android.iml" filepath="$PROJECT_DIR$/iziozi-android.iml" />
     </modules>
   </component>
 </project>
