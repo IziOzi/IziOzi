@@ -29,6 +29,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.ImageButton;
 
@@ -78,7 +79,7 @@ public class IOSpeakableImageButton extends ImageButton  {
 
     private Context mContext;
 
-    private Boolean mShowBorder;
+    private boolean mShowBorder;
 
     private int mPaddingWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
 
@@ -105,6 +106,18 @@ public class IOSpeakableImageButton extends ImageButton  {
         super(IOApplication.CONTEXT);
 
         setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
+    }
+
+    public IOSpeakableImageButton(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
+        setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
+        setScaleType(ScaleType.CENTER_INSIDE);
+    }
+
+    public IOSpeakableImageButton(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
+        setScaleType(ScaleType.CENTER_INSIDE);
     }
 
     public String getIntentPackageName() {
@@ -226,7 +239,6 @@ public class IOSpeakableImageButton extends ImageButton  {
 
         return mLevel;
     }
-
 
 
     public Boolean getIsHiglighted() {

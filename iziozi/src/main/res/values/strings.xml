@@ -233,6 +233,7 @@
     <string name="disable">Disable</string>
     <string name="set">Set</string>
     <string name="tts_unavailable">Android text to speech(TTS) is unavailable. Please check your system settings.</string>
+    <string name="enable_label">Show label</string>
 
     <string name="external_storage_permission">No permissions to write on the external storage!</string>
     <string name="pdf_created">Done creating PDF</string>

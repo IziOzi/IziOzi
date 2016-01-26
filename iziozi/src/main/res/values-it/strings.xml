@@ -162,6 +162,7 @@
     <string name="tts_unavailable">Il motore di sintesi vocale(TTS) di Android non è disponibile. Controlla le tue impostazioni di sistema.</string>
     <string name="language">Lingua</string>
     <string name="finish">Fine</string>
+    <string name="enable_label">Mostra etichette</string>
 
 
 </resources>
