@@ -68,7 +68,6 @@ import com.joanzapata.android.iconify.Iconify;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -173,7 +172,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     public static final String BUTTON_INTENT_NAME = "button_intent_name";
     public static final String BUTTON_INTENT_PACKAGENAME = "button_intent_packagename";
 
-    private String[] languageCode = {"en", "it", "es", "fr", "de"};
+    private String[] languageCode = {"it", "en", "es", "fr", "de"};
 
     private static final int SPEECH_RECOGNIZER_CODE = 2;
     private static final int REMOTE_IMAGE_SEARCH_CODE = 3;

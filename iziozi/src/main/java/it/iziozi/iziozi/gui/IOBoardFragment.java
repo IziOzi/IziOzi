@@ -30,7 +30,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,7 +37,6 @@ import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.DragEvent;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -158,10 +156,12 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
     public boolean onDrag(View v, DragEvent event) {
         int action = event.getAction();
         IOSpeakableImageButton draggedImage = (IOSpeakableImageButton) event.getLocalState();
+        TextView draggedLabel = ((TextView) ((ViewGroup) draggedImage.getParent()).getChildAt(0));
         ViewGroup parentDraggedImage = (ViewGroup) draggedImage.getParent();
 
         ViewGroup view = (ViewGroup) v;
-        IOSpeakableImageButton targetImage = (IOSpeakableImageButton) view.getChildAt(0);
+        IOSpeakableImageButton targetImage = (IOSpeakableImageButton) ((ViewGroup) view.getChildAt(0)).getChildAt(1);
+        TextView targetLabel = (TextView) ((ViewGroup) view.getChildAt(0)).getChildAt(0);
 
         Vibrator vibObj = null;
         if (getActivity() != null) {
@@ -194,11 +194,23 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
                 targetImage.invalidate();
 
                 if (parentDraggedImage != view) {
-                    if (parentDraggedImage.getChildCount() > 0) parentDraggedImage.removeViewAt(0);
-                    if (view.getChildCount() > 0) view.removeViewAt(0);
+                    if (parentDraggedImage.getChildCount() > 0) {
+                        parentDraggedImage.removeViewAt(0);
+                    }
+                    if (parentDraggedImage.getChildCount() > 0) {
+                        parentDraggedImage.removeViewAt(0);
+                    }
+                    if (((ViewGroup) view.getChildAt(0)).getChildCount() > 0) {
+                        ((ViewGroup) view.getChildAt(0)).removeViewAt(0);
+                    }
+                    if (((ViewGroup) view.getChildAt(0)).getChildCount() > 0) {
+                        ((ViewGroup) view.getChildAt(0)).removeViewAt(0);
+                    }
 
                     parentDraggedImage.addView(targetImage, 0);
-                    view.addView(draggedImage, 0);
+                    parentDraggedImage.addView(targetLabel, 0);
+                    ((ViewGroup) view.getChildAt(0)).addView(draggedImage, 0);
+                    ((ViewGroup) view.getChildAt(0)).addView(draggedLabel, 0);
 
                     int targetIndex = getBoard().getButtons().indexOf(targetImage);
                     int draggedIndex = getBoard().getButtons().indexOf(draggedImage);

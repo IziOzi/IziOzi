@@ -49,12 +49,66 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="IOBoardActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="IOBoardActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7309734">
-              <caret line="894" column="0" selection-start-line="894" selection-start-column="0" selection-end-line="894" selection-end-column="0" />
+            <state vertical-scroll-proportion="-10.851851">
+              <caret line="988" column="66" selection-start-line="988" selection-start-column="66" selection-end-line="988" selection-end-column="66" />
+              <folding>
+                <marker date="1453848448000" expanded="true" signature="67281:67327" placeholder="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PdfCreatorTask.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/pdfcreator/PdfCreatorTask.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.29054055">
+              <caret line="160" column="0" selection-start-line="160" selection-start-column="0" selection-end-line="160" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values/strings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-12.703704">
+              <caret line="27" column="28" selection-start-line="27" selection-start-column="28" selection-end-line="27" selection-end-column="28" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-76.666664">
+              <caret line="151" column="48" selection-start-line="151" selection-start-column="48" selection-end-line="151" selection-end-column="48" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/iziozi/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="64" column="53" selection-start-line="64" selection-start-column="53" selection-end-line="64" selection-end-column="53" />
+              <folding>
+                <element signature="e#0#777#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -72,10 +126,23 @@
       <file leaf-file-name="IOBoardFragment.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="219" column="77" selection-start-line="219" selection-start-column="77" selection-end-line="219" selection-end-column="77" />
+            <state vertical-scroll-proportion="-9.074074">
+              <caret line="206" column="54" selection-start-line="206" selection-start-column="54" selection-end-line="206" selection-end-column="54" />
               <folding />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="picto_element.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/layout/picto_element.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.275862">
+              <caret line="16" column="35" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="35" />
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="android-designer">
+            <state />
           </provider>
         </entry>
       </file>
@@ -550,14 +617,14 @@
                 <option name="name" value="preReleaseUnitTestBuild" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:appcompat-v7:23.0.0" />
+                <option name="description" value="Prepare com.android.support:appcompat-v7:23.0.1" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComAndroidSupportAppcompatV72300Library" />
+                <option name="name" value="prepareComAndroidSupportAppcompatV72301Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:support-v4:23.0.0" />
+                <option name="description" value="Prepare com.android.support:support-v4:23.0.1" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComAndroidSupportSupportV42300Library" />
+                <option name="name" value="prepareComAndroidSupportSupportV42301Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Prepare com.crashlytics.sdk.android:answers:1.1.0" />
@@ -1112,14 +1179,14 @@
                 <option name="name" value="preReleaseUnitTestBuild" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:appcompat-v7:23.0.0" />
+                <option name="description" value="Prepare com.android.support:appcompat-v7:23.0.1" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/iziozi" />
-                <option name="name" value="prepareComAndroidSupportAppcompatV72300Library" />
+                <option name="name" value="prepareComAndroidSupportAppcompatV72301Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:support-v4:23.0.0" />
+                <option name="description" value="Prepare com.android.support:support-v4:23.0.1" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/iziozi" />
-                <option name="name" value="prepareComAndroidSupportSupportV42300Library" />
+                <option name="name" value="prepareComAndroidSupportSupportV42301Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Prepare com.crashlytics.sdk.android:answers:1.1.0" />
@@ -1285,6 +1352,7 @@
     <option name="modificationStamps">
       <map>
         <entry key="$USER_HOME$/AndroidStudioProjects/2-TTT" value="4308574934549" />
+        <entry key="$PROJECT_DIR$" value="4344772464000" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -1462,13 +1530,13 @@
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3-sources.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3.jar" />
-                            <option value="/opt/android-sdk/extras/android/m2repository/com/android/support/support-v4/23.0.0/support-v4-23.0.0.aar" />
+                            <option value="/opt/android-sdk/extras/android/m2repository/com/android/support/support-v4/23.0.1/support-v4-23.0.1.aar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.loopj.android/android-async-http/1.4.5/77bf7cacf9cefe19dc105e5425d2eb1bb5285881/android-async-http-1.4.5.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.nostra13.universalimageloader/universal-image-loader/1.9.3/a85588bec3e2c4584d593d3f15df1677321bca72/universal-image-loader-1.9.3.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.joanzapata.android/android-iconify/1.0.6/f9ee1a18c922b05fa5b48d9ff0a5ca4fccbf5b35/android-iconify-1.0.6.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.crashlytics.sdk.android/crashlytics/2.2.0/685f901996f927132e9c020833c1bdd0be4e7619/crashlytics-2.2.0.aar" />
-                            <option value="/opt/android-sdk/extras/android/m2repository/com/android/support/appcompat-v7/23.0.0/appcompat-v7-23.0.0.aar" />
-                            <option value="/opt/android-sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.0/support-annotations-23.0.0.jar" />
+                            <option value="/opt/android-sdk/extras/android/m2repository/com/android/support/appcompat-v7/23.0.1/appcompat-v7-23.0.1.aar" />
+                            <option value="/opt/android-sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.crashlytics.sdk.android/answers/1.1.0/ac49cf5de7566911caca52c37f4c9cadc3e7142a/answers-1.1.0.aar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.crashlytics.sdk.android/beta/1.1.0/ba5d691f91af770ff2bc702ce9f6ac4201b2cf98/beta-1.1.0.aar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.fabric.sdk.android/fabric/1.1.0/4c89828ef67b4dea94a785b9cbce3eeaae4136d7/fabric-1.1.0.aar" />
@@ -1622,6 +1690,7 @@
         <option value="$PROJECT_DIR$/iziozi/src/main/res/layout/button_container_layout.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/res/layout/picto_element.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOSpeakableImageButton.java" />
+        <option value="$PROJECT_DIR$/iziozi/build.gradle" />
         <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java" />
         <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java" />
       </list>
@@ -1668,15 +1737,9 @@
               <option name="myItemId" value="iziozi-android" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
-          </PATH>
-          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="iziozi-android" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="iziozi" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+              <option name="myItemId" value="Gradle Scripts" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -1689,16 +1752,8 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="iziozi" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="helpers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -1711,16 +1766,12 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="iziozi" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gui" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemId" value="values" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -1733,20 +1784,16 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="iziozi" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+              <option name="myItemId" value="values" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="gui" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="components" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemId" value="strings.xml" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResGroupNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -1759,16 +1806,22 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="layout" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="iziozi-android" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="iziozi" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="core" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -1783,6 +1836,9 @@
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="02c5bb16091cb285" />
     <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager2.WIDTH" value="338" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="Android_Wear_Round_API_21" />
+    <property name="DEBUGGABLE_DEVICE" value="lge-nexus_5-02c5bb16091cb285" />
+    <property name="DEBUGGABLE_PROCESS" value="it.iziozi.iziozi" />
+    <property name="SHOW_ALL_PROCESSES" value="false" />
   </component>
   <component name="RunManager" selected="Android Application.iziozi">
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
@@ -1990,17 +2046,18 @@
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928678" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34112647" sideWeight="0.4969651" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34112647" sideWeight="0.4969651" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39865997" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3985122" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32495812" sideWeight="0.5030349" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998326" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32943678" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928678" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -2012,7 +2069,6 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -2061,35 +2117,19 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="7" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java</url>
+          <line>195</line>
+          <properties />
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="11" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="56" column="46" selection-start-line="55" selection-start-column="4" selection-end-line="56" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="325" column="77" selection-start-line="325" selection-start-column="77" selection-end-line="325" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/layout/table_main_layout.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2105,13 +2145,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="170" column="27" selection-start-line="170" selection-start-column="22" selection-end-line="170" selection-end-column="27" />
-          <folding>
-            <element signature="e#4305#4306#0" expanded="true" />
-            <element signature="e#4337#4338#0" expanded="true" />
-            <element signature="e#5399#5400#0" expanded="true" />
-            <element signature="e#5432#5433#0" expanded="true" />
-            <element signature="e#5596#5597#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2127,7 +2161,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="354" column="53" selection-start-line="354" selection-start-column="53" selection-end-line="354" selection-end-column="53" />
-          <folding />
+          <folding>
+            <marker date="1453848448000" expanded="true" signature="67281:67327" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2169,13 +2205,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="170" column="27" selection-start-line="170" selection-start-column="22" selection-end-line="170" selection-end-column="27" />
-          <folding>
-            <element signature="e#4305#4306#0" expanded="true" />
-            <element signature="e#4337#4338#0" expanded="true" />
-            <element signature="e#5399#5400#0" expanded="true" />
-            <element signature="e#5432#5433#0" expanded="true" />
-            <element signature="e#5596#5597#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2191,7 +2221,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="354" column="53" selection-start-line="354" selection-start-column="53" selection-end-line="354" selection-end-column="53" />
-          <folding />
+          <folding>
+            <marker date="1453848448000" expanded="true" signature="67281:67327" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2233,13 +2265,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="170" column="27" selection-start-line="170" selection-start-column="22" selection-end-line="170" selection-end-column="27" />
-          <folding>
-            <element signature="e#4305#4306#0" expanded="true" />
-            <element signature="e#4337#4338#0" expanded="true" />
-            <element signature="e#5399#5400#0" expanded="true" />
-            <element signature="e#5432#5433#0" expanded="true" />
-            <element signature="e#5596#5597#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2255,7 +2281,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="178" column="25" selection-start-line="178" selection-start-column="14" selection-end-line="178" selection-end-column="25" />
-          <folding />
+          <folding>
+            <marker date="1453848448000" expanded="true" signature="67281:67327" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2289,13 +2317,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="170" column="27" selection-start-line="170" selection-start-column="22" selection-end-line="170" selection-end-column="27" />
-          <folding>
-            <element signature="e#4305#4306#0" expanded="true" />
-            <element signature="e#4337#4338#0" expanded="true" />
-            <element signature="e#5399#5400#0" expanded="true" />
-            <element signature="e#5432#5433#0" expanded="true" />
-            <element signature="e#5596#5597#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2311,7 +2333,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="872" column="36" selection-start-line="870" selection-start-column="29" selection-end-line="870" selection-end-column="36" />
-          <folding />
+          <folding>
+            <marker date="1453848448000" expanded="true" signature="67281:67327" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2338,7 +2362,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="870" column="36" selection-start-line="870" selection-start-column="29" selection-end-line="870" selection-end-column="36" />
-          <folding />
+          <folding>
+            <marker date="1453848448000" expanded="true" signature="67281:67327" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2351,14 +2377,6 @@
       </provider>
       <provider selected="true" editor-type-id="android-designer">
         <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="151" column="48" selection-start-line="151" selection-start-column="48" selection-end-line="151" selection-end-column="48" />
-          <folding />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml">
@@ -2395,28 +2413,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/layout/picto_element.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="43" selection-start-line="6" selection-start-column="43" selection-end-line="6" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOSpeakableImageButton.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="212" column="0" selection-start-line="212" selection-start-column="0" selection-end-line="212" selection-end-column="0" />
-          <folding>
-            <element signature="e#4305#4306#0" expanded="true" />
-            <element signature="e#4337#4338#0" expanded="true" />
-            <element signature="e#5399#5400#0" expanded="true" />
-            <element signature="e#5432#5433#0" expanded="true" />
-            <element signature="e#5596#5597#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2424,21 +2425,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="350" column="22" selection-start-line="350" selection-start-column="22" selection-end-line="350" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="219" column="77" selection-start-line="219" selection-start-column="77" selection-end-line="219" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="56" column="46" selection-start-line="55" selection-start-column="4" selection-end-line="56" selection-end-column="46" />
           <folding />
         </state>
       </provider>
@@ -2480,10 +2466,115 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOApiClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="40" column="68" selection-start-line="40" selection-start-column="56" selection-end-line="40" selection-end-column="68" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="64" column="53" selection-start-line="64" selection-start-column="53" selection-end-line="64" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#777#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/layout/picto_element.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.275862">
+          <caret line="16" column="35" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="56" column="46" selection-start-line="55" selection-start-column="4" selection-end-line="56" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.074074">
+          <caret line="206" column="54" selection-start-line="206" selection-start-column="54" selection-end-line="206" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/layout/fragment_tutorial_page.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.42628774">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="android-dummy:///Users/martinolessio/workspaces/Android/IziOzi/iziozi/Translations Editor">
+      <provider selected="true" editor-type-id="string-resource-editor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-76.666664">
+          <caret line="151" column="48" selection-start-line="151" selection-start-column="48" selection-end-line="151" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-12.703704">
+          <caret line="27" column="28" selection-start-line="27" selection-start-column="28" selection-end-line="27" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/android-sdk/sources/android-23/android/os/AsyncTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.8327703">
+          <caret line="549" column="53" selection-start-line="549" selection-start-column="53" selection-end-line="549" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7309734">
-          <caret line="894" column="0" selection-start-line="894" selection-start-column="0" selection-end-line="894" selection-end-column="0" />
+        <state vertical-scroll-proportion="-10.851851">
+          <caret line="988" column="66" selection-start-line="988" selection-start-column="66" selection-end-line="988" selection-end-column="66" />
+          <folding>
+            <marker date="1453848448000" expanded="true" signature="67281:67327" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/pdfcreator/PdfCreatorTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.29054055">
+          <caret line="160" column="0" selection-start-line="160" selection-start-column="0" selection-end-line="160" selection-end-column="0" />
           <folding />
         </state>
       </provider>
