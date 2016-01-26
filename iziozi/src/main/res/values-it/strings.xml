@@ -149,6 +149,7 @@
     <string name="disable">Disabilita</string>
     <string name="set">Configura</string>
     <string name="tts_unavailable">Il motore di sintesi vocale(TTS) di Android non è disponibile. Controlla le tue impostazioni di sistema.</string>
+    <string name="enable_label">Mostra etichette</string>
 
 
 </resources>

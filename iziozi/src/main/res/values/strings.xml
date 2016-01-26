@@ -139,5 +139,6 @@
     <string name="disable">Disable</string>
     <string name="set">Set</string>
     <string name="tts_unavailable">Android text to speech(TTS) is unavailable. Please check your system settings.</string>
+    <string name="enable_label">Show label</string>
 
 </resources>

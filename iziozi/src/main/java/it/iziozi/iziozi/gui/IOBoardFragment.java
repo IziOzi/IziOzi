@@ -23,20 +23,24 @@ package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -205,7 +209,23 @@ public class IOBoardFragment extends Fragment {
                     homeRow.addView(btnContainer);
 
 
-                    final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(getActivity());
+                    LayoutInflater layoutInflater =  (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View pictoLayout = layoutInflater.inflate(R.layout.picto_element,null);
+                    final IOSpeakableImageButton originalButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton();
+
+                    final IOSpeakableImageButton imgButton = (IOSpeakableImageButton)pictoLayout.findViewById(R.id.img_button);
+
+                    imgButton.setAudioFile(originalButton.getAudioFile());
+                    imgButton.setIntentName(originalButton.getIntentName());
+                    imgButton.setIntentPackageName(originalButton.getIntentPackageName());
+                    imgButton.setIsMatrioska(originalButton.getIsMatrioska());
+                    imgButton.setmImageFile(originalButton.getmImageFile());
+                    imgButton.setmSentence(originalButton.getmSentence());
+                    imgButton.setmTitle(originalButton.getmTitle());
+                    imgButton.setmUrl(originalButton.getmUrl());
+                    imgButton.setVideoFile(originalButton.getVideoFile());
+
+
                     imgButton.setmContext(getActivity());
                     imgButton.setShowBorder(IOConfiguration.getShowBorders());
                     if (IOGlobalConfiguration.isEditing)
@@ -289,12 +309,17 @@ public class IOBoardFragment extends Fragment {
                         }
                     }
 
-                    ViewGroup parent = (ViewGroup) imgButton.getParent();
+                    //setup labels if enabled
+                    if(IOConfiguration.isShowLabels()) {
+                        TextView textLabel = (TextView)pictoLayout.findViewById(R.id.img_button_label);
+                        textLabel.setText(imgButton.getmTitle());
+                    }
+                    /*ViewGroup parent = (ViewGroup) imgButton.getParent();
 
                     if (parent != null)
-                        parent.removeAllViews();
+                        parent.removeAllViews();*/
 
-                    btnContainer.addView(imgButton);
+                    btnContainer.addView(pictoLayout);
 
                     mButtons.add(imgButton);
 
@@ -310,7 +335,8 @@ public class IOBoardFragment extends Fragment {
                 }
             }
 
-            this.mBoard.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);
+            /*this.mBoard.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);*/
+            this.mBoard.setButtons(mButtons);
 
             return tableContainer;
 

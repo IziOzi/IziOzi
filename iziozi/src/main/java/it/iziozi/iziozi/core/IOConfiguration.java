@@ -53,6 +53,9 @@ public class IOConfiguration {
     @Attribute(required = false)
     private static Boolean bigNavigation = false;
 
+    @Attribute(required = false)
+    private static Boolean showLabels = false;
+
 
     public IOConfiguration() {
     }
@@ -79,6 +82,14 @@ public class IOConfiguration {
 
     public static void setShowBorders(Boolean showBorders) {
         IOConfiguration.showBorders = showBorders;
+    }
+
+    public static Boolean isShowLabels() {
+        return showLabels;
+    }
+
+    public static void setShowLabels(Boolean showLabels) {
+        IOConfiguration.showLabels = showLabels;
     }
 
     public IOLevel getLevel() {

@@ -880,10 +880,12 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 final CheckBox bordersCheckbox = (CheckBox) layoutView.findViewById(R.id.bordersCheckbox);
                 final CheckBox swipeCheckbox = (CheckBox) layoutView.findViewById(R.id.swipe_checkbox);
                 final CheckBox bigNavCheckbox = (CheckBox) layoutView.findViewById(R.id.bignav_checkbox);
+		        final CheckBox labelsCheckbox = (CheckBox) layoutView.findViewById(R.id.label_checkbox);
 
                 bordersCheckbox.setChecked(IOConfiguration.getShowBorders());
                 swipeCheckbox.setChecked(IOConfiguration.isSwipeEnabled());
                 bigNavCheckbox.setChecked(IOConfiguration.isBigNavigation());
+		        labelsCheckbox.setChecked(IOConfiguration.isShowLabels());
 
                 builder.setTitle(getResources().getString(R.string.settings))
                         .setView(layoutView)
@@ -902,6 +904,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                                 IOConfiguration.setShowBorders(bordersCheckbox.isChecked());
                                 IOConfiguration.setSwipeEnabled(swipeCheckbox.isChecked());
                                 IOConfiguration.setBigNavigation(bigNavCheckbox.isChecked());
+                                IOConfiguration.setShowLabels(labelsCheckbox.isChecked());
 
                                 refreshView();
                             }
@@ -1403,7 +1406,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     private void refreshView(int index) {
 
         FragmentManager fm = getSupportFragmentManager();
-
         IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) fm.findFragmentById(mFrameLayout.getId());
 
         fragment.refreshView(index);
