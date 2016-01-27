@@ -23,8 +23,8 @@
 
     <!-- String languages -->
     <string-array name="languages_array">
-        <item>English</item>
         <item>Italian</item>
+        <item>English</item>
         <item>Spanish</item>
         <item>French</item>
         <item>German</item>
@@ -259,5 +259,7 @@
     <string name="check_words">Check words</string>
     <string name="get_images">Getting images</string>
     <string name="no_images">No images found!</string>
+    <string name="create_pdf">Create pdf</string>
+    <string name="done">Done</string>
 
 </resources>
