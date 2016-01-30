@@ -261,5 +261,11 @@
     <string name="no_images">No images found!</string>
     <string name="create_pdf">Create pdf</string>
     <string name="done">Done</string>
+    <string name="recreate">Recreate</string>
+    <string name="search_no_words">You must select at least one word to begin search.</string>
+    <string name="speech_search_info">Select the words you\'d like to keep.
+        \n\nClick recreate to repeat the speech and add new words or done to start searching.</string>
+    <string name="select_all">Select all</string>
+    <string name="speech_board_error">You must first enable edit mode.</string>
 
 </resources>

@@ -1197,12 +1197,15 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 break;
 
             case R.id.action_create_board_speech:
-                Intent recordAudio = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().getLanguage());
+                if (IOGlobalConfiguration.isEditing) {
+                    Intent recordAudio = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().getLanguage());
 
-                startActivityForResult(recordAudio, SPEECH_RECOGNIZER_CODE);
-
+                    startActivityForResult(recordAudio, SPEECH_RECOGNIZER_CODE);
+                } else {
+                    Toast.makeText(IOBoardActivity.this, getString(R.string.speech_board_error), Toast.LENGTH_LONG).show();
+                }
                 break;
 
             default:
@@ -1707,6 +1710,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                         b.setmImageFile(downloadedImage.get(SpeechBoardActivity.IMAGE_FILE));
                         b.setmUrl(downloadedImage.get(SpeechBoardActivity.IMAGE_URL));
                         b.setmTitle(downloadedImage.get(SpeechBoardActivity.IMAGE_TITLE));
+                        b.setSentence(downloadedImage.get(SpeechBoardActivity.IMAGE_TITLE));
                         pictogramList.add(b);
                     }
                     int rows = (int) Math.floor(Math.sqrt(images.size()));
@@ -1720,7 +1724,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                     newBoard.setCols(cols);
 
                     mActualLevel.addInnerBoardAtIndex(newBoard, mActualLevel.getLevelSize());
-                    refreshView();
+                    refreshView(mActualLevel.getLevelSize() - 1);
                     saveBoard(mActualConfigName);
                 }
             }
