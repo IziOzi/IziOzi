@@ -86,7 +86,7 @@
         navigational arrows. This is available if you have more than one board.</string>
 
     <string name="tutorial_header_8">Thank you for using IziOzi</string>
-    <string name="tutorial_details1_8">This project is free and open source and was done in collaboration
+    <string name="tutorial_details1_8">This project is free and open source and some features were developed in collaboration
         with University of Eastern Piedmont. \n\nPlease consider supporting our efforts and donating.
     </string>
 
@@ -184,6 +184,7 @@
     <string name="send_mail">Send mail...</string>
     <string name="app_description">IziOzi is an aumentative and alternative communication app. It is open source, completely free and in daily developement.
         If you have any request, some suggestions or you want to tell us something, write us using the button here under!
+        Some features were developed in collaboration with University of Eastern Piedmont.
         If you think this is a useful project and you want to help us, please use the button at the bottom of the page to donate us supporting developement costs! Thank you!</string>
     <string name="image_missing">Missing images!</string>
     <string name="image_missing_text">Application will now download missing files. Please wait until all images are shown.</string>

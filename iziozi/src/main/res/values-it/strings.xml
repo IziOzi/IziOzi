@@ -81,7 +81,7 @@
         \n\nInfine, puoi abilitare la visualizzazione di etichette al di sotto di ogni immagine presente nelle tavole. Queste etichette corrispondono al campo \"Titolo\" associato a ogni immagine durante la sua impostazione, come visto in precedenza.</string>
 
     <string name="tutorial_header_8">Grazie per aver scelto IziOzi</string>
-    <string name="tutorial_details1_8">Questa applicazione è gratis, open source ed è stata realizzata in collaborazione con l\'Università del Piemonte Orientale \"Amedeo Avogadro\".\nSe ti piacerebbe darci una mano e contribuire al progetto puoi effettuare una donazione per supportare i costi di sviluppo! Grazie!
+    <string name="tutorial_details1_8">Questa applicazione è gratis, open source ed è stata realizzata nei momenti di tempo libero. Alcune funzionalità sono state sviluppate grazie alla collaborazione con l\'Università del Piemonte Orientale \"Amedeo Avogadro\".\nSe ti piacerebbe darci una mano e contribuire al progetto puoi effettuare una donazione per supportare i costi di sviluppo! Grazie!
     </string>
 
     <!-- Strings for the page title of the viewpager; format is `page_title_[0..9]` -->
@@ -181,6 +181,7 @@
 
     <string name="app_description">IziOzi è un\'applicazione di comunicazione aumentativa e alternativa open source, completamente gratuita e in continuo sviluppo.\n
         Se hai delle richieste, dei suggerimenti o se vuoi dirci qualcosa, scrivici cliccando il pulsante qui sotto!\n
+        Alcune funzionalità sono state sviluppate grazie alla collaborazione con l\'Università del Piemonte Orientale \"Amedeo Avogadro\"
         Se infine credi che questo sia un progetto utile e vuoi darci una mano, usa il pulsante in fondo alla pagina per effettuare una donazione spontanea
         per supportare i costi di sviluppo! Grazie!</string>
     <string name="image_missing">Pittogrammi mancanti!</string>

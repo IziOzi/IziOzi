@@ -23,8 +23,9 @@ package it.iziozi.iziozi.gui.tutorial;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -35,7 +36,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import it.iziozi.iziozi.R;
@@ -116,6 +116,20 @@ public class FragmentTutorialPage extends Fragment implements View.OnClickListen
 
         if (imgResourceId[0] != 0) imageView.setImageResource(imgResourceId[0]);
         if (imgResourceId[1] != 0) imageView2.setImageResource(imgResourceId[1]);
+
+        if(imgResourceId[1] != 0 && page == 8)
+        {
+            imageView2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=HMEFXQHF35PTY&lc=IT&item_name=IziOzi&item_number=IziOzi%20Android%20app&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"));
+                    startActivity(browserIntent);
+                }
+            });
+        }else
+        {
+            imageView2.setOnClickListener(null);
+        }
 
         return v;
     }
