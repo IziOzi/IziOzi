@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="languages_array">
+        <item>Inglés</item>
+        <item>Italiano</item>
+        <item>Español</item>
+        <item>Francés</item>
+        <item>Alemán</item>
+    </string-array>
+
+    <!-- Generic strings -->
+    <string name="language">Idioma</string>
+    <string name="finish">Finalizar</string>
+    <string name="apply">Aplicar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="confirm">Confirmar</string>
+    <string name="error">Error</string>
+    <string name="continue_string">Continuar</string>
+    <string name="c_title">Título:</string>
+    <string name="c_text">Texto a habla:</string>
+    <string name="s_search">Buscar</string>
+    <string name="manage_medias">Administrar archivos</string>
+
+    <!-- App specific strings -->
+    <string name="app_name">IziOzi</string>
+    <string name="btn_inserttext">Introduzca el texto para decir:</string>
+    <string name="rows">Filas:</string>
+    <string name="cols">Cols:</string>
+    <string name="show_borders">Mostrar fronteras</string>
+    <string name="preview">Vista</string>
+    <string name="set_image">Imagen Establecer</string>
+    <string name="img_search">Búsqueda en la base de datos</string>
+    <string name="img_camera">Escoja de cámara</string>
+    <string name="choose">Seleccionar...</string>
+    <string name="img_gallery">Seleccionar de galería</string>
+    <string name="tap_for_image">Toque aquí para insertar una imagen!</string>
+
+    <!-- Actions strings -->
+    <string name="settings">Configuración</string>
+    <string name="edit_mode">Modo Edición</string>
+    <string name="scan_mode">Modo Scan</string>
+    <string name="save">Guardar</string>
+    <string name="about">Sobre</string>
+    <string name="exit">Salir</string>
+    <string name="save_as">Guardar as</string>
+    <string name="load">Load</string>
+    <string name="new_board">Nuevo</string>
+
+    <!-- Device interface lock -->
+    <string name="lock">Bloquear</string>
+    <string name="unlock">Desbloquear</string>
+
+</resources>

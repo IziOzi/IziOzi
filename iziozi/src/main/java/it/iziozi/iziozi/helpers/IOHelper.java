@@ -26,10 +26,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Display;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +43,11 @@ import it.iziozi.iziozi.core.IOInfoObject;
  * Created by martinolessio on 14/03/15.
  */
 public class IOHelper {
+
+    public enum Orientation {
+        VERTICAL,
+        HORIZONTAL
+    }
 
     private static String TAG = "IOHelper";
 
@@ -115,6 +122,15 @@ public class IOHelper {
             return true;
         }
 
+    }
+
+    public static Orientation getOrientation(Activity activity) {
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        if (size.x > size.y) return Orientation.HORIZONTAL;
+        return Orientation.VERTICAL;
     }
 }
 

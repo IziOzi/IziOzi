@@ -21,6 +21,7 @@
 
 package it.iziozi.iziozi.gui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -77,6 +78,7 @@ public class IORemoteImageSearchActivity extends AppCompatActivity {
     private ProgressDialog mBarProgressDialog;
     private ProgressDialog mRingProgressDialog;
 
+    boolean isSpeechBoardSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,13 +107,21 @@ public class IORemoteImageSearchActivity extends AppCompatActivity {
                     final IOPictogram pictogram = mPictograms.get(position);
 
                     File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
-                    Character pictoChar = pictogram.getFilePath().charAt(0);
+                    final Character pictoChar = pictogram.getFilePath().charAt(0);
                     File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
                     final File pictoFile = new File(baseFolder + "/" + pictoChar + "/" + pictogram.getFilePath());
 
-                    final Intent backIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
-                    backIntent.putExtra(IOCreateButtonActivity.IMAGE_URL, pictogram.getUrl());
-                    backIntent.putExtra(IOCreateButtonActivity.IMAGE_TITLE, pictogram.getDescription());
+                    final Intent backIntent;
+                    if (isSpeechBoardSearch) {
+                        backIntent = new Intent();
+                        backIntent.putExtra(SpeechBoardActivity.IMAGE_URL, pictogram.getUrl());
+                        backIntent.putExtra(SpeechBoardActivity.IMAGE_TITLE, pictogram.getDescription());
+                    }
+                    else {
+                        backIntent = new Intent(getApplicationContext(), IOCreateButtonActivity.class);
+                        backIntent.putExtra(IOCreateButtonActivity.IMAGE_URL, pictogram.getUrl());
+                        backIntent.putExtra(IOCreateButtonActivity.IMAGE_TITLE, pictogram.getDescription());
+                    }
 
                     if (!pictoFile.exists() && isExternalStorageWritable()) {
 
@@ -150,11 +160,17 @@ public class IORemoteImageSearchActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, File downloadedFile) {
 
-
                                 if (pictoFile.exists()) {
-                                    backIntent.putExtra(IOCreateButtonActivity.IMAGE_FILE, pictoFile.toString());
-                                    finish();
-                                    startActivity(backIntent);
+                                    if (isSpeechBoardSearch) {
+                                        backIntent.putExtra(SpeechBoardActivity.IMAGE_FILE, pictoFile.toString());
+                                        setResult(Activity.RESULT_OK, backIntent);
+                                        finish();
+                                    }
+                                    else {
+                                        backIntent.putExtra(IOCreateButtonActivity.IMAGE_FILE, pictoFile.toString());
+                                        finish();
+                                        startActivity(backIntent);
+                                    }
                                 } else {
                                     Toast.makeText(getApplicationContext(), getString(R.string.image_save_error), Toast.LENGTH_SHORT).show();
                                     mBarProgressDialog.cancel();
@@ -163,9 +179,16 @@ public class IORemoteImageSearchActivity extends AppCompatActivity {
                         });
                     } else {
                         //file already exists
-                        backIntent.putExtra(IOCreateButtonActivity.IMAGE_FILE, pictoFile.toString());
-                        finish();
-                        startActivity(backIntent);
+                        if (isSpeechBoardSearch) {
+                            backIntent.putExtra(SpeechBoardActivity.IMAGE_FILE, pictoFile.toString());
+                            setResult(Activity.RESULT_OK, backIntent);
+                            finish();
+                        }
+                        else {
+                            backIntent.putExtra(IOCreateButtonActivity.IMAGE_FILE, pictoFile.toString());
+                            finish();
+                            startActivity(backIntent);
+                        }
                     }
                 }
             }
@@ -200,6 +223,7 @@ public class IORemoteImageSearchActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            isSpeechBoardSearch = intent.getBooleanExtra(SpeechBoardActivity.class.getSimpleName(), false);
             searchImages(query);
         }
     }

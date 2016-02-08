@@ -41,34 +41,38 @@ android {
         }
     }
 
-    useLibrary  'org.apache.http.legacy'
-
     compileSdkVersion 23
-    buildToolsVersion '21.1.2'
+    buildToolsVersion '23.0.2'
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 20151021
-        versionName '1.6rc'
+        versionCode 20160208
+        versionName '2.0'
         signingConfig signingConfigs.IziOzi
     }
     buildTypes {
         release {
+            lintOptions {
+                disable 'MissingTranslation'
+            }
         }
     }
     productFlavors {
     }
+
+    useLibrary 'org.apache.http.legacy'
+
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/simple-xml-2.7.1.jar')
     compile files('libs/ormlite-core-4.48.jar')
     compile files('libs/ormlite-android-4.48.jar')
     //chromecast support
     //compile 'com.google.android.gms:play-services:4.3.23'
     //compile 'com.android.support:support-v7-mediarouter:19.0.0'
-    compile 'com.android.support:support-v4:23.0.0'
+    compile 'com.android.support:support-v4:23.0.1'
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile files('libs/ThinkGear.jar')
@@ -76,5 +80,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.2.0@aar') {
         transitive = true;
     }
-    compile 'com.android.support:appcompat-v7:23.0.0'
+    compile 'com.android.support:appcompat-v7:23.0.1'
 }

@@ -23,20 +23,28 @@ package it.iziozi.iziozi.gui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -60,7 +68,8 @@ import it.iziozi.iziozi.core.IOSpeakableImageButton;
 import it.iziozi.iziozi.helpers.IOHelper;
 
 
-public class IOBoardFragment extends Fragment {
+public class IOBoardFragment extends Fragment implements View.OnDragListener, View.OnLongClickListener,
+    View.OnTouchListener {
 
     public interface OnBoardFragmentInteractionListener {
 
@@ -80,6 +89,8 @@ public class IOBoardFragment extends Fragment {
     private int mBoardIndex = 0;
 
     private ImageLoader imageLoader = ImageLoader.getInstance();
+
+    private int xPos, yPos;
 
     /*
     * Interface widgets
@@ -141,6 +152,107 @@ public class IOBoardFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public boolean onDrag(View v, DragEvent event) {
+        int action = event.getAction();
+        IOSpeakableImageButton draggedImage = (IOSpeakableImageButton) event.getLocalState();
+        TextView draggedLabel = ((TextView) ((ViewGroup) draggedImage.getParent()).getChildAt(0));
+        ViewGroup parentDraggedImage = (ViewGroup) draggedImage.getParent();
+
+        ViewGroup view = (ViewGroup) v;
+        IOSpeakableImageButton targetImage = (IOSpeakableImageButton) ((ViewGroup) view.getChildAt(0)).getChildAt(1);
+        TextView targetLabel = (TextView) ((ViewGroup) view.getChildAt(0)).getChildAt(0);
+
+        Vibrator vibObj = null;
+        if (getActivity() != null) {
+            vibObj = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
+        switch (action) {
+            case DragEvent.ACTION_DRAG_STARTED:
+                draggedImage.setVisibility(View.INVISIBLE);
+                if (vibObj != null) {
+                    vibObj.vibrate(10);
+                }
+
+                break;
+
+            case DragEvent.ACTION_DRAG_ENTERED:
+                // add red border around view
+                targetImage.setIsHiglighted(true);
+                targetImage.invalidate();
+                break;
+
+            case DragEvent.ACTION_DRAG_EXITED:
+                targetImage.setIsHiglighted(false);
+                targetImage.invalidate();
+                break;
+
+            case DragEvent.ACTION_DROP:
+                // if it's not the same viewgroup, i.e. drag&drop in any different position than the current one
+                targetImage.setIsHiglighted(false);
+                targetImage.invalidate();
+
+                if (parentDraggedImage != view) {
+                    if (parentDraggedImage.getChildCount() > 0) {
+                        parentDraggedImage.removeViewAt(0);
+                    }
+                    if (parentDraggedImage.getChildCount() > 0) {
+                        parentDraggedImage.removeViewAt(0);
+                    }
+                    if (((ViewGroup) view.getChildAt(0)).getChildCount() > 0) {
+                        ((ViewGroup) view.getChildAt(0)).removeViewAt(0);
+                    }
+                    if (((ViewGroup) view.getChildAt(0)).getChildCount() > 0) {
+                        ((ViewGroup) view.getChildAt(0)).removeViewAt(0);
+                    }
+
+                    parentDraggedImage.addView(targetImage, 0);
+                    parentDraggedImage.addView(targetLabel, 0);
+                    ((ViewGroup) view.getChildAt(0)).addView(draggedImage, 0);
+                    ((ViewGroup) view.getChildAt(0)).addView(draggedLabel, 0);
+
+                    int targetIndex = getBoard().getButtons().indexOf(targetImage);
+                    int draggedIndex = getBoard().getButtons().indexOf(draggedImage);
+                    getBoard().getButtons().set(targetIndex, draggedImage);
+                    getBoard().getButtons().set(draggedIndex, targetImage);
+                }
+
+                draggedImage.setVisibility(View.VISIBLE);
+                break;
+
+            case DragEvent.ACTION_DRAG_ENDED:
+                // If the user dropped the image in an illegal position ACTION_DROP won't fire;
+                // so make this view visible again
+                if (draggedImage.getVisibility() != View.VISIBLE) {
+                    draggedImage.setVisibility(View.VISIBLE);
+                }
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        ClipData data = ClipData.newPlainText("", "");
+        View.DragShadowBuilder shadow = new PictogramDragShadow(v, xPos, yPos); //View.DragShadowBuilder(v);
+        v.startDrag(data, shadow, v, 0);
+
+        return true;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            xPos = (int) event.getX();
+            yPos = (int) event.getY();
+        }
+
+        // It's important to return false so the event propagates to onLongClick
+        return false;
+    }
+
     public IOBoard getBoard() {
         return mBoard;
     }
@@ -174,7 +286,6 @@ public class IOBoardFragment extends Fragment {
 
             ViewGroup mainView = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.table_main_layout, null);
 
-
             LinearLayout tableContainer = new LinearLayout(getActivity());
             LinearLayout.LayoutParams mainParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             tableContainer.setLayoutParams(mainParams);
@@ -204,17 +315,44 @@ public class IOBoardFragment extends Fragment {
 
                     homeRow.addView(btnContainer);
 
+                    btnContainer.setOnDragListener(this);
 
-                    final IOSpeakableImageButton imgButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton(getActivity());
+                    LayoutInflater layoutInflater =  (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View pictoLayout = layoutInflater.inflate(R.layout.picto_element,null);
+                    final IOSpeakableImageButton originalButton = (configButtons.size() > 0 && configButtons.size() > mButtons.size()) ? configButtons.get(mButtons.size()) : new IOSpeakableImageButton();
+
+                    final IOSpeakableImageButton imgButton = (IOSpeakableImageButton)pictoLayout.findViewById(R.id.img_button);
+
+                    imgButton.setAudioFile(originalButton.getAudioFile());
+                    imgButton.setIntentName(originalButton.getIntentName());
+                    imgButton.setIntentPackageName(originalButton.getIntentPackageName());
+                    imgButton.setIsMatrioska(originalButton.getIsMatrioska());
+                    imgButton.setmImageFile(originalButton.getmImageFile());
+                    imgButton.setmSentence(originalButton.getmSentence());
+                    imgButton.setmTitle(originalButton.getmTitle());
+                    imgButton.setmUrl(originalButton.getmUrl());
+                    imgButton.setVideoFile(originalButton.getVideoFile());
+
+
                     imgButton.setmContext(getActivity());
                     imgButton.setShowBorder(IOConfiguration.getShowBorders());
-                    if (IOGlobalConfiguration.isEditing)
+                    if (IOGlobalConfiguration.isEditing) {
                         imgButton.setImageDrawable(getResources().getDrawable(R.drawable.logo_org));
-                    else
+                    }
+                    else {
                         imgButton.setImageDrawable(null);
+                    }
                     imgButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                     imgButton.setBackgroundColor(Color.TRANSPARENT);
 
+                    // Set the listeners
+                    if (IOGlobalConfiguration.isEditing) {
+                        imgButton.setOnTouchListener(this);
+                        imgButton.setOnLongClickListener(this);
+                    } else {
+                        imgButton.setOnTouchListener(null);
+                        imgButton.setOnLongClickListener(null);
+                    }
 
                     if (imgButton.getmImageFile() != null && imgButton.getmImageFile().length() > 0) {
 
@@ -230,7 +368,6 @@ public class IOBoardFragment extends Fragment {
                             }
 
                             //download image
-
                             if (isExternalStorageReadable() && IOHelper.checkForRequiredPermissions(getActivity())) {
 
                                 File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
@@ -289,12 +426,17 @@ public class IOBoardFragment extends Fragment {
                         }
                     }
 
-                    ViewGroup parent = (ViewGroup) imgButton.getParent();
+                    //setup labels if enabled
+                    if(IOConfiguration.isShowLabels()) {
+                        TextView textLabel = (TextView)pictoLayout.findViewById(R.id.img_button_label);
+                        textLabel.setText(imgButton.getmTitle());
+                    }
+                    /*ViewGroup parent = (ViewGroup) imgButton.getParent();
 
                     if (parent != null)
-                        parent.removeAllViews();
+                        parent.removeAllViews();*/
 
-                    btnContainer.addView(imgButton);
+                    btnContainer.addView(pictoLayout);
 
                     mButtons.add(imgButton);
 
@@ -310,7 +452,8 @@ public class IOBoardFragment extends Fragment {
                 }
             }
 
-            this.mBoard.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);
+            /*this.mBoard.setButtons(mButtons.size() > configButtons.size() ? mButtons : configButtons);*/
+            this.mBoard.setButtons(mButtons);
 
             return tableContainer;
 
@@ -355,4 +498,29 @@ public class IOBoardFragment extends Fragment {
         return IOApplication.CONTEXT;
     }
 */
+
+    private static class PictogramDragShadow extends View.DragShadowBuilder {
+
+        int xPos, yPos;
+
+        public PictogramDragShadow(View v, int xPos, int yPos) {
+            super(v);
+            this.xPos = xPos;
+            this.yPos = yPos;
+        }
+
+        @Override
+        public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
+            final View v = getView();
+            if (v != null) {
+                shadowSize.set(v.getWidth(), v.getHeight());
+                shadowTouchPoint.set(xPos, yPos);
+            }
+        }
+
+        @Override
+        public void onDrawShadow(Canvas canvas) {
+            super.onDrawShadow(canvas);
+        }
+    }
 }

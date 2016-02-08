@@ -34,13 +34,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:fontFamily="sans-serif-light"
         android:text="@string/app_description"
         android:id="@+id/audioListCreationTextView"
         android:gravity="center_horizontal"
-        android:textSize="12sp"
-        android:layout_marginTop="44dp"
-        android:layout_alignParentTop="true"
+        android:textSize="15sp"
+        android:layout_below="@+id/linearLayout5"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -56,8 +55,8 @@
         android:onClick="pleaseDonate" />
 
     <ImageButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/social_icons"
+        android:layout_height="@dimen/social_icons"
         android:id="@+id/audiolistDeleteButton"
         android:src="@drawable/fb_logo"
         android:background="@null"
@@ -68,42 +67,16 @@
         android:layout_alignParentStart="true" />
 
     <ImageButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/social_icons"
+        android:layout_height="@dimen/social_icons"
         android:id="@+id/audiolistPlayButton"
         android:src="@drawable/github_logo"
         android:background="@null"
         android:scaleType="centerInside"
         android:onClick="openGithub"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <ImageButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:id="@+id/imageButton4"
-        android:src="@drawable/tw_logo"
-        android:background="@null"
-        android:scaleType="centerInside"
-        android:onClick="openTw"
-        android:layout_toEndOf="@+id/audiolistDeleteButton"
-        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@+id/audiolistRecordButton"
         android:layout_toRightOf="@+id/audiolistDeleteButton"
-        android:layout_marginLeft="8dp" />
-
-    <ImageButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:id="@+id/imageButton5"
-        android:src="@drawable/gplus_logo"
-        android:background="@null"
-        android:scaleType="centerInside"
-        android:onClick="openGplus"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/audiolistPlayButton"
-        android:layout_toStartOf="@+id/audiolistPlayButton"
-        android:layout_marginRight="8dp" />
+        android:layout_toEndOf="@+id/audiolistDeleteButton" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -111,11 +84,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:gravity="center">
+        android:gravity="center"
+        android:id="@+id/linearLayout5">
 
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/logo_about"
+            android:layout_height="@dimen/logo_about"
             android:id="@+id/imageView"
             android:src="@drawable/logo_512"
             android:layout_alignParentTop="true"
@@ -124,16 +98,6 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp" />
 
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:id="@+id/imageView3"
-            android:src="@drawable/minibit"
-            android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/audiolistRecordButton"
-            android:layout_alignEnd="@+id/audiolistRecordButton"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -142,14 +106,17 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/audioListCreationTextView"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/layout_margin_top"
         android:gravity="center_horizontal">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:text="www.iziozi.org"
+            android:padding="@dimen/links_padding"
             android:id="@+id/editModeAlertActionPicture"
-            android:background="@null"
+            android:background="@drawable/btn_background"
+            style="?android:attr/borderlessButtonStyle"
             android:onClick="openWebsite"
             android:textSize="12dp"
             android:textStyle="bold"
@@ -161,8 +128,10 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:text="info@iziozi.org"
+            android:padding="@dimen/links_padding"
             android:id="@+id/CreateButtonSetImageButton"
-            android:background="@null"
+            android:background="@drawable/btn_background"
+            style="?android:attr/borderlessButtonStyle"
             android:onClick="sendMail"
             android:textSize="12dp"
             android:textStyle="bold"
@@ -171,5 +140,14 @@
             android:layout_toEndOf="@+id/editModeAlertActionPicture"
             android:layout_marginLeft="8dp" />
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:id="@+id/imageView3"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/audiolistRecordButton"
+        android:layout_toEndOf="@+id/audiolistRecordButton"
+        android:src="@drawable/upo" />
 
 </RelativeLayout>

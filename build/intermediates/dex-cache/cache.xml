@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/exploded-aar/com.crashlytics.sdk.android/beta/1.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="86a04f40b5e28f11d108171131bed57ae1443f35">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/classes-1c4714568cd249c69af5ccb14bbef286b0a7cf69.jar" />
+    </item>
+    <item
+        jar="/opt/android-sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/support-annotations-23.0.1-55544acaf7567404cc89c13faa7d16877bb6a718.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/exploded-aar/com.crashlytics.sdk.android/answers/1.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="4d100f9e146f538d729d698a994c74c7b5fb886e">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/classes-aa5a3fe6c0156bcd212444f603d3d7d51c57b0fd.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/libs/ormlite-android-4.48.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="afa06f539a4026c10b247386312aa67404b80a16">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/ormlite-android-4.48-92a26341169e56aeaa160a35d3855bc7c1e5043d.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/libs/ormlite-core-4.48.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="e579bd2905d0399af5029aaaf9817d5fa0ca88a5">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/ormlite-core-4.48-df5b36ef024101004068dea5154d2eebe74fbfdb.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/.gradle/caches/modules-2/files-2.1/com.loopj.android/android-async-http/1.4.5/77bf7cacf9cefe19dc105e5425d2eb1bb5285881/android-async-http-1.4.5.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="77bf7cacf9cefe19dc105e5425d2eb1bb5285881">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/android-async-http-1.4.5-764c55515de5d29cc598d05611f9735dcdf4477e.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/classes-e176fc831b8fa5632bf2d60b82b6d56f244c4cb8.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/exploded-aar/com.crashlytics.sdk.android/crashlytics/2.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="9c91cd2b5773b33e4cfe8ababb6544b54ef40335">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/classes-ae139d3b3d5140435b97dfd143966547a4ed3cef.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/libs/internal_impl-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/internal_impl-23.0.1-8ec6f4efe1c21d49720e4788d9d5a2edc51b9c44.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/.gradle/caches/modules-2/files-2.1/com.joanzapata.android/android-iconify/1.0.6/f9ee1a18c922b05fa5b48d9ff0a5ca4fccbf5b35/android-iconify-1.0.6.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="f9ee1a18c922b05fa5b48d9ff0a5ca4fccbf5b35">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/android-iconify-1.0.6-abfca6271712655659d3bd0d0a2451efe22622f0.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/libs/ThinkGear.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="b4f0f0a355dcc5315e5bef25b775beaa52b2d208">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/ThinkGear-b5c825f5118ecb750b4316eef0087767b2939056.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/.gradle/caches/modules-2/files-2.1/com.nostra13.universalimageloader/universal-image-loader/1.9.3/a85588bec3e2c4584d593d3f15df1677321bca72/universal-image-loader-1.9.3.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a85588bec3e2c4584d593d3f15df1677321bca72">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/universal-image-loader-1.9.3-b568fa85170dac169eedca671a4547d8f76e00fd.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/libs/simple-xml-2.7.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="083623424bcfa03bd598e709765bad0816c2375d">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/simple-xml-2.7.1-2bdad37c38fcd3fe3cecc5d2cfc925fbeb5c6dd1.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/classes-f96d1ca205d0e2865b36dd9089b84819ba29684d.jar" />
+    </item>
+    <item
+        jar="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/exploded-aar/io.fabric.sdk.android/fabric/1.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="0bb0df3bf333801406f32bdfba678bcbd38cb9ff">
+        <dex dex="/Users/martinolessio/workspaces/Android/IziOzi/iziozi/build/intermediates/pre-dexed/release/classes-a08156f0d87ab75387fcfb3a5f71609f4e172fb1.jar" />
+    </item>
+
+</items>

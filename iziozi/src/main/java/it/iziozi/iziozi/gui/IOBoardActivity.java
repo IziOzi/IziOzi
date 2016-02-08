@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -35,7 +36,9 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -54,7 +57,9 @@ import android.widget.FrameLayout;
 import android.widget.IconTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +68,9 @@ import com.joanzapata.android.iconify.Iconify;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,10 +81,14 @@ import it.iziozi.iziozi.core.IOConfiguration;
 import it.iziozi.iziozi.core.IOGlobalConfiguration;
 import it.iziozi.iziozi.core.IOLevel;
 import it.iziozi.iziozi.core.IOSpeakableImageButton;
+import it.iziozi.iziozi.core.dbclasses.IOPictogram;
+import it.iziozi.iziozi.core.pdfcreator.PdfCreatorTask;
+import it.iziozi.iziozi.gui.tutorial.FragmentTutorialPage;
+import it.iziozi.iziozi.gui.tutorial.FragmentTutorialViewPager;
 import it.iziozi.iziozi.helpers.IOHelper;
 
-
-public class IOBoardActivity extends AppCompatActivity implements IOBoardFragment.OnBoardFragmentInteractionListener, IOPaginatedBoardFragment.OnFragmentInteractionListener {
+public class IOBoardActivity extends AppCompatActivity implements IOBoardFragment.OnBoardFragmentInteractionListener,
+        IOPaginatedBoardFragment.OnFragmentInteractionListener, FragmentTutorialPage.OnTutorialFinishedListener {
 
 
     /*
@@ -90,7 +102,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     /*
     * MediaPlayer vars
     * */
-
     private final MediaPlayer mPlayer = new MediaPlayer();
 
     /*
@@ -161,8 +172,20 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     public static final String BUTTON_INTENT_NAME = "button_intent_name";
     public static final String BUTTON_INTENT_PACKAGENAME = "button_intent_packagename";
 
-    int newRows, newCols;
+    private String[] languageCode = {"it", "en", "es", "fr", "de"};
 
+    private static final int SPEECH_RECOGNIZER_CODE = 2;
+    private static final int REMOTE_IMAGE_SEARCH_CODE = 3;
+
+    private boolean showTutorial;
+    private static boolean hasLanguageChanged;
+
+    private int newRows, newCols;
+    private int langSelection;
+
+    private RelativeLayout mainNavContainer;
+
+    private ArrayList<IOPictogram> remotePictogramSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,13 +193,16 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         setContentView(R.layout.activity_board);
 
+        mainNavContainer = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
+
         this.mDecorView = getWindow().getDecorView();
 
         if (IOHelper.checkForRequiredPermissions(this)) {
             this.mActiveConfig = IOConfiguration.getSavedConfiguration();
         }
 
-        SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME,
+                Context.MODE_PRIVATE);
 
         this.mActualConfigName = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, null);
         if (mActualConfigName != null)
@@ -184,24 +210,34 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         if (this.mActiveConfig == null) {
             this.mActiveConfig = new IOConfiguration();
-            showHintAlert();
-        } else {
-            lockUI();
         }
 
-        mActualLevel = mActiveConfig.getLevel();
+        SharedPreferences prefs = getSharedPreferences("tutorial", Context.MODE_PRIVATE);
+        SharedPreferences langPrefs = getSharedPreferences("lang", Context.MODE_PRIVATE);
 
+        langSelection = langPrefs.getInt("lang", 0);
+        showTutorial = prefs.getBoolean("showTutorial", true);
+
+        mActualLevel = mActiveConfig.getLevel();
         mFrameLayout = (FrameLayout) findViewById(R.id.mainLayoutTableContainer);
 
         FragmentManager fm = getSupportFragmentManager();
 
-        fm.beginTransaction()
-                .add(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActualLevel))
-                .commit();
+        if (showTutorial) {
+            showTutorial();
+        } else {
+            if (!hasLanguageChanged) {}/*lockUI();*/
+            else hasLanguageChanged = false;
 
+            fm.beginTransaction()
+                    .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActualLevel))
+                    .commit();
+
+        }
         setupNavButtons();
-
         setupSideNavButtons();
+
+        setLocale(langSelection);
 
         /*
         * Neurosky Mindwave support
@@ -214,11 +250,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             }
         }
 */
-
         this.tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-
                 if (status == TextToSpeech.SUCCESS) {
                     Locale locale = Locale.getDefault();
                     if (null == locale)
@@ -231,7 +265,8 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                     mCanSpeak = true;
                 } else {
-                    Toast.makeText(IOBoardActivity.this, getString(R.string.tts_unavailable), Toast.LENGTH_LONG).show();
+                    Toast.makeText(IOBoardActivity.this, getString(R.string.tts_unavailable),
+                            Toast.LENGTH_LONG).show();
                     mCanSpeak = false;
                 }
             }
@@ -239,7 +274,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         this.mDecorView.setOnSystemUiVisibilityChangeListener
                 (new View.OnSystemUiVisibilityChangeListener() {
-
                     @Override
                     public void onSystemUiVisibilityChange(int visibility) {
                         // Note that system bars will only be "visible" if none of the
@@ -249,7 +283,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                             if (mUILocked && !IOGlobalConfiguration.isEditing && IOHelper.canGoImmersive())
                                 showUnlockAlert();
 
-
                         } else {
                             // TODO: The system bars are NOT visible.
                         }
@@ -257,6 +290,46 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 });
     }
 
+    @Override
+    public void onTutorialFinish() {
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction()
+                .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActualLevel))
+                .commit();
+
+        if (getSupportActionBar() != null) getSupportActionBar().show();
+        RelativeLayout navLayout = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
+        navLayout.setVisibility(View.VISIBLE);
+
+        fm.executePendingTransactions();
+
+        if (showTutorial) {
+            saveTutorialPref();
+            toggleEditing();
+        }
+    }
+
+    private void saveTutorialPref() {
+        if (showTutorial) {
+            showTutorial = false;
+            SharedPreferences prefs = getSharedPreferences("tutorial", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("showTutorial", false);
+            editor.commit();
+        }
+    }
+
+    private void showTutorial() {
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
+        RelativeLayout navLayout = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
+        navLayout.setVisibility(View.GONE);
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTutorialViewPager fragmentTutorialViewPager = new FragmentTutorialViewPager();
+        fm.beginTransaction()
+                .replace(mFrameLayout.getId(), fragmentTutorialViewPager)
+                .commit();
+    }
 
     private void showSideNavButtons() {
         mLeftSideArrowButton.setVisibility(View.VISIBLE);
@@ -278,17 +351,22 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         int size = (int) (getResources().getDimension(R.dimen.nav_buttons_size) * getResources().getDisplayMetrics().densityDpi / 160);
 
-        leftArrow.setLayoutParams(new ViewGroup.LayoutParams(size, size));
-        rightArrow.setLayoutParams(new ViewGroup.LayoutParams(size, size));
+        leftArrow.setLayoutParams(new ViewGroup.LayoutParams(size, ViewGroup.LayoutParams.MATCH_PARENT));
+        rightArrow.setLayoutParams(new ViewGroup.LayoutParams(size, ViewGroup.LayoutParams.MATCH_PARENT));
 
         leftArrow.setImageDrawable(getResources().getDrawable(R.drawable.freccia_sx));
         rightArrow.setImageDrawable(getResources().getDrawable(R.drawable.freccia_dx));
 
+        leftArrow.setTag("leftArrow");
+        rightArrow.setTag("rightArrow");
+
         leftArrow.setShowBorder(mActiveConfig.getShowBorders());
         rightArrow.setShowBorder(mActiveConfig.getShowBorders());
 
-        leftContainer.addView(leftArrow);
+        leftArrow.setBackgroundColor(Color.WHITE);
+        rightArrow.setBackgroundColor(Color.WHITE);
 
+        leftContainer.addView(leftArrow);
         rightContainer.addView(rightArrow);
 
         leftArrow.setOnClickListener(new View.OnClickListener() {
@@ -315,7 +393,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     private void checkScanModeButtons() {
 
     }
-
 
     private void setupNavButtons() {
 
@@ -512,22 +589,53 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         mCenterTrashNavigationButton.setVisibility(View.GONE);
         mCenterHomeButton.setVisibility(View.GONE);
         mCenterBackButton.setVisibility(View.GONE);
+    }
 
-
+    private void displayTutorialExitDialog() {
+        new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.exit_tutorial_title))
+            .setMessage(getString(R.string.exit_tutorial_msg))
+            .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onTutorialFinish();
+                }
+            })
+            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+            .setCancelable(false)
+            .create()
+            .show();
     }
 
     @Override
     public void onBackPressed() {
+        // Check if we need to remove the tutorial fragment
+        Fragment fragment = getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
 
-        IOGlobalConfiguration.isInSwapMode = false;
+        if (fragment instanceof FragmentTutorialViewPager) {
+            // If this is the first run display a dialog
+            if (showTutorial) displayTutorialExitDialog();
+            else onTutorialFinish();
 
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStackImmediate();
-            refreshView();
-            return;
+        } else {
+            IOGlobalConfiguration.isInSwapMode = false;
+
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                getSupportFragmentManager().popBackStackImmediate();
+                refreshView();
+                return;
+            }
+
+            // Added to avoid a NPE on mUnlockCountDown
+            if (IOGlobalConfiguration.isEditing) toggleEditing();
+
+            super.onBackPressed();
         }
-
-        super.onBackPressed();
     }
 
     /*
@@ -818,7 +926,11 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 /*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 */
-        refreshView();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
+        if (!(fragment instanceof FragmentTutorialViewPager)) {
+            refreshView();
+        }
+
         super.onResume();
     }
 
@@ -860,13 +972,28 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
 
         return super.onMenuOpened(featureId, menu);
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+
+            case R.id.action_create_pdf:
+                if (Build.VERSION.SDK_INT >= 19) {
+                    if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                        Toast.makeText(this, getString(R.string.external_storage_permission), Toast.LENGTH_LONG)
+                        .show();
+
+                    } else {
+                        PdfCreatorTask pdfCreateTask = new PdfCreatorTask(this, IOHelper.getOrientation(this));
+                        pdfCreateTask.execute(mActualLevel);
+                    }
+                } else {
+                    Toast.makeText(this, getString(R.string.feature_unavailable), Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
 
             case R.id.action_settings: {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -881,9 +1008,21 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 final CheckBox swipeCheckbox = (CheckBox) layoutView.findViewById(R.id.swipe_checkbox);
                 final CheckBox bigNavCheckbox = (CheckBox) layoutView.findViewById(R.id.bignav_checkbox);
 
+                final Spinner spinnerLang = (Spinner) layoutView.findViewById(R.id.spinner_lang);
+
+                final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getApplicationContext(),
+                        R.array.languages_array, R.layout.spinner_textview);
+                spinnerAdapter.setDropDownViewResource(R.layout.spinner_textview);
+                spinnerLang.setAdapter(spinnerAdapter);
+                spinnerLang.setSelection(langSelection);
+
+                final CheckBox labelsCheckbox = (CheckBox) layoutView.findViewById(R.id.label_checkbox);
+
+                
                 bordersCheckbox.setChecked(IOConfiguration.getShowBorders());
                 swipeCheckbox.setChecked(IOConfiguration.isSwipeEnabled());
                 bigNavCheckbox.setChecked(IOConfiguration.isBigNavigation());
+		        labelsCheckbox.setChecked(IOConfiguration.isShowLabels());
 
                 builder.setTitle(getResources().getString(R.string.settings))
                         .setView(layoutView)
@@ -902,8 +1041,14 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                                 IOConfiguration.setShowBorders(bordersCheckbox.isChecked());
                                 IOConfiguration.setSwipeEnabled(swipeCheckbox.isChecked());
                                 IOConfiguration.setBigNavigation(bigNavCheckbox.isChecked());
+                                IOConfiguration.setShowLabels(labelsCheckbox.isChecked());
 
                                 refreshView();
+
+                                if (spinnerLang.getSelectedItemPosition() != langSelection) {
+                                    setLocale(spinnerLang.getSelectedItemPosition());
+                                    recreate();
+                                }
                             }
                         })
                         .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -980,6 +1125,12 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             case R.id.editMode: {
                 Log.d("options menu", "edit mode selected");
                 item.setChecked(!item.isChecked());
+
+                if (IOGlobalConfiguration.isScanMode) {
+                    stopScanMode();
+                    mainNavContainer.setVisibility(View.VISIBLE);
+                }
+
                 toggleEditing();
 
                 break;
@@ -992,11 +1143,14 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                 updateNavigationItems();
 
-                if (IOGlobalConfiguration.isScanMode)
+                if (IOGlobalConfiguration.isScanMode) {
                     startScanMode();
-                else
+                    mainNavContainer.setVisibility(View.GONE);
+                }
+                else {
                     stopScanMode();
-
+                    mainNavContainer.setVisibility(View.VISIBLE);
+                }
                 break;
             }
 
@@ -1038,12 +1192,47 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 break;
             }
 
+            case R.id.action_tutorial:
+                showTutorial();
+                break;
+
+            case R.id.action_create_board_speech:
+                if (IOGlobalConfiguration.isEditing) {
+                    Intent recordAudio = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().getLanguage());
+
+                    startActivityForResult(recordAudio, SPEECH_RECOGNIZER_CODE);
+                } else {
+                    Toast.makeText(IOBoardActivity.this, getString(R.string.speech_board_error), Toast.LENGTH_LONG).show();
+                }
+                break;
+
             default:
                 break;
 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setLocale(int newLangSelection) {
+        Locale locale = new Locale(languageCode[newLangSelection]);
+        Locale oldLocale = Locale.getDefault();
+        Locale.setDefault(locale);
+
+        Configuration conf = new Configuration();
+        conf.locale = locale;
+        getBaseContext().getResources().updateConfiguration(conf, getBaseContext().getResources().getDisplayMetrics());
+
+        if (newLangSelection != langSelection) {
+            SharedPreferences prefs = getSharedPreferences("lang", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt("lang", newLangSelection);
+            editor.commit();
+        }
+
+        if (!oldLocale.getLanguage().equals(locale.getLanguage())) hasLanguageChanged = true;
     }
 
     /**
@@ -1278,7 +1467,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     private void toggleEditing() {
         IOGlobalConfiguration.isEditing = !IOGlobalConfiguration.isEditing;
 
-
         if (!IOGlobalConfiguration.isEditing) {
             if (null == mActualConfigName)
                 saveBoard(null);
@@ -1301,7 +1489,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             mCenterTrashNavigationButton.setVisibility(View.VISIBLE);
 
             setTitle(getString(R.string.edit_mode));
-
         }
 
         refreshView();
@@ -1403,7 +1590,6 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     private void refreshView(int index) {
 
         FragmentManager fm = getSupportFragmentManager();
-
         IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) fm.findFragmentById(mFrameLayout.getId());
 
         fragment.refreshView(index);
@@ -1423,13 +1609,10 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     // This snippet hides the system bars.
     private void hideSystemUI() {
         mDecorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE
-        );
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_IMMERSIVE);
+        getSupportActionBar().hide();
     }
 
 
@@ -1454,13 +1637,15 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     private void showSystemUI() {
 
         mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+
+        getSupportActionBar().show();
         findViewById(R.id.rootContainer).invalidate();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CREATE_BUTTON_CODE) {
-            if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CREATE_BUTTON_CODE) {
                 Bundle extras = data.getExtras();
                 int index = extras.getInt(BUTTON_INDEX);
                 String title = extras.getString(BUTTON_TITLE);
@@ -1494,17 +1679,64 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                 button.setAudioFile(audioFile);
                 button.setVideoFile(videoFile);
+
+            } else if (requestCode == SPEECH_RECOGNIZER_CODE) {
+                // Parse the resulting strings
+                ArrayList<String> resultStrings = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                String words = null;
+
+                if (resultStrings != null) words = resultStrings.get(0);
+
+                final String[] wordArray = words.split(" ");
+                final ArrayList<String> wordsFromUser = new ArrayList<>(Arrays.asList(wordArray));
+
+                Intent speechActivity = new Intent(this, SpeechBoardActivity.class);
+                speechActivity.putStringArrayListExtra("speechWords", wordsFromUser);
+                startActivityForResult(speechActivity, REMOTE_IMAGE_SEARCH_CODE);
+
+            } else if (requestCode == REMOTE_IMAGE_SEARCH_CODE) {
+                Bundle res = data.getExtras();
+                ArrayList<HashMap<String, String>> images;
+
+                if (res != null) {
+                    images = (ArrayList<HashMap<String,String>>) res.getSerializable(SpeechBoardActivity.IMAGES_RESULT_KEY);
+                    List<IOSpeakableImageButton> pictogramList = new ArrayList<>();
+
+                    // Create a new board with the result
+                    for (int i = 0; i < images.size(); i++) {
+                        IOSpeakableImageButton b = new IOSpeakableImageButton();
+                        HashMap<String, String> downloadedImage = images.get(i);
+
+                        b.setmImageFile(downloadedImage.get(SpeechBoardActivity.IMAGE_FILE));
+                        b.setmUrl(downloadedImage.get(SpeechBoardActivity.IMAGE_URL));
+                        b.setmTitle(downloadedImage.get(SpeechBoardActivity.IMAGE_TITLE));
+                        b.setSentence(downloadedImage.get(SpeechBoardActivity.IMAGE_TITLE));
+                        pictogramList.add(b);
+                    }
+                    int rows = (int) Math.floor(Math.sqrt(images.size()));
+                    int cols = (int) Math.ceil(Math.sqrt(images.size()));
+
+                    if (rows * cols < images.size()) rows++;
+
+                    IOBoard newBoard = new IOBoard();
+                    newBoard.setButtons(pictogramList);
+                    newBoard.setRows(rows);
+                    newBoard.setCols(cols);
+
+                    mActualLevel.addInnerBoardAtIndex(newBoard, mActualLevel.getLevelSize());
+                    refreshView(mActualLevel.getLevelSize() - 1);
+                    saveBoard(mActualConfigName);
+                }
             }
         } else
             super.onActivityResult(requestCode, resultCode, data);
     }
 
-
     private void lockUI() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            if (IOHelper.canGoImmersive())
+            if (IOHelper.canGoImmersive()) {
                 hideSystemUI();
-
+            }
             mUILocked = true;
         }
     }

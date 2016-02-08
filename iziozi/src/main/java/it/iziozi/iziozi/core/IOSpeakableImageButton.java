@@ -29,6 +29,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.ImageButton;
 
@@ -36,8 +37,10 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
+import it.iziozi.iziozi.R;
+
 @Root(name = "IOSpeakableImageButton")
-public class IOSpeakableImageButton extends ImageButton {
+public class IOSpeakableImageButton extends ImageButton  {
 
     @Element(required = false)
     private String mSentence = "";
@@ -76,10 +79,10 @@ public class IOSpeakableImageButton extends ImageButton {
 
     private Context mContext;
 
-    private Boolean mShowBorder;
+    private boolean mShowBorder;
 
     private int mPaddingWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-    ;
+
 
 
     public IOSpeakableImageButton(Context ctx) {
@@ -103,6 +106,18 @@ public class IOSpeakableImageButton extends ImageButton {
         super(IOApplication.CONTEXT);
 
         setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
+    }
+
+    public IOSpeakableImageButton(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
+        setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
+        setScaleType(ScaleType.CENTER_INSIDE);
+    }
+
+    public IOSpeakableImageButton(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        setPadding(mPaddingWidth, mPaddingWidth, mPaddingWidth, mPaddingWidth);
+        setScaleType(ScaleType.CENTER_INSIDE);
     }
 
     public String getIntentPackageName() {
@@ -226,7 +241,6 @@ public class IOSpeakableImageButton extends ImageButton {
     }
 
 
-
     public Boolean getIsHiglighted() {
         return mIsHiglighted;
     }
@@ -268,11 +282,19 @@ public class IOSpeakableImageButton extends ImageButton {
 
             Rect r = new Rect();
 
-            r.top = Math.max(mPaddingWidth / 2, getHeight() / 2 - actH / 2 - mPaddingWidth);
-            r.left = Math.max(mPaddingWidth / 2, getWidth() / 2 - actW / 2 - mPaddingWidth);
-            r.right = Math.min(getWidth() - mPaddingWidth / 2, getWidth() / 2 + actW / 2 + mPaddingWidth);
-            r.bottom = Math.min(getHeight() - mPaddingWidth / 2, getHeight() / 2 + actH / 2 + mPaddingWidth);
+            if (getTag() != null && (getTag().equals("leftArrow") || getTag().equals("rightArrow"))) {
+                int size = (int) (getResources().getDimension(R.dimen.nav_buttons_size) * getResources().getDisplayMetrics().densityDpi / 160);
 
+                r.top = 12;
+                r.bottom = canvas.getHeight() - 12;
+                r.left = 12;
+                r.right = size - 12;
+            } else {
+                r.top = Math.max(mPaddingWidth / 2, getHeight() / 2 - actH / 2 - mPaddingWidth);
+                r.left = Math.max(mPaddingWidth / 2, getWidth() / 2 - actW / 2 - mPaddingWidth);
+                r.right = Math.min(getWidth() - mPaddingWidth / 2, getWidth() / 2 + actW / 2 + mPaddingWidth);
+                r.bottom = Math.min(getHeight() - mPaddingWidth / 2, getHeight() / 2 + actH / 2 + mPaddingWidth);
+            }
             canvas.drawRect(r, paint);
         }
 

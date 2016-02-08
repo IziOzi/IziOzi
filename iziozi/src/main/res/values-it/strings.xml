@@ -22,6 +22,91 @@
 
 <resources>
 
+    <!-- String languages -->
+    <string-array name="languages_array">
+        <item>Italiano</item>
+        <item>Inglese</item>
+        <item>Spagnolo</item>
+        <item>Francese</item>
+        <item>Tedesco</item>
+    </string-array>
+
+    <!-- Strings for each tutorial page, format: page_header_[0..n], page_details1/2_[0..n] -->
+    <string name="tutorial_header_0">Benvenuto in IziOzi</string>
+    <string name="tutorial_details1_0">Questo tutorial ti aiuterà a capire come funziona e come usare l\'applicazione. Richiederà solo alcuni minuti.
+        \n\nPassando il dito sullo schermo da destra a sinistra potrai navigare tra le pagine di questa guida. Iniziamo.</string>
+
+    <string name="tutorial_header_1">Aggiungere pittogrammi in modalità di modifica</string>
+    <string name="tutorial_details1_1">La prima volta che aprirai l\'applicazione la modalità di modifica sarà attivata automaticamente e ti troverai davanti a sei pittogrammi.
+        Questa è una tavola.
+        \n\nPuoi iniziare a modificarla cliccando su un pittogramma qualsiasi.</string>
+    <string name="tutorial_details2_1">Con i bottoni \"più\" puoi aggiungere una nuova tavola, o alla destra o alla sinistra della tavola corrente. Il bottone \"cestino\" ti permette di eliminare la tavola corrente.</string>
+
+    <string name="tutorial_header_2">Impostare una cella della tavola</string>
+    <string name="tutorial_details1_2">Dopo aver cliccato sul pittogramma desiderato ti verranno presentate diverse opzioni.\n\nImpostare
+        la cella selezionata come tavola ad albero significa aggiungere una tavola dentro ad essa, che verrà visualizzata quando cliccherai sul pittogramma.
+        \n\nPuoi anche impostare una nuova immagine per la cella o eliminare quella correntemente associata ad essa.</string>
+
+    <string name="tutorial_header_3">Impostare le informazioni di una cella</string>
+    <string name="tutorial_details1_3">Dopo aver scelto di impostare una nuova immagine puoi cliccare sul riquadro vuoto per scegliere da dove prendere l\'immagine.</string>
+    <string name="tutorial_details2_3">Puoi anche impostare un titolo e se vuoi un testo da far pronunciare al sintetizzatore vocale.
+        \n\nIn alternativa a questo puoi anche scegliere di registrare la frase da associare alla cella cliccando sull\'icona registra (il pallino rosso). Quando hai finito clicca sull\'icona salva. </string>
+
+    <string name="tutorial_header_4">Scelta della fonte per l\'immagine</string>
+    <string name="tutorial_details1_4">Hai un paio di opzioni per scegliere l\'immagine da impostare.</string>
+    <string name="tutorial_details2_4">Se selezioni l\'opzione \"Cerca sul database\" il cursore verrà posizionato sulla barra in alto, dove potrai inserire una parola da ricercare. Cerchiamo ad esempio la parola \"bus\".
+        \n\nPer dare via alla ricerca premi invio.</string>
+
+    <string name="tutorial_header_5">Risultati ricerca sul database</string>
+    <string name="tutorial_details1_5">Come risultato della ricerca verrà visualizzata una lista di pittogrammi che potrai scorrere fino a trovare quello che ti piace. Cliccaci sopra per selezionarlo. A questo punto
+        il pittogramma verrà scaricato e visualizzato nell\'anteprima.
+        \n\nIl campo titolo verrà automaticamente impostato al titolo del pittogramma appena scaricato.</string>
+
+    <string name="tutorial_header_6">Menu principale</string>
+    <string name="tutorial_details1_6">Puoi accedere al menu dell\'applicazione cliccando sui tre pallini posizionati nell\'angolo in alto a destra dello schermo. Verranno visualizzate le diverse opzioni disponibili.
+        \n\n\"Gestisci tavole\" ti permette di salvare, caricare e creare una tavola. Quando salvi puoi usare l\'opzione
+        \"Salva con nome\" per dare il nome che preferisci alla tavola. Questo apparirà quando verrà visualizzata la lista di tavole caricabili.
+    </string>
+    <string name="tutorial_details2_6">L\'opzione \"Blocca\" blocca lo schermo e nasconde il menu e la barra di sistema. Questo impedisce all\'utilizzatore di accedere al menu e fare modifiche involontariamente.
+        \nPer uscire dalla modalità di blocco posiziona il dito in cima allo schermo, trascinalo verso il basso e seleziona l\'opzione \"Sblocca\" nella finestra che compare.
+        \n\nLa voce \"Tutorial\" ti permette di accedere alla guida che stai seguendo in qualsiasi momento tu voglia.
+        \n\nLa voce \"Tavola da input vocale\" consente di creare una tavola pronunciando le parole per ricercare le immagini volute, invece di inserirle manualmente come visto prima. L\'applicazione ti guiderà passo a passo in questa operazione.
+        \n\nInfine la voce \"Crea pdf\" crea e memorizza nel dispositivo un documento pdf equivalente alle tavole create, per poi poterle stampare ad esempio.
+    </string>
+
+    <string name="tutorial_header_7">Cambiare le impostazioni della tavola corrente</string>
+    <string name="tutorial_details1_7">La voce del menu \"Impostazioni\" ti permette di effettuare modifiche alla configurazione della tavola corrente.\n\nPuoi modificare il numero di celle visualizzate selezionando il numero di righe e di colonne della tavola.
+        \n\nPuoi anche disabilitare il cambiamento di tavola attraverso il trascinamento del dito e usare invece le frecce di navigazione. Questa opzione è disponibile solo se c\'è più di una tavola.
+        \n\nSe necessario puoi abilitare dei bottoni di navigazione più grandi di quelli standard.
+        \n\nInfine, puoi abilitare la visualizzazione di etichette al di sotto di ogni immagine presente nelle tavole. Queste etichette corrispondono al campo \"Titolo\" associato a ogni immagine durante la sua impostazione, come visto in precedenza.</string>
+
+    <string name="tutorial_header_8">Grazie per aver scelto IziOzi</string>
+    <string name="tutorial_details1_8">Questa applicazione è gratis, open source ed è stata realizzata nei momenti di tempo libero. Alcune funzionalità sono state sviluppate grazie alla collaborazione con l\'Università del Piemonte Orientale \"Amedeo Avogadro\".\nSe ti piacerebbe darci una mano e contribuire al progetto puoi effettuare una donazione per supportare i costi di sviluppo! Grazie!
+    </string>
+
+    <!-- Strings for the page title of the viewpager; format is `page_title_[0..9]` -->
+    <string name="page_title_0">Intro</string>
+    <string name="page_title_1">Modalità di modifica</string>
+    <string name="page_title_2">Imposta immagine</string>
+    <string name="page_title_3">Fonti immagine</string>
+    <string name="page_title_4">Seleziona immagine</string>
+    <string name="page_title_5">Ricerca sul database</string>
+    <string name="page_title_6">Menu</string>
+    <string name="page_title_7">Impostazioni</string>
+    <string name="page_title_8">Fine</string>
+
+    <!-- Strings for the initial tutorial -->
+    <string name="slideone_header">Benvenuti in IziOzi</string>
+    <string name="slideone_details">Questo tutorial ti aiuterà a capire come funziona l\'applicazione e richiederà solo alcuni minuti.
+        \n\nPassando il dito sullo schermo da destra a sinistra potrai navigare tra le pagine. Iniziamo.</string>
+
+    <string name="tutorial">Tutorial</string>
+    <string name="exit_tutorial_title">Esci dal tutorial</string>
+    <string name="exit_tutorial_msg">Stai per uscire dal tutorial. Se sei sicuro premi Esci,
+        altrimenti premi Annulla. Potrai sempre accedere al tutorial attraverso il menu.
+    </string>
+
+
     <!-- Generic strings -->
     <string name="apply">Applica</string>
     <string name="cancel">Annulla</string>
@@ -96,6 +181,7 @@
 
     <string name="app_description">IziOzi è un\'applicazione di comunicazione aumentativa e alternativa open source, completamente gratuita e in continuo sviluppo.\n
         Se hai delle richieste, dei suggerimenti o se vuoi dirci qualcosa, scrivici cliccando il pulsante qui sotto!\n
+        Alcune funzionalità sono state sviluppate grazie alla collaborazione con l\'Università del Piemonte Orientale \"Amedeo Avogadro\"
         Se infine credi che questo sia un progetto utile e vuoi darci una mano, usa il pulsante in fondo alla pagina per effettuare una donazione spontanea
         per supportare i costi di sviluppo! Grazie!</string>
     <string name="image_missing">Pittogrammi mancanti!</string>
@@ -149,6 +235,30 @@
     <string name="disable">Disabilita</string>
     <string name="set">Configura</string>
     <string name="tts_unavailable">Il motore di sintesi vocale(TTS) di Android non è disponibile. Controlla le tue impostazioni di sistema.</string>
+    <string name="alert_dialog_exit">Sei sicuro di voler abbandonare la schermata? Le modifiche effettuate non saranno salvate. </string>
+    <string name="pdf_created">PDF creato!</string>
+    <string name="pdf_create_error">Errore durante la creazione del PDF.</string>
+    <string name="feature_unavailable">Questa opzione non è disponibile sul tuo dispositivo.</string>
+    <string name="language">Lingua</string>
+    <string name="finish">Fine</string>
+    <string name="enable_label">Mostra etichette</string>
+
+    <!-- Strings related to the speech board activity -->
+    <string name="create_board_speech">Tavola da input vocale</string>
+    <string name="downloading">Attendere prego...</string>
+    <string name="speech_board_empty_images_title">Nuova tavola</string>
+    <string name="speech_board_empty_images">La nuova tavola non è stata creata poiché nessuna immagine è stata scaricata.</string>
+    <string name="check_words">Verifica le parole</string>
+    <string name="get_images">Download immagini</string>
+    <string name="no_images">Nessuna immagine trovata!</string>
+    <string name="create_pdf">Crea pdf</string>
+    <string name="done">Fatto</string>
+    <string name="recreate">Ricreare</string>
+    <string name="search_no_words">Devi selezionare almeno una parola per iniziare la ricerca.</string>
+    <string name="speech_search_info">Seleziona le parole che vuoi mantenere.
+        \n\nPuoi selezionare ricreare per ripetere il processo del dettato oppure fatto per iniziare la ricerca.</string>
+    <string name="select_all">Seleziona tutto</string>
+    <string name="speech_board_error">Devi prima abilitare la modalita\' modifica.</string>
 
 
 </resources>
