@@ -3,10 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tvInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/tv_padding"
+        android:text="@string/speech_search_info"
+        android:textSize="@dimen/tv_detail_size" />
+
+    <LinearLayout
+        android:id="@+id/layoutSelectWords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvInfo"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvSelectAll"
+            android:text="@string/select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <CheckBox
+            android:id="@+id/checkboxAllWords"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/scrollWords"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layoutSelectWords">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,12 +51,26 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btnSpeechDone"
+            <LinearLayout
+                android:id="@+id/btnContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/speechBoardWordsLayout"
-                android:text="Done" />
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btnSpeechRecreate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/recreate" />
+
+                <Button
+                    android:id="@+id/btnSpeechDone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/done" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -45,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Please wait while downloading..." />
+        android:text="@string/downloading" />
 
 </RelativeLayout>
 

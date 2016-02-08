@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -30,9 +32,11 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -45,7 +49,8 @@ import it.iziozi.iziozi.core.dbclasses.IOPictogram;
 public class SpeechBoardActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    public static final int SPEECH_RECOGNIZER_CODE = 1;
+    public static final int SPEECH_REMOTE_SEARCH_CODE = 1;
+    private static final int SPEECH_REQUEST_CODE = 2;
 
     public static final String IMAGES_RESULT_KEY = "downloaded_images";
     public static final String IMAGE_FILE = "image_file";
@@ -60,8 +65,11 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
     int numberOfWords, currentDownloadNum, totalToDownload;
 
     ProgressBar progressDownload;
-    TextView tvDownloadInfo;
-    Button btnDone;
+    TextView tvDownloadInfo, tvInfoMsg, tvSelectAll;
+    Button btnDone, btnRecreate;
+    CheckBox checkboxAllWords;
+
+    LinearLayout layoutWords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,23 +82,35 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
         wordsFromUser = null;
 
         btnDone = (Button) findViewById(R.id.btnSpeechDone);
+        btnRecreate = (Button) findViewById(R.id.btnSpeechRecreate);
+        layoutWords = (LinearLayout) findViewById(R.id.speechBoardWordsLayout);
+        checkboxAllWords = (CheckBox) findViewById(R.id.checkboxAllWords);
+        checkboxAllWords.setOnClickListener(this);
+
         tvDownloadInfo = (TextView) findViewById(R.id.tvProgressInfo);
+        tvInfoMsg = (TextView) findViewById(R.id.tvInfo);
+        tvSelectAll = (TextView) findViewById(R.id.tvSelectAll);
         progressDownload = (ProgressBar) findViewById(R.id.speechBoardProgress);
         progressDownload.setIndeterminate(true);
 
         Intent intent = getIntent();
-        if (intent != null) {
-            wordsFromUser = intent.getStringArrayListExtra("speechWords");
+        if (savedInstanceState != null) {
+            wordsFromUser = (ArrayList<String>) savedInstanceState.get("words");
             numberOfWords = wordsFromUser.size();
 
-            // Create the views dynamically
-            prepareView(wordsFromUser);
-
-            tvDownloadInfo.setVisibility(View.GONE);
-            progressDownload.setVisibility(View.GONE);
-
-            btnDone.setOnClickListener(this);
+        } else if (intent != null) {
+            wordsFromUser = intent.getStringArrayListExtra("speechWords");
+            numberOfWords = wordsFromUser.size();
         }
+
+        // Create the views dynamically
+        prepareView(wordsFromUser);
+
+        tvDownloadInfo.setVisibility(View.GONE);
+        progressDownload.setVisibility(View.GONE);
+
+        btnDone.setOnClickListener(this);
+        btnRecreate.setOnClickListener(this);
     }
 
     @Override
@@ -101,6 +121,15 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        ArrayList<String> words = new ArrayList<>();
+        getEditTextInput(layoutWords, words);
+        outState.putStringArrayList("words", words);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -108,22 +137,55 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
 
             case R.id.btnSpeechDone:
-                setTitle(getString(R.string.get_images));
-                LinearLayout layout = (LinearLayout) findViewById(R.id.speechBoardWordsLayout);
-                layout.setVisibility(View.GONE);
-                btnDone.setVisibility(View.GONE);
-
-                tvDownloadInfo.setVisibility(View.VISIBLE);
-                progressDownload.setVisibility(View.VISIBLE);
-
                 wordsFromUser.clear();
-                getEditTextInput(layout, wordsFromUser);
+                getCheckedEditTextInput(layoutWords, wordsFromUser);
 
-                totalToDownload = wordsFromUser.size();
-                tvDownloadInfo.setText(getString(R.string.downloading) + currentDownloadNum
-                        + "/" + totalToDownload);
-                remoteSearchForImages(wordsFromUser);
+                if (wordsFromUser.size() == 0) {
+                    new AlertDialog.Builder(this)
+                            .setTitle(getString(R.string.warning))
+                            .setMessage(getString(R.string.search_no_words))
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
 
+                } else {
+                    setTitle(getString(R.string.get_images));
+                    layoutWords.setVisibility(View.GONE);
+                    btnDone.setVisibility(View.GONE);
+                    btnRecreate.setVisibility(View.GONE);
+                    checkboxAllWords.setVisibility(View.GONE);
+                    tvInfoMsg.setVisibility(View.GONE);
+                    tvSelectAll.setVisibility(View.GONE);
+
+                    tvDownloadInfo.setVisibility(View.VISIBLE);
+                    progressDownload.setVisibility(View.VISIBLE);
+
+                    totalToDownload = wordsFromUser.size();
+                    tvDownloadInfo.setText(getString(R.string.downloading) + currentDownloadNum
+                            + "/" + totalToDownload);
+                    remoteSearchForImages(wordsFromUser);
+                }
+                break;
+
+            case R.id.btnSpeechRecreate:
+                wordsFromUser.clear();
+                getCheckedEditTextInput(layoutWords, wordsFromUser);
+
+                // start the speech again
+                Intent recordAudio = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                recordAudio.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().getLanguage());
+
+                startActivityForResult(recordAudio, SPEECH_REQUEST_CODE);
+                layoutWords.removeAllViews();
+                break;
+
+            case R.id.checkboxAllWords:
+                setCheckState(layoutWords, checkboxAllWords.isChecked());
                 break;
         }
     }
@@ -132,25 +194,42 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && requestCode == SPEECH_RECOGNIZER_CODE) {
-            // save pictogram
-            HashMap<String, String> res = new HashMap<>();
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SPEECH_REMOTE_SEARCH_CODE) {
+                // save pictogram
+                HashMap<String, String> res = new HashMap<>();
 
-            String imageFile = data.getStringExtra(IMAGE_FILE);
-            String imageUrl = data.getStringExtra(IMAGE_URL);
-            String imageTitle = data.getStringExtra(IMAGE_TITLE);
+                String imageFile = data.getStringExtra(IMAGE_FILE);
+                String imageUrl = data.getStringExtra(IMAGE_URL);
+                String imageTitle = data.getStringExtra(IMAGE_TITLE);
 
-            res.put(IMAGE_FILE, imageFile);
-            res.put(IMAGE_TITLE, imageTitle);
-            res.put(IMAGE_URL, imageUrl);
+                res.put(IMAGE_FILE, imageFile);
+                res.put(IMAGE_TITLE, imageTitle);
+                res.put(IMAGE_URL, imageUrl);
 
-            downloadedImagesInfo.add(res);
+                downloadedImagesInfo.add(res);
 
-            if (wordsFromUser.size() > 0) {
-                remoteSearchForImages(wordsFromUser);
-            } else {
-                // Go back to previous activity
-                checkDownloadedImagesAndFinish();
+                if (wordsFromUser.size() > 0) {
+                    remoteSearchForImages(wordsFromUser);
+                } else {
+                    // Go back to previous activity
+                    checkDownloadedImagesAndFinish();
+                }
+            } else if (requestCode == SPEECH_REQUEST_CODE) {
+                // Parse the resulting strings
+                ArrayList<String> resultStrings = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                String words = null;
+
+                if (resultStrings != null) words = resultStrings.get(0);
+
+                final String[] wordArray = words.split(" ");
+                final ArrayList<String> resWords = new ArrayList<>(Arrays.asList(wordArray));
+
+                wordsFromUser.addAll(resWords);
+
+                // recreate the view
+                prepareView(wordsFromUser);
+                checkboxAllWords.setChecked(false);
             }
 
         } else if (resultCode == RESULT_CANCELED) {
@@ -162,11 +241,12 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
     /**
      * Prepares the view from the first parameter which is a series of edittexts in a two column
      * fashion.
+     *
      * @param wordsFromUser
      * @return the view created
      */
-    private LinearLayout prepareView(ArrayList<String> wordsFromUser) {
-        LinearLayout topContainer = (LinearLayout) findViewById(R.id.speechBoardWordsLayout);
+    private void prepareView(ArrayList<String> wordsFromUser) {
+        LinearLayout topContainer = layoutWords; //(LinearLayout) findViewById(R.id.speechBoardWordsLayout);
         LinearLayout firstCol = new LinearLayout(this);
         LinearLayout secondCol = new LinearLayout(this);
 
@@ -176,37 +256,64 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
         topContainer.addView(firstCol);
         topContainer.addView(secondCol);
 
-        firstCol.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
+        params.setMargins(0, 0, 10, 0);
+
+        firstCol.setLayoutParams(params);
         firstCol.setOrientation(LinearLayout.VERTICAL);
 
-        secondCol.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.MATCH_PARENT, 1.0f));
+        params.setMargins(10, 0, 0, 0);
+        secondCol.setLayoutParams(params);
         secondCol.setOrientation(LinearLayout.VERTICAL);
 
-        for (int i = 0; i < wordsFromUser.size(); i++) {
-            EditText editText = new EditText(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            editText.setLayoutParams(params);
+        setWords(topContainer, wordsFromUser);
+    }
 
+    /**
+     * Sets the words for each edittext
+     *
+     * @param parent
+     * @param wordsFromUser
+     */
+    private void setWords(LinearLayout parent, ArrayList<String> wordsFromUser) {
+        LinearLayout firstCol = (LinearLayout) parent.getChildAt(0);
+        LinearLayout secondCol = (LinearLayout) parent.getChildAt(1);
+
+        for (int i = 0; i < wordsFromUser.size(); i++) {
+            LinearLayout wrapper = new LinearLayout(this);
+            wrapper.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            EditText editText = new EditText(this);
+            CheckBox checkBox = new CheckBox(this);
+
+            wrapper.setOrientation(LinearLayout.HORIZONTAL);
+            wrapper.addView(editText);
+            wrapper.addView(checkBox);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+            editText.setLayoutParams(params);
             editText.setGravity(Gravity.CENTER);
             editText.setText(wordsFromUser.get(i).toString());
 
-            if (i % 2 == 0) firstCol.addView(editText);
-            else secondCol.addView(editText);
-        }
+            checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        return topContainer;
+            if (i % 2 == 0) {
+                firstCol.addView(wrapper);
+            } else {
+                secondCol.addView(wrapper);
+            }
+        }
     }
 
     /**
      * This gets each word from each edittext box and stores it in the second parameter.
+     *
      * @param v
-     * @param wordsFromUser
+     * @param wordsFromUser list where the words are saved
      */
     private void getEditTextInput(ViewGroup v, ArrayList<String> wordsFromUser) {
-
         for (int i = 0; i < v.getChildCount(); i++) {
             Object child = v.getChildAt(i);
 
@@ -216,9 +323,46 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
                 if (!editText.getText().toString().equals("")) {
                     wordsFromUser.add(editText.getText().toString());
                 }
-
             } else if (child instanceof ViewGroup) {
                 getEditTextInput((ViewGroup) child, wordsFromUser);
+            }
+        }
+    }
+
+    /**
+     * Gets the text from each selected edittext.
+     *
+     * @param v     the layout
+     * @param words the resulting strings
+     */
+    private void getCheckedEditTextInput(ViewGroup v, ArrayList<String> words) {
+        for (int i = 0; i < v.getChildCount(); i++) {
+            Object child = v.getChildAt(i);
+
+            if (child instanceof CheckBox) {
+                if (((CheckBox) child).isChecked()) {
+                    ViewGroup parent = (ViewGroup) ((CheckBox) child).getParent();
+                    getEditTextInput(parent, words);
+                }
+            } else if (child instanceof ViewGroup) {
+                getCheckedEditTextInput((ViewGroup) child, words);
+            }
+        }
+    }
+
+    /**
+     * Sets the state of the checkboxes.
+     *
+     * @param state of the checkboxes
+     */
+    private void setCheckState(ViewGroup v, boolean state) {
+        for (int i = 0; i < v.getChildCount(); i++) {
+            Object child = v.getChildAt(i);
+
+            if (child instanceof CheckBox) {
+                ((CheckBox) child).setChecked(state);
+            } else if (child instanceof ViewGroup) {
+                setCheckState((ViewGroup) child, state);
             }
         }
     }
@@ -257,6 +401,7 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
     /**
      * Starts a remote search for a word. If it finds just one it downloads it, otherwise it starts
      * a new activity.
+     *
      * @param words
      */
     private void remoteSearchForImages(ArrayList<String> words) {
@@ -315,7 +460,7 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
                         intent.putExtra(SearchManager.QUERY, query);
                         intent.putExtra(SpeechBoardActivity.class.getSimpleName(), true);
 
-                        startActivityForResult(intent, SPEECH_RECOGNIZER_CODE);
+                        startActivityForResult(intent, SPEECH_REMOTE_SEARCH_CODE);
                     }
                 }
             });

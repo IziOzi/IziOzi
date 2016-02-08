@@ -101,7 +101,7 @@
         android:id="@+id/action_create_pdf"
         android:orderInCategory="23"
         android:showAsAction="never"
-        android:title="Create pdf" />
+        android:title="@string/create_pdf" />
 
     <item
         android:id="@+id/action_create_board_speech"

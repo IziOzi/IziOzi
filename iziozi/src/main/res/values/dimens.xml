@@ -51,4 +51,5 @@
 
     <dimen name="logo_margin_bottom">10dp</dimen>
 
+    <dimen name="tv_padding">15dp</dimen>
 </resources>
