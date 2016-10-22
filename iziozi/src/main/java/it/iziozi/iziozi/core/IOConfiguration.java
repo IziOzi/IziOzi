@@ -93,7 +93,7 @@ public class IOConfiguration {
     }
 
     public IOLevel getLevel() {
-        if(mLevel == null)
+        if (mLevel == null)
             mLevel = new IOLevel();
         return mLevel;
     }
@@ -104,13 +104,13 @@ public class IOConfiguration {
 
     }
 
-    public boolean save(String filename){
+    public boolean save(String filename) {
         return saveAs(filename);
     }
 
     private boolean saveAs(String fileName) {
 
-        if(fileName == null)
+        if (fileName == null)
             fileName = "config";
 
         Serializer serializer = new Persister();
@@ -121,6 +121,10 @@ public class IOConfiguration {
             dirFile.mkdirs();
 
         File file = new File(dirFile.toString(), fileName + ".xml");
+
+        //Gson gson = new Gson();
+        //String json = gson.toJson(this);
+        //Log.d("DEBUG", json);
 
         try {
             serializer.write(this, file);
@@ -145,7 +149,6 @@ public class IOConfiguration {
     }
 
 
-
     public static IOConfiguration getSavedConfiguration(String fileName) {
 
         Serializer serializer = new Persister();
@@ -155,7 +158,7 @@ public class IOConfiguration {
         if (!dirFile.exists())
             dirFile.mkdirs();
 
-        if(fileName == null){
+        if (fileName == null) {
             SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
             fileName = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, "config.xml");
         }

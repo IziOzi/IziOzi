@@ -332,7 +332,7 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
                     imgButton.setmTitle(originalButton.getmTitle());
                     imgButton.setmUrl(originalButton.getmUrl());
                     imgButton.setVideoFile(originalButton.getVideoFile());
-
+                    imgButton.setmLevel(originalButton.getLevel());
 
                     imgButton.setmContext(getActivity());
                     imgButton.setShowBorder(IOConfiguration.getShowBorders());

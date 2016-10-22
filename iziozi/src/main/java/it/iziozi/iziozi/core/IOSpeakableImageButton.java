@@ -240,6 +240,9 @@ public class IOSpeakableImageButton extends ImageButton  {
         return mLevel;
     }
 
+    public void setmLevel(IOLevel mLevel) {
+        this.mLevel = mLevel;
+    }
 
     public Boolean getIsHiglighted() {
         return mIsHiglighted;

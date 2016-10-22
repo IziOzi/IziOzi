@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License along with IziOzi.
  * If not, see http://www.gnu.org/licenses/.
  */
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 repositories {
@@ -46,8 +46,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 20160208
-        versionName '2.0'
+        versionCode 20160304
+        versionName '2.1'
         signingConfig signingConfigs.IziOzi
     }
     buildTypes {
@@ -67,18 +67,16 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/simple-xml-2.7.1.jar')
-    compile files('libs/ormlite-core-4.48.jar')
-    compile files('libs/ormlite-android-4.48.jar')
     //chromecast support
     //compile 'com.google.android.gms:play-services:4.3.23'
     //compile 'com.android.support:support-v7-mediarouter:19.0.0'
     compile 'com.android.support:support-v4:23.0.1'
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-    compile files('libs/ThinkGear.jar')
     compile 'com.joanzapata.android:android-iconify:1.0.6'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.0@aar') {
         transitive = true;
     }
     compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.google.code.gson:gson:2.7'
 }
