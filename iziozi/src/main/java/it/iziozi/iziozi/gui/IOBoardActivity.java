@@ -22,6 +22,7 @@
 package it.iziozi.iziozi.gui;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -196,6 +197,8 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         mainNavContainer = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
 
         this.mDecorView = getWindow().getDecorView();
+
+        this.migrateXML();
 
         if (IOHelper.checkForRequiredPermissions(this)) {
             this.mActiveConfig = IOConfiguration.getSavedConfiguration();
@@ -1461,6 +1464,53 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                         }
                     }).setNegativeButton(getResources().getString(R.string.cancel), null)
                     .create().show();
+        }
+    }
+
+    private void migrateXML(){
+        File dirFile = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
+        if (!dirFile.exists())
+            dirFile.mkdirs();
+
+        final String[] configFiles = dirFile.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+
+                if (filename.indexOf(".xml") != -1 && !new File(dir, filename.replace(".xml", ".json")).exists()) {
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        final int len = configFiles.length;
+        if(len > 0){
+            SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE);
+            final String lastConfigBackup = preferences.getString(IOGlobalConfiguration.IO_LAST_BOARD_USED, "config.xml");
+
+            final ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.please_wait), getString(R.string.upgrade_in_progress), true);
+
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    for(int i = 0; i < len; i++){
+                        IOConfiguration configuration = IOConfiguration.getSavedConfiguration(configFiles[i]);
+                        configuration.save(configFiles[i].replace(".xml", ""));
+                    }
+
+                    SharedPreferences.Editor editor = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE).edit();
+                    editor.putString(IOGlobalConfiguration.IO_LAST_BOARD_USED, lastConfigBackup);
+                    editor.commit();
+
+                    dialog.dismiss();
+
+                }
+            };
+
+            thread.start();
+
         }
     }
 

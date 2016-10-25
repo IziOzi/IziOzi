@@ -21,6 +21,10 @@
 
 package it.iziozi.iziozi.core;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
@@ -30,15 +34,17 @@ import java.util.List;
 /**
  * Created by martinolessio on 05/11/14.
  */
-
 @Root(name = "IOLevel")
 public class IOLevel {
 
     private static final String LOG_TAG = "IOLevel_DEBUG";
 
     @ElementList(inline = true, required = false)
+    @SerializedName("level")
+    @Expose
     private List<IOBoard> mLevel = new ArrayList<IOBoard>();
 
+    @Element(required = false)
     private int activeIndex = 0;
 
     public IOLevel() {

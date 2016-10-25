@@ -54,4 +54,6 @@
     <string name="lock">Bloquer</string>
     <string name="unlock">Ouvrir</string>
 
+    <string name="upgrade_in_progress">Upgrade in progress...</string>
+
 </resources>

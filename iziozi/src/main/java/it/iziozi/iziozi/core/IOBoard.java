@@ -21,7 +21,8 @@
 
 package it.iziozi.iziozi.core;
 
-import android.content.Context;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
@@ -44,11 +45,18 @@ import java.util.List;
 public class IOBoard {
 
     @Attribute
+    @SerializedName("rows")
+    @Expose
     private Integer rows = 2;
+
     @Attribute
+    @SerializedName("cols")
+    @Expose
     private Integer cols = 3;
 
     @ElementList(inline = true, required = false)
+    @SerializedName("buttons")
+    @Expose
     private List<IOSpeakableImageButton> mButtons = new ArrayList<IOSpeakableImageButton>();;
 
     public IOBoard() {

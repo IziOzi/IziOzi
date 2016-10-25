@@ -33,6 +33,9 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.ImageButton;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -43,44 +46,68 @@ import it.iziozi.iziozi.R;
 public class IOSpeakableImageButton extends ImageButton  {
 
     @Element(required = false)
+    @SerializedName("sentence")
+    @Expose
     private String mSentence = "";
 
     @Element(required = false)
+    @SerializedName("imageFile")
+    @Expose
     private String mImageFile = "";
 
     @Element(required = false)
+    @SerializedName("audioFile")
+    @Expose
     private String mAudioFile = "";
 
     @Element(required = false)
+    @SerializedName("videoFile")
+    @Expose
     private String mVideoFile = "";
 
     @Element(required = false)
+    @SerializedName("title")
+    @Expose
     private String mTitle = "";
 
     @Element(required = false)
+    @SerializedName("url")
+    @Expose
     private String mUrl = "";
 
     @Element(required = false)
+    @SerializedName("intentPackageName")
+    @Expose
     private String mIntentPackageName = "";
 
     @Element(required = false)
+    @SerializedName("intentName")
+    @Expose
     private String mIntentName = "";
 
     /*
     * Nested boards
     * */
     @Attribute
+    @SerializedName("isMatrioska")
+    @Expose
     private Boolean mIsMatrioska = false;
 
     @Element(required = false)
+    @SerializedName("level")
+    @Expose
     private IOLevel mLevel;
 
+    @SerializedName("isHighlighted")
+    @Expose
     private Boolean mIsHiglighted = false;
 
     private Context mContext;
 
+    @SerializedName("showBorder")
+    @Expose
     private boolean mShowBorder;
-
+    
     private int mPaddingWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
 
 

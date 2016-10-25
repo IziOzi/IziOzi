@@ -26,13 +26,27 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 
 /**
  * Created by martinolessio on 05/11/14.
@@ -42,18 +56,28 @@ import java.io.File;
 public class IOConfiguration {
 
     @Element(required = false)
+    @SerializedName("board")
+    @Expose
     private IOLevel mLevel;
 
     @Attribute(required = false)
+    @SerializedName("showBorders")
+    @Expose
     private static Boolean showBorders = true;
 
     @Attribute(required = false)
+    @SerializedName("swipeEnabled")
+    @Expose
     private static Boolean swipeEnabled = true;
 
     @Attribute(required = false)
+    @SerializedName("bigNavigation")
+    @Expose
     private static Boolean bigNavigation = false;
 
     @Attribute(required = false)
+    @SerializedName("showLabels")
+    @Expose
     private static Boolean showLabels = false;
 
 
@@ -113,33 +137,27 @@ public class IOConfiguration {
         if (fileName == null)
             fileName = "config";
 
-        Serializer serializer = new Persister();
-
         File dirFile = new File(Environment.getExternalStorageDirectory()
                 .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
         if (!dirFile.exists())
             dirFile.mkdirs();
 
-        File file = new File(dirFile.toString(), fileName + ".xml");
+        final GsonBuilder builder = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .setPrettyPrinting();
 
-        //Gson gson = new Gson();
-        //String json = gson.toJson(this);
-        //Log.d("DEBUG", json);
+        final Gson gson = builder.create();
+        String jsonString = gson.toJson(this);
 
         try {
-            serializer.write(this, file);
-
-            SharedPreferences.Editor preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE).edit();
-            preferences.putString(IOGlobalConfiguration.IO_LAST_BOARD_USED, fileName + ".xml");
-
-            preferences.commit();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("XmlConfig", "Error writing xml");
-
-            return false;
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(new File(dirFile.toString(), fileName + ".json")), Charset.forName("UTF-8").newEncoder());
+            outputStreamWriter.write(jsonString);
+            outputStreamWriter.close();
         }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+
         return true;
     }
 
@@ -150,8 +168,6 @@ public class IOConfiguration {
 
 
     public static IOConfiguration getSavedConfiguration(String fileName) {
-
-        Serializer serializer = new Persister();
 
         File dirFile = new File(Environment.getExternalStorageDirectory()
                 .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
@@ -164,21 +180,76 @@ public class IOConfiguration {
         }
 
         File file = new File(dirFile.toString(), fileName);
+        File jsonFile = new File(dirFile.toString(), fileName.replace("xml", "json"));
 
         IOConfiguration config = null;
 
-        try {
-            config = serializer.read(IOConfiguration.class, file);
+        String jsonString = "";
 
-            SharedPreferences.Editor preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE).edit();
-            preferences.putString(IOGlobalConfiguration.IO_LAST_BOARD_USED, fileName);
-            preferences.commit();
+        if(jsonFile.exists()){
+            //load from json
 
-        } catch (Exception e) {
-            Log.w("XmlSeializer", "Unable to read configuration file");
-            Log.d("XmlSerializer", "" + IOApplication.CONTEXT.getFilesDir());
-            e.printStackTrace();
+            Log.d("DEBUG", "trying to load JSON file: " + jsonFile);
+
+            FileInputStream fin = null;
+            try {
+                fin = new FileInputStream(jsonFile);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(fin));
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                reader.close();
+                jsonString = sb.toString();
+                //Make sure you close all streams.
+                fin.close();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("DEBUG", "loaded JSON string: " + jsonString.length());
+
+
+            final GsonBuilder builder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
+            final Gson gson = builder.create();
+
+            try{
+                config = gson.fromJson(jsonString, IOConfiguration.class);
+
+                SharedPreferences.Editor preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE).edit();
+                preferences.putString(IOGlobalConfiguration.IO_LAST_BOARD_USED, fileName);
+                preferences.commit();
+
+                Log.d("DEBUG", "loaded configuration from JSON");
+            }catch (JsonSyntaxException e){
+                e.printStackTrace();
+                Log.w("DEBUG", "error loading configuration from JSON");
+            }
+
+
+        }else{
+            Serializer serializer = new Persister();
+
+            try {
+                config = serializer.read(IOConfiguration.class, file);
+
+                SharedPreferences.Editor preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME, Context.MODE_PRIVATE).edit();
+                preferences.putString(IOGlobalConfiguration.IO_LAST_BOARD_USED, fileName);
+                preferences.commit();
+
+            } catch (Exception e) {
+                Log.w("XmlSeializer", "Unable to read configuration file");
+                Log.d("XmlSerializer", "" + IOApplication.CONTEXT.getFilesDir());
+                e.printStackTrace();
+            }
+
+            Log.d("DEBUG", "loaded configuration from XML");
         }
+
 
         return config;
 
