@@ -28,15 +28,25 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Display;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import it.iziozi.iziozi.core.IOApplication;
 import it.iziozi.iziozi.core.IOInfoObject;
 
 /**
@@ -66,6 +76,8 @@ public class IOHelper {
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.GET_ACCOUNTS
     };
+
+    public static String CONFIG_BASE_DIR = "";
 
     public static Boolean canGoImmersive() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -132,5 +144,93 @@ public class IOHelper {
         if (size.x > size.y) return Orientation.HORIZONTAL;
         return Orientation.VERTICAL;
     }
+
+/*
+ *
+ * Zips a file at a location and places the resulting zip file at the toLocation
+ * Example: zipFileAtPath("downloads/myfolder", "downloads/myFolder.zip");
+ */
+
+    public static boolean exportBoard() {
+        final int BUFFER = 2048;
+
+        File sourceFile = new File(IOHelper.CONFIG_BASE_DIR);
+        new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "exports").mkdirs();
+
+        try {
+            BufferedInputStream origin = null;
+            FileOutputStream dest = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "exports", sourceFile.getName() + ".iziozi"));
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
+                    dest));
+            if (sourceFile.isDirectory()) {
+                zipSubFolder(out, sourceFile, sourceFile.getParent().length());
+            } else {
+                byte data[] = new byte[BUFFER];
+                FileInputStream fi = new FileInputStream(sourceFile);
+                origin = new BufferedInputStream(fi, BUFFER);
+                ZipEntry entry = new ZipEntry(getLastPathComponent(IOHelper.CONFIG_BASE_DIR));
+                out.putNextEntry(entry);
+                int count;
+                while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                    out.write(data, 0, count);
+                }
+            }
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+/*
+ *
+ * Zips a subfolder
+ *
+ */
+
+    private static void zipSubFolder(ZipOutputStream out, File folder,
+                              int basePathLength) throws IOException {
+
+        final int BUFFER = 2048;
+
+        File[] fileList = folder.listFiles();
+        BufferedInputStream origin = null;
+        for (File file : fileList) {
+
+            if (file.isDirectory()) {
+                zipSubFolder(out, file, basePathLength);
+            } else {
+                byte data[] = new byte[BUFFER];
+                String unmodifiedFilePath = file.getPath();
+                String relativePath = unmodifiedFilePath
+                        .substring(basePathLength);
+                FileInputStream fi = new FileInputStream(unmodifiedFilePath);
+                origin = new BufferedInputStream(fi, BUFFER);
+                ZipEntry entry = new ZipEntry(relativePath);
+                out.putNextEntry(entry);
+                int count;
+                while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                    out.write(data, 0, count);
+                }
+                origin.close();
+            }
+        }
+    }
+
+    /*
+     * gets the last path component
+     *
+     * Example: getLastPathComponent("downloads/example/fileToZip");
+     * Result: "fileToZip"
+     */
+    public static String getLastPathComponent(String filePath) {
+        String[] segments = filePath.split("/");
+        if (segments.length == 0)
+            return "";
+        String lastPathComponent = segments[segments.length - 1];
+        return lastPathComponent;
+    }
+
 }
 

@@ -55,6 +55,7 @@ import it.iziozi.iziozi.core.dbclasses.IOKeywordText;
 import it.iziozi.iziozi.core.dbclasses.IOLanguage;
 import it.iziozi.iziozi.core.dbclasses.IOPictogram;
 
+@Deprecated
 public class IOLocalImageSearchActivity extends OrmLiteBaseActivity<IODatabaseHelper> {
 
     private GridView mGridView;

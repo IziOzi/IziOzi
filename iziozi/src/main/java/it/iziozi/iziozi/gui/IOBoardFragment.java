@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Random;
 
 import it.iziozi.iziozi.R;
-import it.iziozi.iziozi.core.IOApplication;
 import it.iziozi.iziozi.core.IOBoard;
 import it.iziozi.iziozi.core.IOConfiguration;
 import it.iziozi.iziozi.core.IOGlobalConfiguration;
@@ -370,13 +369,11 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
                             //download image
                             if (isExternalStorageReadable() && IOHelper.checkForRequiredPermissions(getActivity())) {
 
-                                File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
-                                Character pictoChar = imgButton.getmImageFile().charAt(imgButton.getmImageFile().lastIndexOf("/") + 1);
-                                File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
+                                File imagesFolder = new File(IOHelper.CONFIG_BASE_DIR + File.separator + "images");
 
                                 if (isExternalStorageWritable()) {
 
-                                    pictoFolder.mkdirs();
+                                    imagesFolder.mkdirs();
 
                                     //download it
 
@@ -409,9 +406,6 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
                             }
 
                         } else {
-/*
-                        imgButton.setImageBitmap(BitmapFactory.decodeFile(imgButton.getmImageFile()));
-*/
 
                             imageLoader.displayImage("file://" + imgButton.getmImageFile(), imgButton);
                         }

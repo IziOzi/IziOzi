@@ -261,5 +261,6 @@
     <string name="speech_board_error">Devi prima abilitare la modalita\' modifica.</string>
 
     <string name="upgrade_in_progress">Aggiornamento in corso...</string>
+    <string name="export">Esporta</string>
 
 </resources>

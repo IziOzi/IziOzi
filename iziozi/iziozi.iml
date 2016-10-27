@@ -124,6 +124,7 @@
     <orderEntry type="library" exported="" name="ormlite-core-4.48" level="project" />
     <orderEntry type="library" exported="" name="fabric-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="android-iconify-1.0.6" level="project" />
+    <orderEntry type="library" exported="" name="commons-io-20030203.000550" level="project" />
     <orderEntry type="library" exported="" name="ThinkGear" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.0.1" level="project" />

@@ -53,5 +53,6 @@
     <string name="unlock">Desbloquear</string>
 
     <string name="upgrade_in_progress">Upgrade in progress...</string>
+    <string name="export">Export</string>
 
 </resources>

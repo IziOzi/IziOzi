@@ -28,7 +28,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +43,7 @@ import java.io.IOException;
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.core.IOApplication;
 import it.iziozi.iziozi.gui.IOCreateButtonActivity;
+import it.iziozi.iziozi.helpers.IOHelper;
 
 /**
  * Created by martinolessio on 29/10/14.
@@ -67,8 +67,7 @@ public class IOMediaManagerFragment extends ListFragment {
     }
 
     private void setupAdapter() {
-        File audioFolder = new File(Environment.getExternalStorageDirectory()
-                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/recordings");
+        File audioFolder = new File(IOHelper.CONFIG_BASE_DIR + File.separator + "audio");
 
         mAudioFilesList = null;
 

@@ -48,6 +48,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
+import it.iziozi.iziozi.helpers.IOHelper;
+
 /**
  * Created by martinolessio on 05/11/14.
  */
@@ -138,7 +140,7 @@ public class IOConfiguration {
             fileName = "config";
 
         File dirFile = new File(Environment.getExternalStorageDirectory()
-                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards");
+                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/boards/" + fileName);
         if (!dirFile.exists())
             dirFile.mkdirs();
 
@@ -157,6 +159,8 @@ public class IOConfiguration {
         catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
+
+        IOHelper.CONFIG_BASE_DIR = Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + fileName.replace(".json", "");
 
         return true;
     }
@@ -180,7 +184,7 @@ public class IOConfiguration {
         }
 
         File file = new File(dirFile.toString(), fileName);
-        File jsonFile = new File(dirFile.toString(), fileName.replace("xml", "json"));
+        File jsonFile = new File(dirFile.toString(), fileName.replace(".xml", ".json").replace(".json", "") + File.separator + fileName.replace("xml", "json"));
 
         IOConfiguration config = null;
 
@@ -230,6 +234,7 @@ public class IOConfiguration {
                 Log.w("DEBUG", "error loading configuration from JSON");
             }
 
+            IOHelper.CONFIG_BASE_DIR = Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + jsonFile.getName().replace(".json", "");
 
         }else{
             Serializer serializer = new Persister();

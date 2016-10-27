@@ -24,11 +24,20 @@
     <list default="true" id="b1950ad4-4187-4c87-b153-443f9fc50eb0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOBoard.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOBoard.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" afterPath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/build.gradle" afterPath="$PROJECT_DIR$/iziozi/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/iziozi.iml" afterPath="$PROJECT_DIR$/iziozi/iziozi.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOLevel.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOLevel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOSpeakableImageButton.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOSpeakableImageButton.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOCreateButtonActivity.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOCreateButtonActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOLocalImageSearchActivity.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOLocalImageSearchActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IORemoteImageSearchActivity.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IORemoteImageSearchActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/SpeechBoardActivity.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/SpeechBoardActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/components/IOMediaManagerFragment.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/components/IOMediaManagerFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/helpers/IOHelper.java" afterPath="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/helpers/IOHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/res/menu/main.xml" afterPath="$PROJECT_DIR$/iziozi/src/main/res/menu/main.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/res/values-de/strings.xml" afterPath="$PROJECT_DIR$/iziozi/src/main/res/values-de/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/res/values-es/strings.xml" afterPath="$PROJECT_DIR$/iziozi/src/main/res/values-es/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iziozi/src/main/res/values-fr/strings.xml" afterPath="$PROJECT_DIR$/iziozi/src/main/res/values-fr/strings.xml" />
@@ -85,30 +94,177 @@
       <file leaf-file-name="IOConfiguration.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="67" column="32" selection-start-line="67" selection-start-column="4" selection-end-line="67" selection-end-column="32" />
+            <state relative-caret-position="351">
+              <caret line="162" column="35" selection-start-line="162" selection-start-column="35" selection-end-line="162" selection-end-column="155" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3452#3453#0" expanded="true" />
-                <element signature="e#3491#3492#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IOBoardActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="IOBoardActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="177">
-              <caret line="1492" column="139" selection-start-line="1492" selection-start-column="139" selection-end-line="1492" selection-end-column="139" />
+            <state relative-caret-position="435">
+              <caret line="1182" column="30" selection-start-line="1182" selection-start-column="30" selection-end-line="1182" selection-end-column="30" />
               <folding>
-                <element signature="e#52050#52083#0" expanded="true" />
-                <element signature="e#57726#58056#0" expanded="true" />
-                <element signature="e#58055#58056#0" expanded="true" />
-                <element signature="e#58459#58490#0" expanded="true" />
-                <element signature="e#58569#59275#0" expanded="true" />
-                <element signature="e#59274#59275#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#8427#9230#0" expanded="true" />
+                <element signature="e#9058#9093#0" expanded="true" />
+                <element signature="e#9229#9230#0" expanded="true" />
+                <element signature="e#9313#10138#0" expanded="true" />
+                <element signature="e#10137#10138#0" expanded="true" />
+                <element signature="e#12401#12454#0" expanded="true" />
+                <element signature="e#13343#13494#0" expanded="true" />
+                <element signature="e#13493#13494#0" expanded="true" />
+                <element signature="e#13536#13688#0" expanded="true" />
+                <element signature="e#13687#13688#0" expanded="true" />
+                <element signature="e#14371#14434#0" expanded="true" />
+                <element signature="e#14442#14505#0" expanded="true" />
+                <element signature="e#14987#15451#0" expanded="true" />
+                <element signature="e#15450#15451#0" expanded="true" />
+                <element signature="e#16122#16441#0" expanded="true" />
+                <element signature="e#16440#16441#0" expanded="true" />
+                <element signature="e#17052#17201#0" expanded="true" />
+                <element signature="e#17200#17201#0" expanded="true" />
+                <element signature="e#17815#18124#0" expanded="true" />
+                <element signature="e#18123#18124#0" expanded="true" />
+                <element signature="e#18646#18993#0" expanded="true" />
+                <element signature="e#18992#18993#0" expanded="true" />
+                <element signature="e#19678#19829#0" expanded="true" />
+                <element signature="e#19828#19829#0" expanded="true" />
+                <element signature="e#20577#21528#0" expanded="true" />
+                <element signature="e#20767#20809#0" expanded="true" />
+                <element signature="e#20847#20884#0" expanded="true" />
+                <element signature="e#20929#20967#0" expanded="true" />
+                <element signature="e#20969#21315#0" expanded="true" />
+                <element signature="e#21314#21315#0" expanded="true" />
+                <element signature="e#21360#21382#0" expanded="true" />
+                <element signature="e#21527#21528#0" expanded="true" />
+                <element signature="e#21817#21856#0" expanded="true" />
+                <element signature="e#21886#21923#0" expanded="true" />
+                <element signature="e#21960#21984#0" expanded="true" />
+                <element signature="e#22253#22279#0" expanded="true" />
+                <element signature="e#27354#28422#0" expanded="true" />
+                <element signature="e#28421#28422#0" expanded="true" />
+                <element signature="e#28472#30092#0" expanded="true" />
+                <element signature="e#28694#28739#0" expanded="true" />
+                <element signature="e#28785#28820#0" expanded="true" />
+                <element signature="e#28873#28911#0" expanded="true" />
+                <element signature="e#28913#29380#0" expanded="true" />
+                <element signature="e#29379#29380#0" expanded="true" />
+                <element signature="e#29433#29459#0" expanded="true" />
+                <element signature="e#29517#29544#0" expanded="true" />
+                <element signature="e#29546#29871#0" expanded="true" />
+                <element signature="e#29870#29871#0" expanded="true" />
+                <element signature="e#30091#30092#0" expanded="true" />
+                <element signature="e#30142#32084#0" expanded="true" />
+                <element signature="e#31976#32015#0" expanded="true" />
+                <element signature="e#32083#32084#0" expanded="true" />
+                <element signature="e#32136#33584#0" expanded="true" />
+                <element signature="e#32404#32446#0" expanded="true" />
+                <element signature="e#32492#32530#0" expanded="true" />
+                <element signature="e#32583#32621#0" expanded="true" />
+                <element signature="e#32623#33325#0" expanded="true" />
+                <element signature="e#33324#33325#0" expanded="true" />
+                <element signature="e#33378#33400#0" expanded="true" />
+                <element signature="e#33583#33584#0" expanded="true" />
+                <element signature="e#35048#35101#0" expanded="true" />
+                <element signature="e#37382#37429#0" expanded="true" />
+                <element signature="e#37782#37821#0" expanded="true" />
+                <element signature="e#39625#39668#0" expanded="true" />
+                <element signature="e#39758#39798#0" expanded="true" />
+                <element signature="e#39800#41082#0" expanded="true" />
+                <element signature="e#41081#41082#0" expanded="true" />
+                <element signature="e#41127#41168#0" expanded="true" />
+                <element signature="e#41170#41460#0" expanded="true" />
+                <element signature="e#41459#41460#0" expanded="true" />
+                <element signature="e#46559#46597#0" expanded="true" />
+                <element signature="e#47810#47852#0" expanded="true" />
+                <element signature="e#47886#47921#0" expanded="true" />
+                <element signature="e#47962#48000#0" expanded="true" />
+                <element signature="e#48002#51729#0" expanded="true" />
+                <element signature="e#48604#48631#0" expanded="true" />
+                <element signature="e#48633#51232#0" expanded="true" />
+                <element signature="e#49876#49903#0" expanded="true" />
+                <element signature="e#49965#50004#0" expanded="true" />
+                <element signature="e#50073#50108#0" expanded="true" />
+                <element signature="e#51231#51232#0" expanded="true" />
+                <element signature="e#51288#51314#0" expanded="true" />
+                <element signature="e#51352#51635#0" expanded="true" />
+                <element signature="e#51634#51635#0" expanded="true" />
+                <element signature="e#51728#51729#0" expanded="true" />
+                <element signature="e#51770#51811#0" expanded="true" />
+                <element signature="e#52542#52567#0" expanded="true" />
+                <element signature="e#52605#52638#0" expanded="true" />
+                <element signature="e#52683#52718#0" expanded="true" />
+                <element signature="e#52720#52988#0" expanded="true" />
+                <element signature="e#52987#52988#0" expanded="true" />
+                <element signature="e#53563#53590#0" expanded="true" />
+                <element signature="e#53592#55061#0" expanded="true" />
+                <element signature="e#54594#54621#0" expanded="true" />
+                <element signature="e#54667#54706#0" expanded="true" />
+                <element signature="e#54759#54794#0" expanded="true" />
+                <element signature="e#55060#55061#0" expanded="true" />
+                <element signature="e#55101#55127#0" expanded="true" />
+                <element signature="e#55149#55368#0" expanded="true" />
+                <element signature="e#55367#55368#0" expanded="true" />
+                <element signature="e#55790#56003#0" expanded="true" />
+                <element signature="e#56002#56003#0" expanded="true" />
+                <element signature="e#56067#56075#0" expanded="true" />
+                <element signature="e#56265#56306#0" expanded="true" />
+                <element signature="e#56349#57709#0" expanded="true" />
+                <element signature="e#57708#57709#0" expanded="true" />
+                <element signature="e#57729#57770#0" expanded="true" />
+                <element signature="e#58132#58462#0" expanded="true" />
+                <element signature="e#58461#58462#0" expanded="true" />
+                <element signature="e#58867#58898#0" expanded="true" />
+                <element signature="e#58900#58939#0" expanded="true" />
+                <element signature="e#58977#59685#0" expanded="true" />
+                <element signature="e#59684#59685#0" expanded="true" />
+                <element signature="e#60052#60551#0" expanded="true" />
+                <element signature="e#60550#60551#0" expanded="true" />
+                <element signature="e#60956#60987#0" expanded="true" />
+                <element signature="e#60989#61028#0" expanded="true" />
+                <element signature="e#61066#62699#0" expanded="true" />
+                <element signature="e#62698#62699#0" expanded="true" />
+                <element signature="e#67682#67710#0" expanded="true" />
+                <element signature="e#67941#67970#0" expanded="true" />
+                <element signature="e#77662#77703#0" expanded="true" />
+                <element signature="e#77733#77888#0" expanded="true" />
+                <element signature="e#77925#77966#0" expanded="true" />
+                <element signature="e#77968#78397#0" expanded="true" />
+                <element signature="e#78396#78397#0" expanded="true" />
+                <element signature="e#78434#78475#0" expanded="true" />
+                <element signature="e#78812#79143#0" expanded="true" />
+                <element signature="e#79142#79143#0" expanded="true" />
+                <element signature="e#79191#80184#0" expanded="true" />
+                <element signature="e#79720#79791#0" expanded="true" />
+                <element signature="e#80183#80184#0" expanded="true" />
+                <element signature="e#80329#80371#0" expanded="true" />
+                <element signature="e#80401#80433#0" expanded="true" />
+                <element signature="e#80470#80520#0" expanded="true" />
+                <element signature="e#80522#80835#0" expanded="true" />
+                <element signature="e#80834#80835#0" expanded="true" />
+                <element signature="e#81431#81975#0" expanded="true" />
+                <element signature="e#81974#81975#0" expanded="true" />
+                <element signature="e#82208#82507#0" expanded="true" />
+                <element signature="e#82506#82507#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/menu/main.xml">
+          <provider editor-type-id="android-designer2">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="435">
+              <caret line="66" column="45" selection-start-line="66" selection-start-column="45" selection-end-line="66" selection-end-column="45" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -116,8 +272,8 @@
       <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="448">
-              <caret line="271" column="31" selection-start-line="271" selection-start-column="0" selection-end-line="272" selection-end-column="0" />
+            <state relative-caret-position="457">
+              <caret line="272" column="31" selection-start-line="272" selection-start-column="0" selection-end-line="273" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -126,8 +282,8 @@
       <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-de/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="478">
-              <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+            <state relative-caret-position="472">
+              <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -136,8 +292,8 @@
       <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-es/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="478">
-              <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+            <state relative-caret-position="472">
+              <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -146,8 +302,8 @@
       <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-fr/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="478">
-              <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+            <state relative-caret-position="457">
+              <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -156,28 +312,18 @@
       <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="433">
-              <caret line="262" column="61" selection-start-line="262" selection-start-column="61" selection-end-line="262" selection-end-column="61" />
+            <state relative-caret-position="442">
+              <caret line="263" column="33" selection-start-line="263" selection-start-column="33" selection-end-line="263" selection-end-column="33" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ids.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/ids.xml">
+      <file leaf-file-name="IOHelper.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/helpers/IOHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="12" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IOBoard.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOBoard.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="53" column="8" selection-start-line="53" selection-start-column="8" selection-end-line="53" selection-end-column="8" />
+            <state relative-caret-position="328">
+              <caret line="203" column="32" selection-start-line="203" selection-start-column="32" selection-end-line="203" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -185,13 +331,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IOLevel.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOLevel.java">
+      <file leaf-file-name="IOBoardFragment.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="46" column="12" selection-start-line="46" selection-start-column="12" selection-end-line="46" selection-end-column="12" />
+            <state relative-caret-position="201">
+              <caret line="472" column="50" selection-start-line="472" selection-start-column="50" selection-end-line="472" selection-end-column="50" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#0#20313#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1606,7 +1752,6 @@
     <option name="modificationStamps">
       <map>
         <entry key="$USER_HOME$/AndroidStudioProjects/2-TTT" value="4308574934549" />
-        <entry key="$PROJECT_DIR$" value="4399732989000" />
         <entry key="$PROJECT_DIR$" value="4350512294000" />
       </map>
     </option>
@@ -2198,21 +2343,28 @@
         <option value="$PROJECT_DIR$/iziozi/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/res/layout/activity_about.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOApplication.java" />
-        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java" />
         <option value="$PROJECT_DIR$/iziozi/src/main/res/menu/create_button.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/res/layout/create_button_activity_layout.xml" />
         <option value="$PROJECT_DIR$/iziozi/build.gradle" />
         <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/Jsonify.java" />
         <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOBoard.java" />
-        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOSpeakableImageButton.java" />
-        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java" />
         <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOLevel.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOCreateButtonActivity.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOLocalImageSearchActivity.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IORemoteImageSearchActivity.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/SpeechBoardActivity.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/components/IOMediaManagerFragment.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOSpeakableImageButton.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/res/menu/main.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/res/values-de/strings.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/res/values-es/strings.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/res/values-fr/strings.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml" />
         <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java" />
+        <option value="$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/helpers/IOHelper.java" />
       </list>
     </option>
   </component>
@@ -2255,32 +2407,7 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="Scratches" />
-      <pane id="AndroidView">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="iziozi-android" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Gradle Scripts" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="iziozi-android" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="iziozi" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -2675,6 +2802,31 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="AndroidView">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="iziozi-android" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Gradle Scripts" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="iziozi-android" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="iziozi" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -2686,7 +2838,7 @@
     <property name="DEBUGGABLE_DEVICE" value="lge-nexus_5-02c5bb16091cb285" />
     <property name="DEBUGGABLE_PROCESS" value="it.iziozi.iziozi" />
     <property name="SHOW_ALL_PROCESSES" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../martino-keystore.jks" />
+    <property name="last_opened_file_path" value="$USER_HOME$/test/guidapp/android/BlindBike" />
     <property name="ExportApk.ApkPath" value="$PROJECT_DIR$/iziozi" />
     <property name="ExportApk.Flavors" value="" />
     <property name="ExportApk.BuildType" value="release" />
@@ -3082,29 +3234,31 @@
     <frame x="-318" y="-1057" width="1920" height="1057" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32837406" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32495812" sideWeight="0.5030349" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31880978" sideWeight="0.4969651" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928678" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3985122" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32837406" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32495812" sideWeight="0.5030349" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32837406" sideWeight="0.4969651" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32686085" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960597" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32686085" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25239617" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22896698" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32943678" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928678" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928678" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3985122" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -3114,8 +3268,6 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960597" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32943678" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -3164,55 +3316,15 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="29" />
+      <option name="time" value="32" />
     </breakpoint-manager>
     <watches-manager>
-      <configuration name="Remote">
-        <watch expression="board.getBoardAtIndex(0).getButtons()" language="JAVA" custom="" />
-        <watch expression="mActiveConfig" language="JAVA" custom="" />
-        <watch expression="mActiveConfig.getLevel().getBoardAtIndex(0).getButtons().get(0).getLevel().getBoardAtIndex(0).getButtons()" language="JAVA" custom="" />
-        <watch expression="mBoard" language="JAVA" custom="" />
-        <watch expression="mButtons" language="JAVA" custom="" />
-        <watch expression="gson.toJson(this);" language="JAVA" custom="" />
+      <configuration name="iziozi">
+        <watch expression="button.getVideoFile()" language="JAVA" custom="" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="872" column="36" selection-start-line="870" selection-start-column="29" selection-end-line="870" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/layout/settings_layout.xml">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="151" column="48" selection-start-line="151" selection-start-column="48" selection-end-line="151" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="870" column="36" selection-start-line="870" selection-start-column="29" selection-end-line="870" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/layout/settings_layout.xml">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -3338,23 +3450,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/layout/create_button_activity_layout.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
       <provider editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5415">
-          <caret line="436" column="50" selection-start-line="436" selection-start-column="50" selection-end-line="436" selection-end-column="50" />
-          <folding>
-            <element signature="e#0#20742#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3375,14 +3477,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/menu/create_button.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
       <provider editor-type-id="text-editor">
         <state relative-caret-position="510">
           <caret line="34" column="32" selection-start-line="34" selection-start-column="32" selection-end-line="34" selection-end-column="32" />
           <folding />
         </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/build.gradle">
@@ -3395,19 +3497,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="54" column="20" selection-start-line="54" selection-start-column="20" selection-end-line="54" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOViewPager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3416,7 +3509,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="39" column="13" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3424,14 +3516,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/helpers/IOHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-15">
-          <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
           <folding />
         </state>
       </provider>
@@ -3456,96 +3540,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOCreateButtonActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="25" column="25" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IORemoteImageSearchActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="232" column="30" selection-start-line="232" selection-start-column="0" selection-end-line="233" selection-end-column="0" />
-          <folding>
-            <element signature="e#9963#9994#0" expanded="true" />
-            <element signature="e#9996#10034#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOSpeakableImageButton.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="78" column="30" selection-start-line="78" selection-start-column="28" selection-end-line="78" selection-end-column="30" />
-          <folding>
-            <element signature="e#8124#8177#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOLevel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="46" column="12" selection-start-line="46" selection-start-column="12" selection-end-line="46" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOBoard.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="53" column="8" selection-start-line="53" selection-start-column="8" selection-end-line="53" selection-end-column="8" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="271" column="31" selection-start-line="271" selection-start-column="0" selection-end-line="272" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-de/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="478">
-          <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-es/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="478">
-          <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-fr/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="478">
-          <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="262" column="61" selection-start-line="262" selection-start-column="61" selection-end-line="262" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3557,29 +3551,322 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java">
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOBoard.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="67" column="32" selection-start-line="67" selection-start-column="4" selection-end-line="67" selection-end-column="32" />
+        <state relative-caret-position="255">
+          <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3452#3453#0" expanded="true" />
-            <element signature="e#3491#3492#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOLevel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="44" column="19" selection-start-line="44" selection-start-column="19" selection-end-line="44" selection-end-column="19" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="54" column="20" selection-start-line="54" selection-start-column="20" selection-end-line="54" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOCreateButtonActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="997" column="78" selection-start-line="997" selection-start-column="78" selection-end-line="997" selection-end-column="78" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOLocalImageSearchActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/dbclasses/IOPictogram.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/SpeechBoardActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-327">
+          <caret line="446" column="98" selection-start-line="446" selection-start-column="98" selection-end-line="446" selection-end-column="98" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IORemoteImageSearchActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="402">
+          <caret line="109" column="82" selection-start-line="109" selection-start-column="26" selection-end-line="109" selection-end-column="82" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/components/IOMediaManagerFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="80" column="42" selection-start-line="80" selection-start-column="42" selection-end-line="80" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOSpeakableImageButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="205" column="70" selection-start-line="205" selection-start-column="70" selection-end-line="205" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="472" column="50" selection-start-line="472" selection-start-column="50" selection-end-line="472" selection-end-column="50" />
+          <folding>
+            <element signature="e#0#20313#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/menu/main.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="66" column="45" selection-start-line="66" selection-start-column="45" selection-end-line="66" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="457">
+          <caret line="272" column="31" selection-start-line="272" selection-start-column="0" selection-end-line="273" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-de/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-es/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-fr/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="457">
+          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/res/values-it/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="263" column="33" selection-start-line="263" selection-start-column="33" selection-end-line="263" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/gui/IOBoardActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="177">
-          <caret line="1492" column="139" selection-start-line="1492" selection-start-column="139" selection-end-line="1492" selection-end-column="139" />
+        <state relative-caret-position="435">
+          <caret line="1182" column="30" selection-start-line="1182" selection-start-column="30" selection-end-line="1182" selection-end-column="30" />
           <folding>
-            <element signature="e#52050#52083#0" expanded="true" />
-            <element signature="e#57726#58056#0" expanded="true" />
-            <element signature="e#58055#58056#0" expanded="true" />
-            <element signature="e#58459#58490#0" expanded="true" />
-            <element signature="e#58569#59275#0" expanded="true" />
-            <element signature="e#59274#59275#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#8427#9230#0" expanded="true" />
+            <element signature="e#9058#9093#0" expanded="true" />
+            <element signature="e#9229#9230#0" expanded="true" />
+            <element signature="e#9313#10138#0" expanded="true" />
+            <element signature="e#10137#10138#0" expanded="true" />
+            <element signature="e#12401#12454#0" expanded="true" />
+            <element signature="e#13343#13494#0" expanded="true" />
+            <element signature="e#13493#13494#0" expanded="true" />
+            <element signature="e#13536#13688#0" expanded="true" />
+            <element signature="e#13687#13688#0" expanded="true" />
+            <element signature="e#14371#14434#0" expanded="true" />
+            <element signature="e#14442#14505#0" expanded="true" />
+            <element signature="e#14987#15451#0" expanded="true" />
+            <element signature="e#15450#15451#0" expanded="true" />
+            <element signature="e#16122#16441#0" expanded="true" />
+            <element signature="e#16440#16441#0" expanded="true" />
+            <element signature="e#17052#17201#0" expanded="true" />
+            <element signature="e#17200#17201#0" expanded="true" />
+            <element signature="e#17815#18124#0" expanded="true" />
+            <element signature="e#18123#18124#0" expanded="true" />
+            <element signature="e#18646#18993#0" expanded="true" />
+            <element signature="e#18992#18993#0" expanded="true" />
+            <element signature="e#19678#19829#0" expanded="true" />
+            <element signature="e#19828#19829#0" expanded="true" />
+            <element signature="e#20577#21528#0" expanded="true" />
+            <element signature="e#20767#20809#0" expanded="true" />
+            <element signature="e#20847#20884#0" expanded="true" />
+            <element signature="e#20929#20967#0" expanded="true" />
+            <element signature="e#20969#21315#0" expanded="true" />
+            <element signature="e#21314#21315#0" expanded="true" />
+            <element signature="e#21360#21382#0" expanded="true" />
+            <element signature="e#21527#21528#0" expanded="true" />
+            <element signature="e#21817#21856#0" expanded="true" />
+            <element signature="e#21886#21923#0" expanded="true" />
+            <element signature="e#21960#21984#0" expanded="true" />
+            <element signature="e#22253#22279#0" expanded="true" />
+            <element signature="e#27354#28422#0" expanded="true" />
+            <element signature="e#28421#28422#0" expanded="true" />
+            <element signature="e#28472#30092#0" expanded="true" />
+            <element signature="e#28694#28739#0" expanded="true" />
+            <element signature="e#28785#28820#0" expanded="true" />
+            <element signature="e#28873#28911#0" expanded="true" />
+            <element signature="e#28913#29380#0" expanded="true" />
+            <element signature="e#29379#29380#0" expanded="true" />
+            <element signature="e#29433#29459#0" expanded="true" />
+            <element signature="e#29517#29544#0" expanded="true" />
+            <element signature="e#29546#29871#0" expanded="true" />
+            <element signature="e#29870#29871#0" expanded="true" />
+            <element signature="e#30091#30092#0" expanded="true" />
+            <element signature="e#30142#32084#0" expanded="true" />
+            <element signature="e#31976#32015#0" expanded="true" />
+            <element signature="e#32083#32084#0" expanded="true" />
+            <element signature="e#32136#33584#0" expanded="true" />
+            <element signature="e#32404#32446#0" expanded="true" />
+            <element signature="e#32492#32530#0" expanded="true" />
+            <element signature="e#32583#32621#0" expanded="true" />
+            <element signature="e#32623#33325#0" expanded="true" />
+            <element signature="e#33324#33325#0" expanded="true" />
+            <element signature="e#33378#33400#0" expanded="true" />
+            <element signature="e#33583#33584#0" expanded="true" />
+            <element signature="e#35048#35101#0" expanded="true" />
+            <element signature="e#37382#37429#0" expanded="true" />
+            <element signature="e#37782#37821#0" expanded="true" />
+            <element signature="e#39625#39668#0" expanded="true" />
+            <element signature="e#39758#39798#0" expanded="true" />
+            <element signature="e#39800#41082#0" expanded="true" />
+            <element signature="e#41081#41082#0" expanded="true" />
+            <element signature="e#41127#41168#0" expanded="true" />
+            <element signature="e#41170#41460#0" expanded="true" />
+            <element signature="e#41459#41460#0" expanded="true" />
+            <element signature="e#46559#46597#0" expanded="true" />
+            <element signature="e#47810#47852#0" expanded="true" />
+            <element signature="e#47886#47921#0" expanded="true" />
+            <element signature="e#47962#48000#0" expanded="true" />
+            <element signature="e#48002#51729#0" expanded="true" />
+            <element signature="e#48604#48631#0" expanded="true" />
+            <element signature="e#48633#51232#0" expanded="true" />
+            <element signature="e#49876#49903#0" expanded="true" />
+            <element signature="e#49965#50004#0" expanded="true" />
+            <element signature="e#50073#50108#0" expanded="true" />
+            <element signature="e#51231#51232#0" expanded="true" />
+            <element signature="e#51288#51314#0" expanded="true" />
+            <element signature="e#51352#51635#0" expanded="true" />
+            <element signature="e#51634#51635#0" expanded="true" />
+            <element signature="e#51728#51729#0" expanded="true" />
+            <element signature="e#51770#51811#0" expanded="true" />
+            <element signature="e#52542#52567#0" expanded="true" />
+            <element signature="e#52605#52638#0" expanded="true" />
+            <element signature="e#52683#52718#0" expanded="true" />
+            <element signature="e#52720#52988#0" expanded="true" />
+            <element signature="e#52987#52988#0" expanded="true" />
+            <element signature="e#53563#53590#0" expanded="true" />
+            <element signature="e#53592#55061#0" expanded="true" />
+            <element signature="e#54594#54621#0" expanded="true" />
+            <element signature="e#54667#54706#0" expanded="true" />
+            <element signature="e#54759#54794#0" expanded="true" />
+            <element signature="e#55060#55061#0" expanded="true" />
+            <element signature="e#55101#55127#0" expanded="true" />
+            <element signature="e#55149#55368#0" expanded="true" />
+            <element signature="e#55367#55368#0" expanded="true" />
+            <element signature="e#55790#56003#0" expanded="true" />
+            <element signature="e#56002#56003#0" expanded="true" />
+            <element signature="e#56067#56075#0" expanded="true" />
+            <element signature="e#56265#56306#0" expanded="true" />
+            <element signature="e#56349#57709#0" expanded="true" />
+            <element signature="e#57708#57709#0" expanded="true" />
+            <element signature="e#57729#57770#0" expanded="true" />
+            <element signature="e#58132#58462#0" expanded="true" />
+            <element signature="e#58461#58462#0" expanded="true" />
+            <element signature="e#58867#58898#0" expanded="true" />
+            <element signature="e#58900#58939#0" expanded="true" />
+            <element signature="e#58977#59685#0" expanded="true" />
+            <element signature="e#59684#59685#0" expanded="true" />
+            <element signature="e#60052#60551#0" expanded="true" />
+            <element signature="e#60550#60551#0" expanded="true" />
+            <element signature="e#60956#60987#0" expanded="true" />
+            <element signature="e#60989#61028#0" expanded="true" />
+            <element signature="e#61066#62699#0" expanded="true" />
+            <element signature="e#62698#62699#0" expanded="true" />
+            <element signature="e#67682#67710#0" expanded="true" />
+            <element signature="e#67941#67970#0" expanded="true" />
+            <element signature="e#77662#77703#0" expanded="true" />
+            <element signature="e#77733#77888#0" expanded="true" />
+            <element signature="e#77925#77966#0" expanded="true" />
+            <element signature="e#77968#78397#0" expanded="true" />
+            <element signature="e#78396#78397#0" expanded="true" />
+            <element signature="e#78434#78475#0" expanded="true" />
+            <element signature="e#78812#79143#0" expanded="true" />
+            <element signature="e#79142#79143#0" expanded="true" />
+            <element signature="e#79191#80184#0" expanded="true" />
+            <element signature="e#79720#79791#0" expanded="true" />
+            <element signature="e#80183#80184#0" expanded="true" />
+            <element signature="e#80329#80371#0" expanded="true" />
+            <element signature="e#80401#80433#0" expanded="true" />
+            <element signature="e#80470#80520#0" expanded="true" />
+            <element signature="e#80522#80835#0" expanded="true" />
+            <element signature="e#80834#80835#0" expanded="true" />
+            <element signature="e#81431#81975#0" expanded="true" />
+            <element signature="e#81974#81975#0" expanded="true" />
+            <element signature="e#82208#82507#0" expanded="true" />
+            <element signature="e#82506#82507#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/core/IOConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="162" column="35" selection-start-line="162" selection-start-column="35" selection-end-line="162" selection-end-column="155" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/iziozi/src/main/java/it/iziozi/iziozi/helpers/IOHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="203" column="32" selection-start-line="203" selection-start-column="32" selection-end-line="203" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

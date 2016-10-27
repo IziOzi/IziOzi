@@ -40,10 +40,13 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
+import java.io.File;
+
 import it.iziozi.iziozi.R;
+import it.iziozi.iziozi.helpers.IOHelper;
 
 @Root(name = "IOSpeakableImageButton")
-public class IOSpeakableImageButton extends ImageButton  {
+public class IOSpeakableImageButton extends ImageButton {
 
     @Element(required = false)
     @SerializedName("sentence")
@@ -107,9 +110,8 @@ public class IOSpeakableImageButton extends ImageButton  {
     @SerializedName("showBorder")
     @Expose
     private boolean mShowBorder;
-    
-    private int mPaddingWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
 
+    private int mPaddingWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
 
 
     public IOSpeakableImageButton(Context ctx) {
@@ -193,13 +195,17 @@ public class IOSpeakableImageButton extends ImageButton  {
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT )
             return mImageFile.replace("emulated/0", "sdcard0");
 */
-        if(mImageFile == null)
+
+        if (mImageFile == null || mImageFile == "")
             return mImageFile;
 
-        if(mImageFile.indexOf("IziOzi") != -1)
+        if (!mImageFile.contains("/"))
+            return IOHelper.CONFIG_BASE_DIR + File.separator + "images" + File.separator +  mImageFile;
+
+        if (mImageFile.indexOf("IziOzi") != -1)
             return Environment.getExternalStorageDirectory() + "/iziozi" + mImageFile.split("IziOzi")[1];
 
-        if(mImageFile.indexOf("iziozi") != -1)
+        if (mImageFile.indexOf("iziozi") != -1)
             return Environment.getExternalStorageDirectory() + "/iziozi" + mImageFile.split("iziozi")[1];
 
 
@@ -231,6 +237,13 @@ public class IOSpeakableImageButton extends ImageButton  {
     }
 
     public String getAudioFile() {
+
+        if(mAudioFile == null || mAudioFile == "")
+            return mAudioFile;
+
+        if (!mAudioFile.contains("/"))
+            return IOHelper.CONFIG_BASE_DIR + File.separator + "audio" + File.separator +  mAudioFile;
+
         return mAudioFile;
     }
 
@@ -239,6 +252,13 @@ public class IOSpeakableImageButton extends ImageButton  {
     }
 
     public String getVideoFile() {
+
+        if(mVideoFile == null || mVideoFile == "")
+            return mVideoFile;
+
+        if (!mVideoFile.contains("/"))
+            return IOHelper.CONFIG_BASE_DIR + File.separator + "video" + File.separator +  mVideoFile;
+
         return mVideoFile;
     }
 
@@ -256,11 +276,10 @@ public class IOSpeakableImageButton extends ImageButton  {
 
     public IOLevel getLevel() {
 
-        if(null == mLevel)
+        if (null == mLevel)
             mLevel = new IOLevel();
 
-        if(mLevel.getBoardAtIndex(0) == null)
-        {
+        if (mLevel.getBoardAtIndex(0) == null) {
             mLevel.addInnerBoard(new IOBoard());
         }
 
@@ -293,7 +312,7 @@ public class IOSpeakableImageButton extends ImageButton  {
 
             final Drawable d = getDrawable();
 
-            if(null == d)
+            if (null == d)
                 return;
 
             final int origW = d.getIntrinsicWidth();
@@ -306,7 +325,7 @@ public class IOSpeakableImageButton extends ImageButton  {
 
             Paint paint = new Paint();
             paint.setColor(mIsHiglighted ? Color.RED : Color.BLACK);
-            paint.setStrokeWidth((mIsHiglighted ? 3:2) * borderWidth);
+            paint.setStrokeWidth((mIsHiglighted ? 3 : 2) * borderWidth);
             paint.setStyle(Paint.Style.STROKE);
 
 

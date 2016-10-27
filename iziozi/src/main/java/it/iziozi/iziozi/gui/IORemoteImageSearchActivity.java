@@ -106,10 +106,9 @@ public class IORemoteImageSearchActivity extends AppCompatActivity {
                 if (IOHelper.checkForRequiredPermissions(IORemoteImageSearchActivity.this) && isExternalStorageReadable()) {
                     final IOPictogram pictogram = mPictograms.get(position);
 
-                    File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
+                    File baseFolder = new File(IOHelper.CONFIG_BASE_DIR + File.separator + "images");
                     final Character pictoChar = pictogram.getFilePath().charAt(0);
-                    File pictoFolder = new File(baseFolder + "/" + pictoChar + "/");
-                    final File pictoFile = new File(baseFolder + "/" + pictoChar + "/" + pictogram.getFilePath());
+                    final File pictoFile = new File(baseFolder + File.separator + pictoChar + "_" + pictogram.getFilePath());
 
                     final Intent backIntent;
                     if (isSpeechBoardSearch) {
@@ -125,7 +124,7 @@ public class IORemoteImageSearchActivity extends AppCompatActivity {
 
                     if (!pictoFile.exists() && isExternalStorageWritable()) {
 
-                        pictoFolder.mkdirs();
+                        baseFolder.mkdirs();
 
                         //download it
 

@@ -43,7 +43,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -612,8 +611,7 @@ public class IOCreateButtonActivity extends AppCompatActivity {
 
         if (IOHelper.checkForRequiredPermissions(this)) {
 
-            mFileDir = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/camera");
+            mFileDir = new File(IOHelper.CONFIG_BASE_DIR + File.separator + "images");
             if (!mFileDir.isDirectory())
                 mFileDir.mkdirs();
 
@@ -667,8 +665,7 @@ public class IOCreateButtonActivity extends AppCompatActivity {
 
                         String sourceFilename = getRealPathFromURI(this, selectedVideo);
 
-                        mFileDir = new File(Environment.getExternalStorageDirectory()
-                                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/video");
+                        mFileDir = new File(IOHelper.CONFIG_BASE_DIR + File.separator + "video");
                         if (!mFileDir.isDirectory())
                             mFileDir.mkdirs();
 
@@ -705,8 +702,7 @@ public class IOCreateButtonActivity extends AppCompatActivity {
 
                         Bitmap videoThumbnail = ThumbnailUtils.createVideoThumbnail(mDestinationFile.toString(), MediaStore.Images.Thumbnails.MINI_KIND);
 
-                        mFileDir = new File(Environment.getExternalStorageDirectory()
-                                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/gallery");
+                        mFileDir = new File(IOHelper.CONFIG_BASE_DIR + File.separator + "images");
                         if (!mFileDir.isDirectory())
                             mFileDir.mkdirs();
 
@@ -749,8 +745,7 @@ public class IOCreateButtonActivity extends AppCompatActivity {
                                     bitmap = scaleToFill(bitmap, 1024, 1024);
                                 }
 
-                                mFileDir = new File(Environment.getExternalStorageDirectory()
-                                        .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/gallery");
+                                mFileDir = new File(IOHelper.CONFIG_BASE_DIR + File.separator + "images");
                                 if (!mFileDir.isDirectory())
                                     mFileDir.mkdirs();
 
@@ -1000,8 +995,7 @@ public class IOCreateButtonActivity extends AppCompatActivity {
 
     private void startRecording() {
 
-        mFileDir = new File(Environment.getExternalStorageDirectory()
-                .getAbsolutePath(), IOApplication.APPLICATION_NAME + "/recordings");
+        mFileDir = new File(IOHelper.CONFIG_BASE_DIR + File.separator + "audio");
         if (!mFileDir.isDirectory())
             mFileDir.mkdirs();
 

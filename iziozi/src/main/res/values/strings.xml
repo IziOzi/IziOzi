@@ -270,4 +270,5 @@
     <string name="speech_board_error">You must first enable edit mode.</string>
 
     <string name="upgrade_in_progress">Upgrade in progress...</string>
+    <string name="export">Export</string>
 </resources>

@@ -6,7 +6,6 @@ import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -32,7 +31,6 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,8 +40,8 @@ import java.util.Locale;
 
 import it.iziozi.iziozi.R;
 import it.iziozi.iziozi.core.IOApiClient;
-import it.iziozi.iziozi.core.IOApplication;
 import it.iziozi.iziozi.core.dbclasses.IOPictogram;
+import it.iziozi.iziozi.helpers.IOHelper;
 
 
 public class SpeechBoardActivity extends AppCompatActivity implements View.OnClickListener {
@@ -444,9 +442,9 @@ public class SpeechBoardActivity extends AppCompatActivity implements View.OnCli
                             String text = jsonObject.getString("text");
                             pictogram.setDescription(text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase());
 
-                            File baseFolder = new File(Environment.getExternalStorageDirectory() + "/" + IOApplication.APPLICATION_FOLDER + "/pictograms");
+                            File baseFolder = new File(IOHelper.CONFIG_BASE_DIR + File.separator + "images");
                             Character pictoChar = pictogram.getFilePath().charAt(0);
-                            File pictoFile = new File(baseFolder + "/" + pictoChar + "/" + pictogram.getFilePath());
+                            File pictoFile = new File(baseFolder + File.separator + pictoChar + "_" + pictogram.getFilePath());
 
                             client.get(pictogram.getUrl(), new FileAsyncHandler(pictoFile, pictogram));
 
