@@ -32,6 +32,7 @@ import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -69,8 +70,12 @@ import com.joanzapata.android.iconify.Iconify;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -93,6 +98,7 @@ import it.iziozi.iziozi.helpers.IOHelper;
 public class IOBoardActivity extends AppCompatActivity implements IOBoardFragment.OnBoardFragmentInteractionListener,
         IOPaginatedBoardFragment.OnFragmentInteractionListener, FragmentTutorialPage.OnTutorialFinishedListener {
 
+    private static final String TAG = "IOBoardActivity";
 
     /*
     * Layout and configuration
@@ -195,6 +201,16 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_board);
+
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if(action == Intent.ACTION_VIEW && ("application/octet-stream".equals(type) || "application/iziozi".equals(type)))
+        {
+            Log.d(TAG, "Importing board from onCreate");
+            this.handleBoardImport(intent);
+        }
 
         mainNavContainer = (RelativeLayout) findViewById(R.id.mainLayoutNavigationContainer);
 
@@ -597,6 +613,86 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         mCenterBackButton.setVisibility(View.GONE);
     }
 
+    private void copyInputStreamToFile(InputStream in, File file ) {
+        try {
+            OutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int len;
+            while((len=in.read(buf))>0){
+                out.write(buf,0,len);
+            }
+            out.close();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void handleBoardImport(Intent intent){
+        Uri boardUri = (Uri) intent.getData();
+        if (boardUri != null) {
+
+            intent.setType(null);
+
+            InputStream inputStream = null;
+            try {
+                inputStream = getContentResolver().openInputStream(boardUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            File importsDir = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "imports");
+                importsDir.mkdirs();
+            File importFile = new File(importsDir, "import");
+
+            this.copyInputStreamToFile(inputStream, importFile);
+
+                try {
+                    IOHelper.unzip(importFile, importsDir);
+                    importFile.delete();
+
+                    File extractedDir = new File(importsDir, importsDir.listFiles()[importsDir.listFiles().length - 1].getName().replace(".iziozi", ""));
+                    File targetDir = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName());
+                    if(targetDir.exists()){
+                        int classifier = 2;
+                        File alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
+
+                        while (alternateTargetDir.exists()){
+                            classifier ++;
+                            alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
+                        }
+
+                        File oldJson = new File(extractedDir, targetDir.getName() + ".json");
+                        File newJson = new File(extractedDir, alternateTargetDir.getName() + ".json");
+
+                        FileUtils.copyFile(oldJson, newJson);
+
+                        oldJson.delete();
+
+                        targetDir = alternateTargetDir;
+
+                    }
+
+
+                    extractedDir.renameTo(new File(extractedDir.getParentFile(), targetDir.getName()));
+
+                    FileUtils.moveDirectoryToDirectory(new File(extractedDir.getParentFile(), targetDir.getName()), new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards"), false);
+
+                    extractedDir.delete();
+
+                    if(mActiveConfig != null){
+                        mActiveConfig.save(mActualConfigName);
+                    }
+
+                    IOConfiguration.getSavedConfiguration(targetDir.getName() + ".xml");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+
+    }
+
     private void displayTutorialExitDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.exit_tutorial_title))
@@ -876,7 +972,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                     try {
 
-                        if (mPlayingFile != null && mPlayingFile.equals(spkBtn.getAudioFile())) {
+                        if (mPlayingFile != null && mPlayingFile.equals(spkBtn.getAudioFile()) && mPlayer.isPlaying()) {
                             mPlayer.reset();
                             mPlayingFile = null;
                         } else {
@@ -921,14 +1017,29 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         }
     }
 
-
     @Override
     public void onLevelConfigurationChanged() {
         refreshView();
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
+
+    @Override
     protected void onResume() {
+
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if(action == Intent.ACTION_VIEW && ("application/octet-stream".equals(type) || "application/iziozi".equals(type)))
+        {
+            Log.d(TAG, "Importing board from onResume");
+            this.handleBoardImport(intent);
+        }
+
 /*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 */
@@ -1180,7 +1291,21 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             }
 
             case R.id.action_export: {
-                IOHelper.exportBoard();
+                if(IOHelper.exportBoard()){
+
+                    File packFile = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "exports" + File.separator + mActualConfigName + ".iziozi");
+
+                    if(packFile.exists()) {
+                        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                        Uri fileUri = Uri.fromFile(packFile);
+                        Log.d("DEBUG", fileUri.toString());
+                        sharingIntent.setType("*/*");
+                        sharingIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                        startActivity(Intent.createChooser(sharingIntent, getString(R.string.export_share_msg)));
+                    }
+                }else{
+                    Toast.makeText(this, R.string.export_error, Toast.LENGTH_LONG).show();
+                }
                 break;
             }
 

@@ -262,5 +262,7 @@
 
     <string name="upgrade_in_progress">Aggiornamento in corso...</string>
     <string name="export">Esporta</string>
+    <string name="export_error">C\'è stato un errore imprevisto durante l\'esportazione della tavola!</string>
+    <string name="export_share_msg">Invia tavola con:</string>
 
 </resources>

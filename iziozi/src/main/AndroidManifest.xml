@@ -67,6 +67,20 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/iziozi" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:mimeType="application/octet-stream"/>
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".gui.IOCreateButtonActivity"
@@ -127,6 +141,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="it.iziozi.iziozi.gui.IOBoardActivity" />
         </activity>
+
     </application>
 
 </manifest>

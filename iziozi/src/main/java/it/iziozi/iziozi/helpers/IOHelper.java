@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import it.iziozi.iziozi.core.IOApplication;
@@ -94,10 +95,10 @@ public class IOHelper {
     public static ArrayList<IOInfoObject> getInstalledApps(boolean getSysPackages, Context context) {
         ArrayList<IOInfoObject> res = new ArrayList<IOInfoObject>();
         List<PackageInfo> packs = context.getPackageManager().getInstalledPackages(0);
-        for(int i=0;i<packs.size();i++) {
+        for (int i = 0; i < packs.size(); i++) {
             PackageInfo p = packs.get(i);
             if ((!getSysPackages) && (p.versionName == null)) {
-                continue ;
+                continue;
             }
             IOInfoObject newInfo = new IOInfoObject();
             newInfo.appname = p.applicationInfo.loadLabel(context.getPackageManager()).toString();
@@ -125,7 +126,7 @@ public class IOHelper {
         if (!neededPermissions.isEmpty()) {
             String[] params = neededPermissions.toArray(new String[neededPermissions.size()]);
 
-            ActivityCompat.requestPermissions(targetActivity,params, IO_PERMISSIONS_GENERIC_REQUEST);
+            ActivityCompat.requestPermissions(targetActivity, params, IO_PERMISSIONS_GENERIC_REQUEST);
 
             // No permissions, wait if needed...
             return false;
@@ -155,11 +156,11 @@ public class IOHelper {
         final int BUFFER = 2048;
 
         File sourceFile = new File(IOHelper.CONFIG_BASE_DIR);
-        new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "exports").mkdirs();
+        new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "exports").mkdirs();
 
         try {
             BufferedInputStream origin = null;
-            FileOutputStream dest = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "exports", sourceFile.getName() + ".iziozi"));
+            FileOutputStream dest = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "exports", sourceFile.getName() + ".iziozi"));
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
                     dest));
             if (sourceFile.isDirectory()) {
@@ -190,7 +191,7 @@ public class IOHelper {
  */
 
     private static void zipSubFolder(ZipOutputStream out, File folder,
-                              int basePathLength) throws IOException {
+                                     int basePathLength) throws IOException {
 
         final int BUFFER = 2048;
 
@@ -232,5 +233,44 @@ public class IOHelper {
         return lastPathComponent;
     }
 
+
+    public static void unzip(File zipFile, File destinationFolder) {
+        try {
+            FileInputStream fin = new FileInputStream(zipFile);
+            ZipInputStream zin = new ZipInputStream(fin);
+            ZipEntry ze = null;
+            while ((ze = zin.getNextEntry()) != null) {
+                Log.v("Decompress", "Unzipping " + ze.getName());
+
+                File f = new File(destinationFolder, ze.getName());
+
+                if (!f.isDirectory())
+                {
+                    if (f.getParentFile() != null || ze.isDirectory()) {
+                        f.getParentFile().mkdirs();
+                    }
+                    f.createNewFile();
+                }
+
+                if (!ze.isDirectory()) {
+                    FileOutputStream fout = new FileOutputStream(new File(destinationFolder, ze.getName()));
+                    for (int c = zin.read(); c != -1; c = zin.read()) {
+                        fout.write(c);
+                    }
+
+                    zin.closeEntry();
+                    fout.close();
+                }
+
+
+            }
+
+            zin.close();
+
+        } catch (Exception e) {
+            Log.e("Decompress", "unzip", e);
+        }
+
+    }
 }
 
