@@ -660,40 +660,45 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                 IOHelper.unzip(importFile, importsDir);
                 importFile.delete();
 
-                File extractedDir = new File(importsDir, importsDir.listFiles()[importsDir.listFiles().length - 1].getName().replace(".iziozi", ""));
-                File targetDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName());
-                if (targetDir.exists()) {
-                    int classifier = 2;
-                    File alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
+                //Fix for issue #279
+                if(importsDir.listFiles() != null) {
 
-                    while (alternateTargetDir.exists()) {
-                        classifier++;
-                        alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
+                    File extractedDir = new File(importsDir, importsDir.listFiles()[importsDir.listFiles().length - 1].getName().replace(".iziozi", ""));
+                    File targetDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName());
+                    if (targetDir.exists()) {
+                        int classifier = 2;
+                        File alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
+
+                        while (alternateTargetDir.exists()) {
+                            classifier++;
+                            alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
+                        }
+
+                        File oldJson = new File(extractedDir, targetDir.getName() + ".json");
+                        File newJson = new File(extractedDir, alternateTargetDir.getName() + ".json");
+
+                        FileUtils.copyFile(oldJson, newJson);
+
+                        oldJson.delete();
+
+                        targetDir = alternateTargetDir;
+
                     }
 
-                    File oldJson = new File(extractedDir, targetDir.getName() + ".json");
-                    File newJson = new File(extractedDir, alternateTargetDir.getName() + ".json");
 
-                    FileUtils.copyFile(oldJson, newJson);
+                    extractedDir.renameTo(new File(extractedDir.getParentFile(), targetDir.getName()));
 
-                    oldJson.delete();
+                    FileUtils.moveDirectoryToDirectory(new File(extractedDir.getParentFile(), targetDir.getName()), new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards"), false);
 
-                    targetDir = alternateTargetDir;
+                    extractedDir.delete();
+
+                    if (mActiveConfig != null) {
+                        mActiveConfig.save(mActualConfigName);
+                    }
+
+                    IOConfiguration.getSavedConfiguration(targetDir.getName() + ".xml");
 
                 }
-
-
-                extractedDir.renameTo(new File(extractedDir.getParentFile(), targetDir.getName()));
-
-                FileUtils.moveDirectoryToDirectory(new File(extractedDir.getParentFile(), targetDir.getName()), new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards"), false);
-
-                extractedDir.delete();
-
-                if (mActiveConfig != null) {
-                    mActiveConfig.save(mActualConfigName);
-                }
-
-                IOConfiguration.getSavedConfiguration(targetDir.getName() + ".xml");
 
             } catch (IOException e) {
                 e.printStackTrace();
