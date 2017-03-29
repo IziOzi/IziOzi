@@ -208,7 +208,14 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
 
                     parentDraggedImage.addView(targetImage, 0);
                     parentDraggedImage.addView(targetLabel, 0);
+                    //Fix for issue #268
+
+                    if(draggedImage.getParent() != null)
+                        ((ViewGroup) draggedImage.getParent()).removeView(draggedImage);
                     ((ViewGroup) view.getChildAt(0)).addView(draggedImage, 0);
+
+                    if(draggedLabel.getParent() != null)
+                        ((ViewGroup) draggedLabel.getParent()).removeView(draggedLabel);
                     ((ViewGroup) view.getChildAt(0)).addView(draggedLabel, 0);
 
                     int targetIndex = getBoard().getButtons().indexOf(targetImage);
