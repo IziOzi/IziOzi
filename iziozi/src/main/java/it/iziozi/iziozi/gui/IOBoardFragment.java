@@ -382,7 +382,9 @@ public class IOBoardFragment extends Fragment implements View.OnDragListener, Vi
                                         @Override
                                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
 
-                                            Toast.makeText(getContext(), getString(R.string.download_error) + file.toString(), Toast.LENGTH_LONG).show();
+                                            // FIX #286
+                                            if( isAdded() )
+                                                Toast.makeText(getContext(), getString(R.string.download_error) + file.toString(), Toast.LENGTH_LONG).show();
                                         }
 
 
