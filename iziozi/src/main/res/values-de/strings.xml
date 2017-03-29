@@ -58,4 +58,7 @@
     <string name="export_error">An unexpected error has occurred during the board export!</string>
     <string name="export_share_msg">Share board using:</string>
 
+    <string name="permission_error">The application can\'t run properly if you don\'t grant all the permissions.</string>
+    <string name="grant">Grant</string>
+
 </resources>

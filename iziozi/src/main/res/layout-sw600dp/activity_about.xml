@@ -125,7 +125,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:text="www.iziozi.org"
+            android:text="iziozi.martinolessio.com"
             android:id="@+id/editModeAlertActionPicture"
             android:background="@null"
             android:onClick="openWebsite"
@@ -138,7 +138,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:text="info@iziozi.org"
+            android:text="iziozi@martinolessio.com"
             android:id="@+id/CreateButtonSetImageButton"
             android:background="@null"
             android:onClick="sendMail"

@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -202,12 +201,22 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         setContentView(R.layout.activity_board);
 
+        if (IOHelper.checkForRequiredPermissions(this))
+            this.init();
+    }
+
+    private void init() {
+
+        Log.d("TAG", "Calling Init!");
+
+        this.migrateXML();
+        this.upgradeProjectStructure();
+
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
 
-        if(action == Intent.ACTION_VIEW && ("application/octet-stream".equals(type) || "application/iziozi".equals(type)))
-        {
+        if (action == Intent.ACTION_VIEW && ("application/octet-stream".equals(type) || "application/iziozi".equals(type))) {
             Log.d(TAG, "Importing board from onCreate");
             this.handleBoardImport(intent);
         }
@@ -216,12 +225,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         this.mDecorView = getWindow().getDecorView();
 
-        this.migrateXML();
-        this.upgradeProjectStructure();
-
-        if (IOHelper.checkForRequiredPermissions(this)) {
-            this.mActiveConfig = IOConfiguration.getSavedConfiguration();
-        }
+        this.mActiveConfig = IOConfiguration.getSavedConfiguration();
 
         SharedPreferences preferences = IOApplication.CONTEXT.getSharedPreferences(IOApplication.APPLICATION_NAME,
                 Context.MODE_PRIVATE);
@@ -232,6 +236,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
         if (this.mActiveConfig == null) {
             this.mActiveConfig = new IOConfiguration();
+            this.saveBoard(null);
         }
 
         SharedPreferences prefs = getSharedPreferences("tutorial", Context.MODE_PRIVATE);
@@ -363,6 +368,10 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         mRightSideArrowButton.setVisibility(View.GONE);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
+    }
 
     private void setupSideNavButtons() {
         ViewGroup leftContainer = (ViewGroup) findViewById(R.id.leftnav_container);
@@ -613,13 +622,13 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         mCenterBackButton.setVisibility(View.GONE);
     }
 
-    private void copyInputStreamToFile(InputStream in, File file ) {
+    private void copyInputStreamToFile(InputStream in, File file) {
         try {
             OutputStream out = new FileOutputStream(file);
             byte[] buf = new byte[1024];
             int len;
-            while((len=in.read(buf))>0){
-                out.write(buf,0,len);
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
             }
             out.close();
             in.close();
@@ -629,7 +638,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
     }
 
 
-    private void handleBoardImport(Intent intent){
+    private void handleBoardImport(Intent intent) {
         Uri boardUri = (Uri) intent.getData();
         if (boardUri != null) {
 
@@ -641,54 +650,54 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            File importsDir = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "imports");
-                importsDir.mkdirs();
+            File importsDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "imports");
+            importsDir.mkdirs();
             File importFile = new File(importsDir, "import");
 
             this.copyInputStreamToFile(inputStream, importFile);
 
-                try {
-                    IOHelper.unzip(importFile, importsDir);
-                    importFile.delete();
+            try {
+                IOHelper.unzip(importFile, importsDir);
+                importFile.delete();
 
-                    File extractedDir = new File(importsDir, importsDir.listFiles()[importsDir.listFiles().length - 1].getName().replace(".iziozi", ""));
-                    File targetDir = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName());
-                    if(targetDir.exists()){
-                        int classifier = 2;
-                        File alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
+                File extractedDir = new File(importsDir, importsDir.listFiles()[importsDir.listFiles().length - 1].getName().replace(".iziozi", ""));
+                File targetDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName());
+                if (targetDir.exists()) {
+                    int classifier = 2;
+                    File alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
 
-                        while (alternateTargetDir.exists()){
-                            classifier ++;
-                            alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
-                        }
-
-                        File oldJson = new File(extractedDir, targetDir.getName() + ".json");
-                        File newJson = new File(extractedDir, alternateTargetDir.getName() + ".json");
-
-                        FileUtils.copyFile(oldJson, newJson);
-
-                        oldJson.delete();
-
-                        targetDir = alternateTargetDir;
-
+                    while (alternateTargetDir.exists()) {
+                        classifier++;
+                        alternateTargetDir = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + extractedDir.getName() + "_" + classifier);
                     }
 
+                    File oldJson = new File(extractedDir, targetDir.getName() + ".json");
+                    File newJson = new File(extractedDir, alternateTargetDir.getName() + ".json");
 
-                    extractedDir.renameTo(new File(extractedDir.getParentFile(), targetDir.getName()));
+                    FileUtils.copyFile(oldJson, newJson);
 
-                    FileUtils.moveDirectoryToDirectory(new File(extractedDir.getParentFile(), targetDir.getName()), new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "boards"), false);
+                    oldJson.delete();
 
-                    extractedDir.delete();
+                    targetDir = alternateTargetDir;
 
-                    if(mActiveConfig != null){
-                        mActiveConfig.save(mActualConfigName);
-                    }
-
-                    IOConfiguration.getSavedConfiguration(targetDir.getName() + ".xml");
-
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+
+
+                extractedDir.renameTo(new File(extractedDir.getParentFile(), targetDir.getName()));
+
+                FileUtils.moveDirectoryToDirectory(new File(extractedDir.getParentFile(), targetDir.getName()), new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "boards"), false);
+
+                extractedDir.delete();
+
+                if (mActiveConfig != null) {
+                    mActiveConfig.save(mActualConfigName);
+                }
+
+                IOConfiguration.getSavedConfiguration(targetDir.getName() + ".xml");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -1034,8 +1043,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         String action = intent.getAction();
         String type = intent.getType();
 
-        if(action == Intent.ACTION_VIEW && ("application/octet-stream".equals(type) || "application/iziozi".equals(type)))
-        {
+        if (action == Intent.ACTION_VIEW && ("application/octet-stream".equals(type) || "application/iziozi".equals(type))) {
             Log.d(TAG, "Importing board from onResume");
             this.handleBoardImport(intent);
         }
@@ -1043,9 +1051,11 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 /*
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 */
-        Fragment fragment = getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
-        if (!(fragment instanceof FragmentTutorialViewPager)) {
-            refreshView();
+        if (mFrameLayout != null) {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
+            if (!(fragment instanceof FragmentTutorialViewPager)) {
+                refreshView();
+            }
         }
 
         super.onResume();
@@ -1291,11 +1301,11 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             }
 
             case R.id.action_export: {
-                if(IOHelper.exportBoard()){
+                if (IOHelper.exportBoard()) {
 
-                    File packFile = new File(Environment.getExternalStorageDirectory() + File.separator +  IOApplication.APPLICATION_NAME + File.separator + "exports" + File.separator + mActualConfigName + ".iziozi");
+                    File packFile = new File(Environment.getExternalStorageDirectory() + File.separator + IOApplication.APPLICATION_NAME + File.separator + "exports" + File.separator + mActualConfigName + ".iziozi");
 
-                    if(packFile.exists()) {
+                    if (packFile.exists()) {
                         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                         Uri fileUri = Uri.fromFile(packFile);
                         Log.d("DEBUG", fileUri.toString());
@@ -1303,7 +1313,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                         sharingIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
                         startActivity(Intent.createChooser(sharingIntent, getString(R.string.export_share_msg)));
                     }
-                }else{
+                } else {
                     Toast.makeText(this, R.string.export_error, Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -1403,7 +1413,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                                     File dirFile = new File(Environment.getExternalStorageDirectory()
                                             .getAbsolutePath(), IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + value);
-                                    if(!dirFile.exists())
+                                    if (!dirFile.exists())
                                         dirFile.mkdirs();
 
                                     File file = new File(dirFile.toString(), value + ".json");
@@ -1515,7 +1525,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                     File dirFile = new File(Environment.getExternalStorageDirectory()
                             .getAbsolutePath(), IOApplication.APPLICATION_NAME + File.separator + "boards" + File.separator + value);
-                    if(!dirFile.exists())
+                    if (!dirFile.exists())
                         dirFile.mkdirs();
                     File file = new File(dirFile.toString(), value + ".json");
 
@@ -1588,9 +1598,10 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                                 if (mActualConfigName != null)
                                     mActualConfigName = mActualConfigName.replace(".xml", "");
 
-                                fm.beginTransaction()
-                                        .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActiveConfig.getLevel()))
-                                        .commit();
+                                if (mFrameLayout != null)
+                                    fm.beginTransaction()
+                                            .replace(mFrameLayout.getId(), IOPaginatedBoardFragment.newInstance(mActiveConfig.getLevel()))
+                                            .commit();
                             }
                         }
                     }).setNegativeButton(getResources().getString(R.string.cancel), null)
@@ -1608,7 +1619,9 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             @Override
             public boolean accept(File dir, String filename) {
 
-                if (filename.indexOf(".xml") != -1 && !new File(dir, filename.replace(".xml", ".json")).exists()) {
+                String name = filename.replace(".xml", "");
+
+                if (filename.indexOf(".xml") != -1 && !new File(dir + "/" + name, filename.replace(".xml", ".json")).exists()) {
                     return true;
                 }
 
@@ -1657,7 +1670,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
                 if (filename.contains(".xml") && (
                         !new File(dir, filename.replace(".xml", "")).exists() ||
-                        !new File(dir, filename.replace(".xml", "")).isDirectory())) {
+                                !new File(dir, filename.replace(".xml", "")).isDirectory())) {
 
                     Log.d("DEBUG", "config file: " + filename);
 
@@ -1755,12 +1768,12 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
                             new File(imageDir, targetFile.getName()).delete();
 
                             button.setmImageFile(fileName);
-                        }else{
+                        } else {
                             targetFile = new File(mainCameraDir, imageFile.getName());
                             if (targetFile.exists()) {
                                 FileUtils.copyFileToDirectory(targetFile, imageDir);
                                 button.setmImageFile(targetFile.getName());
-                            }else {
+                            } else {
                                 targetFile = new File(mainGalleryDir, imageFile.getName());
                                 if (targetFile.exists()) {
                                     FileUtils.copyFileToDirectory(targetFile, imageDir);
@@ -1846,12 +1859,12 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
 
     public boolean canGoLeft() {
         IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
-        return fragment.canGoLeft();
+        return fragment != null && fragment.canGoLeft();
     }
 
     public boolean canGoRight() {
         IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) getSupportFragmentManager().findFragmentById(mFrameLayout.getId());
-        return fragment.canGoRight();
+        return fragment != null && fragment.canGoRight();
 
     }
 
@@ -1942,7 +1955,8 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
         FragmentManager fm = getSupportFragmentManager();
         IOPaginatedBoardFragment fragment = (IOPaginatedBoardFragment) fm.findFragmentById(mFrameLayout.getId());
 
-        fragment.refreshView(index);
+        if (fragment != null)
+            fragment.refreshView(index);
 
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             mCenterBackButton.setVisibility(View.VISIBLE);
@@ -2254,10 +2268,32 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        // If request is cancelled, the result arrays are empty.
-        if (grantResults.length > 0)
-            return;
 
+        if (IOHelper.hasAllPermissions(this))
+            this.init();
+        else {
+            new AlertDialog.Builder(IOBoardActivity.this)
+                    .setTitle(getResources().getString(R.string.warning))
+                    .setMessage(getString(R.string.permission_error))
+                    .setPositiveButton(getResources().getString(R.string.grant), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            IOHelper.checkForRequiredPermissions(IOBoardActivity.this);
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setCancelable(false)
+                    .create()
+                    .show();
+
+        }
+
+/*
         switch (requestCode) {
 
             case IOHelper.IO_PERMISSIONS_READ_STORAGE_FOR_LOADING:
@@ -2276,6 +2312,7 @@ public class IOBoardActivity extends AppCompatActivity implements IOBoardFragmen
             default:
                 break;
         }
+*/
     }
 
     private void highlightButtonAtIndex(int index) {

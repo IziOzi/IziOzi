@@ -136,6 +136,7 @@ public class IORemoteImageSearchActivity extends AppCompatActivity {
                         mBarProgressDialog.setMax(100);
                         mBarProgressDialog.show();
 
+                        Log.d("DEBUG", pictogram.getUrl());
 
                         AsyncHttpClient client = new AsyncHttpClient();
                         client.get(pictogram.getUrl(), new FileAsyncHttpResponseHandler(pictoFile) {

@@ -137,7 +137,7 @@
 
     <!-- Hint Alert-->
     <string name="welcome">Benvenuto</string>
-    <string name="welcome_text">Benvenuto in IziOzi! Per creare un nuovo pulsante, ora ti abiliterò la modalità di modifica! Tocca un pulsante qualsiasi per iniziare la configurazione. Quando hai finito, disabilita la modalità di modifica, blocca l\'interfaccia nel menu e sarai pronto a cominciare! Per altre informazioni, vai su www.iziozi.org!</string>
+    <string name="welcome_text">Benvenuto in IziOzi! Per creare un nuovo pulsante, ora ti abiliterò la modalità di modifica! Tocca un pulsante qualsiasi per iniziare la configurazione. Quando hai finito, disabilita la modalità di modifica, blocca l\'interfaccia nel menu e sarai pronto a cominciare! Per altre informazioni, vai su iziozi.martinolessio.com!</string>
 
 
     <!-- TTS strings -->
@@ -264,5 +264,7 @@
     <string name="export">Esporta</string>
     <string name="export_error">C\'è stato un errore imprevisto durante l\'esportazione della tavola!</string>
     <string name="export_share_msg">Invia tavola con:</string>
+    <string name="permission_error">L\'app non può funzionare correttamente se non garantisci tutti i permessi.</string>
+    <string name="grant">Garantisci</string>
 
 </resources>

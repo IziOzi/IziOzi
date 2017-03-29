@@ -46,8 +46,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 20160304
-        versionName '2.1'
+        versionCode 20170214
+        versionName '3.0'
         signingConfig signingConfigs.IziOzi
     }
     buildTypes {

@@ -32,7 +32,7 @@ import org.apache.http.client.params.ClientPNames;
  */
 public class IOApiClient {
 
-    private static final String BASE_URL = "http://www.iziozi.org/api/";
+    private static final String BASE_URL = "http://www.martinolessio.com/iziozi/api/";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 

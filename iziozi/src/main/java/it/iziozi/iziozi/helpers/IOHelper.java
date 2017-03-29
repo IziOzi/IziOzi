@@ -137,6 +137,14 @@ public class IOHelper {
 
     }
 
+    public static boolean hasAllPermissions(Activity targetActivity) {
+        for (String permission : IO_REQUIRED_PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(targetActivity, permission) != PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+        return true;
+    }
+
     public static Orientation getOrientation(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point size = new Point();

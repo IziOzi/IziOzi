@@ -66,14 +66,14 @@ public class IOAboutActivity extends AppCompatActivity {
 
     public void openWebsite(View v)
     {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.iziozi.org"));
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://iziozi.martinolessio.com"));
         startActivity(browserIntent);
     }
 
     public void sendMail(View v)
     {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto","info@iziozi.org", null));
+                "mailto","iziozi@martinolessio.com", null));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "IziOzi Info");
         startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.send_mail)));
     }
